@@ -14,6 +14,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
+import { PortalAccessGuard } from '../../components/common/PortalAccessGuard';
 
 export const ParentPortal: React.FC = () => {
   const {
@@ -44,8 +45,13 @@ export const ParentPortal: React.FC = () => {
   const studentPayments = payments.filter((p) => p.studentId === student.id);
 
   return (
-    <div className="bg-slate-50 min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <PortalAccessGuard
+      requiredRole="ORANG_TUA"
+      portalName="Portal Orang Tua"
+      loginTab="ORANG_TUA"
+    >
+      <div className="bg-slate-50 min-h-screen py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Header Profile Ananda */}
         <div className="bg-gradient-to-r from-teal-900 via-emerald-800 to-emerald-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
@@ -355,5 +361,6 @@ export const ParentPortal: React.FC = () => {
         )}
       </div>
     </div>
+    </PortalAccessGuard>
   );
 };

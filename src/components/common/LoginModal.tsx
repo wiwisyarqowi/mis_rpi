@@ -9,21 +9,21 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
-  const { loginAsRole, currentUser } = useSchool();
+  const { navigate, currentUser } = useSchool();
   const [selectedRole, setSelectedRole] = useState<UserRole>('SISWA');
 
   if (!isOpen) return null;
 
-  const demoAccounts: { role: UserRole; title: string; name: string; desc: string; icon: string }[] = [
-    { role: 'SISWA', title: 'Portal Siswa (LMS & CBT)', name: 'Muhammad Al Fatih', desc: 'Kelas 4A • Tugas, Kuis CBT, Jurnal Ibadah & E-Library', icon: '👦' },
-    { role: 'ORANG_TUA', title: 'Portal Orang Tua / Wali', name: 'Wali Murid Al Fatih', desc: 'Monitoring Presensi Real-Time, e-Rapor & Bayar SPP', icon: '👨‍👩‍👧' },
-    { role: 'GURU', title: 'Portal Pendidik (GTK)', name: 'Ustadz Ahmad Fauzi, S.Pd.I', desc: 'Input Nilai, Checklist Presensi, Poin Karakter & Bank Soal', icon: '👨‍🏫' },
-    { role: 'KEPALA_MADRASAH', title: 'Eksekutif Dashboard', name: 'Kepala Madrasah RPI', desc: 'Monitoring Kinerja Sekolah, Kehadiran, Keuangan & SPMB', icon: '🏛️' },
-    { role: 'ADMIN', title: 'Super Administrator', name: 'Admin Pusat Data RPI', desc: 'Pengaturan Sekolah (/admin/settings), SPMB & Suara Warga', icon: '⚙️' },
+  const demoAccounts: { role: UserRole; tab: 'SISWA' | 'ORANG_TUA' | 'GURU' | 'ADMIN'; title: string; name: string; desc: string; icon: string }[] = [
+    { role: 'SISWA', tab: 'SISWA', title: 'Portal Siswa (LMS & CBT)', name: 'Muhammad Al Fatih', desc: 'Kelas 4A • Tugas, Kuis CBT, Jurnal Ibadah & E-Library', icon: '👦' },
+    { role: 'ORANG_TUA', tab: 'ORANG_TUA', title: 'Portal Orang Tua / Wali', name: 'Wali Murid Al Fatih', desc: 'Monitoring Presensi Real-Time, e-Rapor & Bayar SPP', icon: '👨‍👩‍👧' },
+    { role: 'GURU', tab: 'GURU', title: 'Portal Pendidik (GTK)', name: 'Ustadz Ahmad Fauzi, S.Pd.I', desc: 'Input Nilai, Checklist Presensi, Poin Karakter & Bank Soal', icon: '👨‍🏫' },
+    { role: 'KEPALA_MADRASAH', tab: 'ADMIN', title: 'Eksekutif Dashboard', name: 'Kepala Madrasah RPI', desc: 'Monitoring Kinerja Sekolah, Kehadiran, Keuangan & SPMB', icon: '🏛️' },
+    { role: 'ADMIN', tab: 'ADMIN', title: 'Super Administrator', name: 'Admin Pusat Data RPI', desc: 'Pengaturan Sekolah (/admin/settings), SPMB & Suara Warga', icon: '⚙️' },
   ];
 
-  const handleSelectRole = (role: UserRole) => {
-    loginAsRole(role);
+  const handleSelectRole = (tab: 'SISWA' | 'ORANG_TUA' | 'GURU' | 'ADMIN') => {
+    navigate('login', { role: tab });
     onClose();
   };
 
@@ -51,14 +51,14 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         {/* Roles Quick-Select List */}
         <div className="p-6 space-y-3 max-h-[70vh] overflow-y-auto">
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-            Pilih Akun Demonstrasi (1-Klik Masuk Langsung):
+            Pilih Portal Tujuan untuk Masuk:
           </p>
 
           <div className="space-y-2.5">
             {demoAccounts.map((acc) => (
               <div
                 key={acc.role}
-                onClick={() => handleSelectRole(acc.role)}
+                onClick={() => handleSelectRole(acc.tab)}
                 className="group cursor-pointer p-3.5 rounded-2xl border border-slate-200/80 hover:border-emerald-500 hover:bg-emerald-50/50 transition flex items-center justify-between gap-3"
               >
                 <div className="flex items-center gap-3">

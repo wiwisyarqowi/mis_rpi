@@ -16,6 +16,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
+import { PortalAccessGuard } from '../../components/common/PortalAccessGuard';
 
 export const StudentPortal: React.FC = () => {
   const {
@@ -106,8 +107,13 @@ export const StudentPortal: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <PortalAccessGuard
+      requiredRole="SISWA"
+      portalName="Portal Siswa"
+      loginTab="SISWA"
+    >
+      <div className="bg-slate-50 min-h-screen py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Student Profile Banner */}
         <div className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
@@ -550,5 +556,6 @@ export const StudentPortal: React.FC = () => {
         )}
       </div>
     </div>
+    </PortalAccessGuard>
   );
 };

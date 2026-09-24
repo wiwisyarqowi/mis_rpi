@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Users,
   GraduationCap,
@@ -19,8 +19,20 @@ import { useSchool } from '../../context/SchoolContext';
 import { UserRole } from '../../types';
 
 export const LoginPage: React.FC = () => {
-  const { loginAsRole, settings, navigate, loginWithCredentials } = useSchool();
-  const [activeTab, setActiveTab] = useState<'GURU' | 'ORANG_TUA' | 'SISWA' | 'ADMIN'>('GURU');
+  const { loginAsRole, settings, navigate, loginWithCredentials, viewParams } = useSchool();
+  const [activeTab, setActiveTab] = useState<'GURU' | 'ORANG_TUA' | 'SISWA' | 'ADMIN'>(() => {
+    if (viewParams?.role && ['GURU', 'ORANG_TUA', 'SISWA', 'ADMIN'].includes(viewParams.role)) {
+      return viewParams.role;
+    }
+    return 'GURU';
+  });
+
+  // Keep activeTab in sync if viewParams changes
+  useEffect(() => {
+    if (viewParams?.role && ['GURU', 'ORANG_TUA', 'SISWA', 'ADMIN'].includes(viewParams.role)) {
+      setActiveTab(viewParams.role);
+    }
+  }, [viewParams]);
 
   // Form states
   const [identifier, setIdentifier] = useState('');
@@ -165,32 +177,42 @@ export const LoginPage: React.FC = () => {
                     </button>
                   </form>
 
-                  {/* 1-Click Demo Login */}
+                  {/* Autofill Demo Credentials */}
                   <div className="pt-4 border-t border-slate-100 space-y-2">
                     <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                      Atau Masuk Cepat (Akses Demonstrasi):
+                      Isi Otomatis Kredensial Pengujian:
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <button
-                        onClick={() => handleQuickLogin('GURU')}
-                        className="p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-left transition flex items-center justify-between"
+                        type="button"
+                        onClick={() => {
+                          setIdentifier('ahmad.fauzi');
+                          setPassword('guru123');
+                          setErrorMsg(null);
+                        }}
+                        className="p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
                       >
                         <div>
                           <p className="font-bold text-xs text-emerald-900">Ustadz Ahmad Fauzi, S.Pd.I</p>
-                          <p className="text-[10px] text-emerald-700">Wali Kelas 4A • Guru PAI</p>
+                          <p className="text-[10px] text-emerald-700">user: ahmad.fauzi • pass: guru123</p>
                         </div>
-                        <ArrowRight size={14} className="text-emerald-600" />
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded">Isi</span>
                       </button>
 
                       <button
-                        onClick={() => handleQuickLogin('GURU')}
-                        className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-left transition flex items-center justify-between"
+                        type="button"
+                        onClick={() => {
+                          setIdentifier('siti.rahma');
+                          setPassword('guru123');
+                          setErrorMsg(null);
+                        }}
+                        className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
                       >
                         <div>
                           <p className="font-bold text-xs text-slate-900">Ustadzah Siti Rahma, S.Pd.</p>
-                          <p className="text-[10px] text-slate-500">Guru Sains & Robotika</p>
+                          <p className="text-[10px] text-slate-500">user: siti.rahma • pass: guru123</p>
                         </div>
-                        <ArrowRight size={14} className="text-slate-400" />
+                        <span className="text-[10px] font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded">Isi</span>
                       </button>
                     </div>
                   </div>
@@ -276,32 +298,42 @@ export const LoginPage: React.FC = () => {
                     </button>
                   </form>
 
-                  {/* 1-Click Demo Login */}
+                  {/* Autofill Demo Credentials */}
                   <div className="pt-4 border-t border-slate-100 space-y-2">
                     <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                      Atau Masuk Cepat (Akses Demonstrasi):
+                      Isi Otomatis Kredensial Pengujian:
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <button
-                        onClick={() => handleQuickLogin('ORANG_TUA')}
-                        className="p-3 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl text-left transition flex items-center justify-between"
+                        type="button"
+                        onClick={() => {
+                          setIdentifier('ortu.alfatih');
+                          setPassword('ortu123');
+                          setErrorMsg(null);
+                        }}
+                        className="p-3 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
                       >
                         <div>
                           <p className="font-bold text-xs text-teal-900">Ibu Fatimah Zahra, S.E.</p>
-                          <p className="text-[10px] text-teal-700">Wali dari Muhammad Al Fatih (4A)</p>
+                          <p className="text-[10px] text-teal-700">user: ortu.alfatih • pass: ortu123</p>
                         </div>
-                        <ArrowRight size={14} className="text-teal-600" />
+                        <span className="text-[10px] font-bold text-teal-800 bg-teal-200 px-2 py-0.5 rounded">Isi</span>
                       </button>
 
                       <button
-                        onClick={() => handleQuickLogin('ORANG_TUA')}
-                        className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-left transition flex items-center justify-between"
+                        type="button"
+                        onClick={() => {
+                          setIdentifier('ortu.aisyah');
+                          setPassword('ortu123');
+                          setErrorMsg(null);
+                        }}
+                        className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
                       >
                         <div>
                           <p className="font-bold text-xs text-slate-900">Bapak Hendra Pratama</p>
-                          <p className="text-[10px] text-slate-500">Wali dari Aisyah Humaira (2B)</p>
+                          <p className="text-[10px] text-slate-500">user: ortu.aisyah • pass: ortu123</p>
                         </div>
-                        <ArrowRight size={14} className="text-slate-400" />
+                        <span className="text-[10px] font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded">Isi</span>
                       </button>
                     </div>
                   </div>
@@ -383,16 +415,25 @@ export const LoginPage: React.FC = () => {
                     </button>
                   </form>
 
-                  <div className="pt-4 border-t border-slate-100">
+                  {/* Autofill Demo Credentials */}
+                  <div className="pt-4 border-t border-slate-100 space-y-2">
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Isi Otomatis Kredensial Pengujian:
+                    </p>
                     <button
-                      onClick={() => handleQuickLogin('SISWA')}
-                      className="w-full p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-left transition flex items-center justify-between"
+                      type="button"
+                      onClick={() => {
+                        setIdentifier('siswa.alfatih');
+                        setPassword('siswa123');
+                        setErrorMsg(null);
+                      }}
+                      className="w-full p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
                     >
                       <div>
-                        <p className="font-bold text-xs text-emerald-900">Masuk sebagai Muhammad Al Fatih</p>
-                        <p className="text-[10px] text-emerald-700">Kelas 4A • Santri Teladan</p>
+                        <p className="font-bold text-xs text-emerald-900">Muhammad Al Fatih</p>
+                        <p className="text-[10px] text-emerald-700">user: siswa.alfatih • pass: siswa123 (NISN: 0092837190)</p>
                       </div>
-                      <ArrowRight size={14} className="text-emerald-600" />
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded">Isi</span>
                     </button>
                   </div>
                 </div>
@@ -426,47 +467,121 @@ export const LoginPage: React.FC = () => {
 
             {/* ================= TAB 4: ADMIN & KAMAD ================= */}
             {activeTab === 'ADMIN' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-                <div className="p-6 rounded-3xl border-2 border-emerald-500 bg-emerald-50/50 space-y-4 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <span className="bg-amber-400 text-slate-950 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">
-                      Administrator Sistem
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                <div className="md:col-span-7 space-y-6">
+                  <div>
+                    <span className="bg-amber-100 text-amber-900 text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase">
+                      Admin & Kepemimpinan
                     </span>
-                    <h4 className="text-base font-bold text-slate-900">
-                      Pusat Kendali Admin & Kelola Media
-                    </h4>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      Kelola logo sekolah, unggah foto banner & galeri kegiatan, verifikasi berkas pendaftaran santri baru (SPMB), dan respons suara warga madrasah.
+                    <h3 className="text-lg font-bold text-slate-900 mt-1">
+                      Masuk sebagai Administrator / Kepala Madrasah
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Gunakan akun resmi pengelola sistem atau pimpinan untuk mengakses kendali madrasah.
                     </p>
                   </div>
-                  <button
-                    onClick={() => handleQuickLogin('ADMIN')}
-                    className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span>Masuk ke Pusat Admin</span>
-                    <ArrowRight size={14} />
-                  </button>
+
+                  <form onSubmit={handleCustomLogin} className="space-y-4 text-xs">
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">
+                        Username / Email *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Contoh: admin atau kamad@mirpi.sch.id"
+                        value={identifier}
+                        onChange={(e) => setIdentifier(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl outline-none focus:border-emerald-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">
+                        Kata Sandi *
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl outline-none focus:border-emerald-500"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full py-3 bg-slate-900 hover:bg-black text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <CheckCircle2 size={16} />
+                      <span>Masuk ke Dashboard Sistem</span>
+                    </button>
+                  </form>
+
+                  {/* Account shortcut filler */}
+                  <div className="pt-4 border-t border-slate-100 space-y-2">
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Isi Otomatis Kredensial Pengujian:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIdentifier('admin');
+                          setPassword('admin123');
+                          setErrorMsg(null);
+                        }}
+                        className="p-3 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
+                      >
+                        <div>
+                          <p className="font-bold text-xs text-amber-950">⚙️ Administrator</p>
+                          <p className="text-[10px] text-amber-700">user: admin • pass: admin123</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Isi</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIdentifier('kamad');
+                          setPassword('kamad123');
+                          setErrorMsg(null);
+                        }}
+                        className="p-3 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
+                      >
+                        <div>
+                          <p className="font-bold text-xs text-purple-950">🏛️ Kepala Madrasah</p>
+                          <p className="text-[10px] text-purple-700">user: kamad • pass: kamad123</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-purple-800 bg-purple-200 px-2 py-0.5 rounded">Isi</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="p-6 rounded-3xl border border-purple-200 bg-purple-50/50 space-y-4 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <span className="bg-purple-200 text-purple-900 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">
-                      Pimpinan Madrasah
-                    </span>
-                    <h4 className="text-base font-bold text-slate-900">
-                      Dashboard Eksekutif Kepala Madrasah
-                    </h4>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      Pantau ringkasan statistik kehadiran santri, grafik kelulusan tahfiz Al-Qur'an, rekapitulasi keuangan SPP, dan supervisi kinerja pendidik.
-                    </p>
+                {/* Feature highlight card */}
+                <div className="md:col-span-5 bg-gradient-to-br from-slate-900 to-emerald-950 text-white p-6 rounded-3xl space-y-4">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                    <ShieldCheck size={22} className="text-amber-400" />
                   </div>
-                  <button
-                    onClick={() => handleQuickLogin('KEPALA_MADRASAH')}
-                    className="w-full py-3 bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span>Masuk sebagai Kepala Madrasah</span>
-                    <ArrowRight size={14} />
-                  </button>
+                  <h4 className="font-bold text-sm">Otoritas Akses Admin & Kamad:</h4>
+                  <ul className="space-y-2.5 text-xs text-slate-200">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                      <span>Manajemen Identitas & Media Informasi Madrasah</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                      <span>Verifikasi Berkas Calon Siswa Baru (SPMB 2027/2028)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                      <span>Manajemen Akun Guru, Wali Murid & Reset Sandi</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                      <span>Supervisi Kinerja Akademik & Eksekutif Dashboard</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             )}

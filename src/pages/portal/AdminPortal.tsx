@@ -18,6 +18,7 @@ import { MediaManager } from '../../components/admin/MediaManager';
 import { UserManager } from '../../components/admin/UserManager';
 import { MasterDataManager } from '../../components/admin/MasterDataManager';
 import { processImageFile } from '../../utils/imageUpload';
+import { PortalAccessGuard } from '../../components/common/PortalAccessGuard';
 
 export const AdminPortal: React.FC = () => {
   const {
@@ -88,8 +89,13 @@ export const AdminPortal: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <PortalAccessGuard
+      requiredRole={['ADMIN', 'SUPER_ADMIN']}
+      portalName="Pusat Kendali Admin"
+      loginTab="ADMIN"
+    >
+      <div className="bg-slate-50 min-h-screen py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Header Admin */}
         <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
@@ -636,5 +642,6 @@ export const AdminPortal: React.FC = () => {
         </div>
       )}
     </div>
+    </PortalAccessGuard>
   );
 };

@@ -10,6 +10,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
+import { PortalAccessGuard } from '../../components/common/PortalAccessGuard';
 
 export const PrincipalPortal: React.FC = () => {
   const { settings, spmbApplications, payments, complaints, students, teachers } = useSchool();
@@ -19,7 +20,12 @@ export const PrincipalPortal: React.FC = () => {
   const totalPayments = payments.reduce((acc, p) => (p.status === 'Lunas' ? acc + p.amount : acc), 0);
 
   return (
-    <div className="bg-slate-50 min-h-screen py-8">
+    <PortalAccessGuard
+      requiredRole="KEPALA_MADRASAH"
+      portalName="Portal Kepala Madrasah"
+      loginTab="ADMIN"
+    >
+      <div className="bg-slate-50 min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Header Principal */}
         <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
@@ -118,5 +124,6 @@ export const PrincipalPortal: React.FC = () => {
         </div>
       </div>
     </div>
+    </PortalAccessGuard>
   );
 };

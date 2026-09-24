@@ -19,7 +19,25 @@ import { FaqSection } from '../../components/public/FaqSection';
 import { useSchool } from '../../context/SchoolContext';
 
 export const HomePage: React.FC = () => {
-  const { settings, news, achievements, events, navigate, loginAsRole } = useSchool();
+  const { settings, news, achievements, events, navigate, currentUser } = useSchool();
+
+  const handlePortalClick = (role: 'GURU' | 'ORANG_TUA' | 'SISWA') => {
+    if (currentUser) {
+      if (role === 'GURU' && (currentUser.role === 'GURU' || currentUser.role === 'WALI_KELAS')) {
+        navigate('portal-guru');
+        return;
+      }
+      if (role === 'ORANG_TUA' && currentUser.role === 'ORANG_TUA') {
+        navigate('portal-ortu');
+        return;
+      }
+      if (role === 'SISWA' && currentUser.role === 'SISWA') {
+        navigate('portal-siswa');
+        return;
+      }
+    }
+    navigate('login', { role });
+  };
 
   return (
     <div className="space-y-0">
@@ -122,7 +140,7 @@ export const HomePage: React.FC = () => {
 
               <div className="space-y-2">
                 <button
-                  onClick={() => loginAsRole('GURU')}
+                  onClick={() => handlePortalClick('GURU')}
                   className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Masuk Portal Guru</span>
@@ -163,7 +181,7 @@ export const HomePage: React.FC = () => {
 
               <div className="space-y-2">
                 <button
-                  onClick={() => loginAsRole('ORANG_TUA')}
+                  onClick={() => handlePortalClick('ORANG_TUA')}
                   className="w-full py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Masuk Portal Orang Tua</span>
@@ -201,7 +219,7 @@ export const HomePage: React.FC = () => {
 
               <div className="space-y-2">
                 <button
-                  onClick={() => loginAsRole('SISWA')}
+                  onClick={() => handlePortalClick('SISWA')}
                   className="w-full py-3 bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Masuk Portal Siswa</span>

@@ -39,9 +39,33 @@ export const Navbar: React.FC = () => {
   ];
 
   const handleRoleSelect = (role: UserRole) => {
-    loginAsRole(role);
     setPortalDropdownOpen(false);
     setMobileMenuOpen(false);
+
+    // If user is already authenticated with the matching role, go straight to portal
+    if (currentUser) {
+      if (
+        (role === 'GURU' && (currentUser.role === 'GURU' || currentUser.role === 'WALI_KELAS')) ||
+        (role === 'ORANG_TUA' && currentUser.role === 'ORANG_TUA') ||
+        (role === 'SISWA' && currentUser.role === 'SISWA') ||
+        (role === 'KEPALA_MADRASAH' && currentUser.role === 'KEPALA_MADRASAH') ||
+        (role === 'ADMIN' && (currentUser.role === 'ADMIN' || currentUser.role === 'SUPER_ADMIN'))
+      ) {
+        if (role === 'GURU') navigate('portal-guru');
+        else if (role === 'ORANG_TUA') navigate('portal-ortu');
+        else if (role === 'SISWA') navigate('portal-siswa');
+        else if (role === 'KEPALA_MADRASAH') navigate('portal-kamad');
+        else navigate('portal-admin');
+        return;
+      }
+    }
+
+    // Otherwise, redirect to login page with the requested role tab preselected
+    let tab: 'GURU' | 'ORANG_TUA' | 'SISWA' | 'ADMIN' = 'GURU';
+    if (role === 'ORANG_TUA') tab = 'ORANG_TUA';
+    else if (role === 'SISWA') tab = 'SISWA';
+    else if (role === 'ADMIN' || role === 'KEPALA_MADRASAH' || role === 'SUPER_ADMIN') tab = 'ADMIN';
+    navigate('login', { role: tab });
   };
 
   const getPortalName = (role: UserRole) => {
@@ -86,14 +110,14 @@ export const Navbar: React.FC = () => {
             </span>
             <span>•</span>
             <button
-              onClick={() => loginAsRole('GURU')}
+              onClick={() => handleRoleSelect('GURU')}
               className="text-emerald-200 hover:text-white font-semibold transition cursor-pointer flex items-center gap-1"
             >
               <span>👩‍🏫 Portal Guru</span>
             </button>
             <span>•</span>
             <button
-              onClick={() => loginAsRole('ORANG_TUA')}
+              onClick={() => handleRoleSelect('ORANG_TUA')}
               className="text-emerald-200 hover:text-white font-semibold transition cursor-pointer flex items-center gap-1"
             >
               <span>👨‍👩‍👧 Portal Ortu</span>
@@ -101,8 +125,11 @@ export const Navbar: React.FC = () => {
             <span>•</span>
             <button
               onClick={() => {
-                loginAsRole('ADMIN');
-                navigate('portal-admin', { tab: 'media' });
+                if (currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'SUPER_ADMIN')) {
+                  navigate('portal-admin', { tab: 'media' });
+                } else {
+                  navigate('login', { role: 'ADMIN' });
+                }
               }}
               className="bg-amber-400/20 hover:bg-amber-400 text-amber-200 hover:text-slate-950 font-bold px-2 py-0.5 rounded-lg border border-amber-400/40 text-[10px] transition flex items-center gap-1 cursor-pointer"
               title="Ganti logo, banner, dan foto kegiatan madrasah"
@@ -266,9 +293,12 @@ export const Navbar: React.FC = () => {
 
                     <button
                       onClick={() => {
-                        handleRoleSelect('ADMIN');
-                        navigate('portal-admin', { tab: 'masterdata' });
                         setPortalDropdownOpen(false);
+                        if (currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'SUPER_ADMIN')) {
+                          navigate('portal-admin', { tab: 'masterdata' });
+                        } else {
+                          navigate('login', { role: 'ADMIN' });
+                        }
                       }}
                       className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 flex items-center justify-between transition"
                     >
@@ -281,9 +311,12 @@ export const Navbar: React.FC = () => {
 
                     <button
                       onClick={() => {
-                        handleRoleSelect('ADMIN');
-                        navigate('portal-admin', { tab: 'users' });
                         setPortalDropdownOpen(false);
+                        if (currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'SUPER_ADMIN')) {
+                          navigate('portal-admin', { tab: 'users' });
+                        } else {
+                          navigate('login', { role: 'ADMIN' });
+                        }
                       }}
                       className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 flex items-center justify-between transition"
                     >
