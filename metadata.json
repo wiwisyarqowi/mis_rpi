@@ -1,0 +1,7 @@
+{
+  "name": "MI RPI Jakarta - Super School Digital Platform",
+  "description": "Platform Digital Terintegrasi Madrasah Ibtidaiyah RPI Jakarta: Portal Siswa, Guru, Orang Tua, LMS, E-Rapor, SPMB, dan Layanan Madrasah Modern.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
