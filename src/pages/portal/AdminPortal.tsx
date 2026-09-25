@@ -11,12 +11,14 @@ import {
   Plus,
   Image as ImageIcon,
   GraduationCap,
+  CreditCard,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
 import { SchoolSettings, SPMBApplication, ComplaintTicket } from '../../types';
 import { MediaManager } from '../../components/admin/MediaManager';
 import { UserManager } from '../../components/admin/UserManager';
 import { MasterDataManager } from '../../components/admin/MasterDataManager';
+import { PaymentFinanceManager } from '../../components/admin/PaymentFinanceManager';
 import { processImageFile } from '../../utils/imageUpload';
 import { PortalAccessGuard } from '../../components/common/PortalAccessGuard';
 
@@ -33,7 +35,7 @@ export const AdminPortal: React.FC = () => {
     viewParams,
   } = useSchool();
 
-  const [activeTab, setActiveTab] = useState<'masterdata' | 'users' | 'media' | 'settings' | 'spmb' | 'suarawarga' | 'berita'>(
+  const [activeTab, setActiveTab] = useState<'masterdata' | 'users' | 'finance' | 'media' | 'settings' | 'spmb' | 'suarawarga' | 'berita'>(
     (viewParams?.tab as any) || 'masterdata'
   );
 
@@ -121,6 +123,7 @@ export const AdminPortal: React.FC = () => {
             {[
               { id: 'masterdata', label: '🎓 Guru, Santri & Kelas', icon: GraduationCap },
               { id: 'users', label: '👥 Kelola Akun & Sandi', icon: Users },
+              { id: 'finance', label: '💳 SPP & Kas Madrasah', icon: CreditCard },
               { id: 'media', label: '📸 Kelola Gambar & Media', icon: ImageIcon },
               { id: 'settings', label: 'Pengaturan Madrasah (/admin/settings)', icon: Settings },
               { id: 'spmb', label: 'Verifikasi SPMB', icon: Users },
@@ -153,6 +156,9 @@ export const AdminPortal: React.FC = () => {
 
         {/* TAB USERS: PENGELOLA AKUN GURU & ORANG TUA */}
         {activeTab === 'users' && <UserManager />}
+
+        {/* TAB FINANCE: PENGELOLA SPP & KAS MADRASAH */}
+        {activeTab === 'finance' && <PaymentFinanceManager />}
 
         {/* TAB MEDIA: PENGELOLA GAMBAR & MEDIA */}
         {activeTab === 'media' && <MediaManager />}
@@ -356,6 +362,15 @@ export const AdminPortal: React.FC = () => {
                     <p className="text-[10px] text-slate-400 mt-0.5">Gunakan [DATA BELUM DIISI ADMIN] jika belum ditetapkan.</p>
                   </div>
                   <div>
+                    <label className="font-bold text-slate-700 block mb-1">Tarif Standar SPP Bulanan (Rp)</label>
+                    <input
+                      type="number"
+                      value={formData.monthlyTuitionFee || 650000}
+                      onChange={(e) => setFormData({ ...formData, monthlyTuitionFee: Number(e.target.value) })}
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
                     <label className="font-bold text-slate-700 block mb-1">Nama Bank Rekening SPP</label>
                     <input
                       type="text"
@@ -365,11 +380,20 @@ export const AdminPortal: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="font-bold text-slate-700 block mb-1">Nomor Rekening & Atas Nama</label>
+                    <label className="font-bold text-slate-700 block mb-1">Nomor Rekening Bank</label>
                     <input
                       type="text"
                       value={formData.bankAccountNumber}
                       onChange={(e) => setFormData({ ...formData, bankAccountNumber: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Atas Nama Rekening Kas</label>
+                    <input
+                      type="text"
+                      value={formData.bankAccountHolder}
+                      onChange={(e) => setFormData({ ...formData, bankAccountHolder: e.target.value })}
                       className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
                     />
                   </div>

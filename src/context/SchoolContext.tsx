@@ -100,6 +100,10 @@ interface SchoolContextType {
   markAttendance: (studentId: string, status: AttendanceRecord['status'], note?: string) => void;
   addCharacterPoints: (studentId: string, dimension: CharacterPointRecord['dimension'], points: number, note: string) => void;
   payTuition: (invoiceNumber: string, method: string) => void;
+  addPaymentRecord: (record: Omit<PaymentRecord, 'id'>) => PaymentRecord;
+  updatePaymentRecord: (id: string, updates: Partial<PaymentRecord>) => void;
+  deletePaymentRecord: (id: string) => void;
+  generateMonthlyInvoices: (month: string, year: number) => number;
   saveGrade: (grade: GradeItem) => void;
   updateWorshipLog: (log: Partial<WorshipLog>) => void;
   borrowBook: (bookId: string, borrowerName: string, role: 'SISWA' | 'GURU') => boolean;
@@ -535,6 +539,60 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       },
       ...prev,
     ]);
+  };
+
+  // Add Payment Record manually by Admin
+  const addPaymentRecord = (record: Omit<PaymentRecord, 'id'>): PaymentRecord => {
+    const newRecord: PaymentRecord = {
+      ...record,
+      id: `pay-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+    };
+    setPayments((prev) => [newRecord, ...prev]);
+    return newRecord;
+  };
+
+  // Update Payment Record
+  const updatePaymentRecord = (id: string, updates: Partial<PaymentRecord>) => {
+    setPayments((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
+    );
+  };
+
+  // Delete Payment Record
+  const deletePaymentRecord = (id: string) => {
+    setPayments((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  // Generate Monthly Invoices for all students
+  const generateMonthlyInvoices = (month: string, year: number): number => {
+    let createdCount = 0;
+    const newInvoices: PaymentRecord[] = [];
+
+    students.forEach((student) => {
+      const exists = payments.some(
+        (p) => p.studentId === student.id && p.month === month && p.year === year
+      );
+      if (!exists) {
+        createdCount++;
+        const randNum = Math.floor(1000 + Math.random() * 9000);
+        newInvoices.push({
+          id: `pay-${Date.now()}-${student.id}`,
+          invoiceNumber: `INV-${year}${month.substring(0, 3).toUpperCase()}-${student.nisn?.slice(-4) || randNum}`,
+          studentId: student.id,
+          studentName: student.name,
+          className: student.className,
+          month,
+          year,
+          amount: settings.monthlyTuitionFee || 650000,
+          status: 'Belum Bayar',
+        });
+      }
+    });
+
+    if (newInvoices.length > 0) {
+      setPayments((prev) => [...newInvoices, ...prev]);
+    }
+    return createdCount;
   };
 
   // Save Grade
@@ -1022,6 +1080,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         markAttendance,
         addCharacterPoints,
         payTuition,
+        addPaymentRecord,
+        updatePaymentRecord,
+        deletePaymentRecord,
+        generateMonthlyInvoices,
         saveGrade,
         updateWorshipLog,
         borrowBook,
