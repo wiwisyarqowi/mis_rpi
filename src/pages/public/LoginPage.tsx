@@ -88,7 +88,7 @@ export const LoginPage: React.FC = () => {
               { id: 'GURU', label: '👩‍🏫 Guru / Asatidz', sub: 'Input Nilai & Rapor' },
               { id: 'ORANG_TUA', label: '👨‍👩‍👧 Orang Tua / Wali', sub: 'Presensi & SPP' },
               { id: 'SISWA', label: '👦 Siswa / Santri', sub: 'LMS & Ujian CBT' },
-              { id: 'ADMIN', label: '⚙️ Admin & Kamad', sub: 'Manajemen Sistem' },
+              { id: 'ADMIN', label: '🏛️ Manajemen & Kas', sub: 'Bendahara, Admin & Kamad' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -470,25 +470,25 @@ export const LoginPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
                 <div className="md:col-span-7 space-y-6">
                   <div>
-                    <span className="bg-amber-100 text-amber-900 text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase">
-                      Admin & Kepemimpinan
+                    <span className="bg-emerald-100 text-emerald-900 text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase">
+                      Bendahara, Admin & Kepemimpinan
                     </span>
                     <h3 className="text-lg font-bold text-slate-900 mt-1">
-                      Masuk sebagai Administrator / Kepala Madrasah
+                      Masuk sebagai Bendahara / Administrator / Kepala Madrasah
                     </h3>
                     <p className="text-xs text-slate-500">
-                      Gunakan akun resmi pengelola sistem atau pimpinan untuk mengakses kendali madrasah.
+                      Gunakan akun resmi pengelola keuangan, operator sistem, atau kepala madrasah untuk mengakses dashboard kendali.
                     </p>
                   </div>
 
                   <form onSubmit={handleCustomLogin} className="space-y-4 text-xs">
                     <div>
                       <label className="font-bold text-slate-700 block mb-1">
-                        Username / Email *
+                        Username / Email / ID Pengguna *
                       </label>
                       <input
                         type="text"
-                        placeholder="Contoh: admin atau kamad@mirpi.sch.id"
+                        placeholder="Contoh: bendahara, admin, atau kamad"
                         value={identifier}
                         onChange={(e) => setIdentifier(e.target.value)}
                         className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl outline-none focus:border-emerald-500"
@@ -522,37 +522,53 @@ export const LoginPage: React.FC = () => {
                     <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                       Isi Otomatis Kredensial Pengujian:
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIdentifier('bendahara');
+                          setPassword('BendaharaRPI#2026');
+                          setErrorMsg(null);
+                        }}
+                        className="p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl text-left transition flex flex-col justify-between cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="font-bold text-xs text-emerald-950">💳 Bendahara</p>
+                          <span className="text-[9px] font-bold text-emerald-800 bg-emerald-200 px-1.5 py-0.2 rounded">Isi</span>
+                        </div>
+                        <p className="text-[10px] text-emerald-700 mt-1 font-mono">user: bendahara</p>
+                      </button>
+
                       <button
                         type="button"
                         onClick={() => {
                           setIdentifier('admin');
-                          setPassword('admin123');
+                          setPassword('AdminRPI#2026');
                           setErrorMsg(null);
                         }}
-                        className="p-3 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
+                        className="p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-left transition flex flex-col justify-between cursor-pointer"
                       >
-                        <div>
-                          <p className="font-bold text-xs text-amber-950">⚙️ Administrator</p>
-                          <p className="text-[10px] text-amber-700">user: admin • pass: admin123</p>
+                        <div className="flex items-center justify-between">
+                          <p className="font-bold text-xs text-amber-950">⚙️ Admin</p>
+                          <span className="text-[9px] font-bold text-amber-800 bg-amber-200 px-1.5 py-0.2 rounded">Isi</span>
                         </div>
-                        <span className="text-[10px] font-bold text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Isi</span>
+                        <p className="text-[10px] text-amber-700 mt-1 font-mono">user: admin</p>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => {
                           setIdentifier('kamad');
-                          setPassword('kamad123');
+                          setPassword('KamadRPI#2026');
                           setErrorMsg(null);
                         }}
-                        className="p-3 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
+                        className="p-2.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl text-left transition flex flex-col justify-between cursor-pointer"
                       >
-                        <div>
-                          <p className="font-bold text-xs text-purple-950">🏛️ Kepala Madrasah</p>
-                          <p className="text-[10px] text-purple-700">user: kamad • pass: kamad123</p>
+                        <div className="flex items-center justify-between">
+                          <p className="font-bold text-xs text-purple-950">🏛️ Kamad</p>
+                          <span className="text-[9px] font-bold text-purple-800 bg-purple-200 px-1.5 py-0.2 rounded">Isi</span>
                         </div>
-                        <span className="text-[10px] font-bold text-purple-800 bg-purple-200 px-2 py-0.5 rounded">Isi</span>
+                        <p className="text-[10px] text-purple-700 mt-1 font-mono">user: kamad</p>
                       </button>
                     </div>
                   </div>

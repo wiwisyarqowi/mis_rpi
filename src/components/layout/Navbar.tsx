@@ -49,12 +49,14 @@ export const Navbar: React.FC = () => {
         (role === 'ORANG_TUA' && currentUser.role === 'ORANG_TUA') ||
         (role === 'SISWA' && currentUser.role === 'SISWA') ||
         (role === 'KEPALA_MADRASAH' && currentUser.role === 'KEPALA_MADRASAH') ||
+        (role === 'BENDAHARA' && currentUser.role === 'BENDAHARA') ||
         (role === 'ADMIN' && (currentUser.role === 'ADMIN' || currentUser.role === 'SUPER_ADMIN'))
       ) {
         if (role === 'GURU') navigate('portal-guru');
         else if (role === 'ORANG_TUA') navigate('portal-ortu');
         else if (role === 'SISWA') navigate('portal-siswa');
         else if (role === 'KEPALA_MADRASAH') navigate('portal-kamad');
+        else if (role === 'BENDAHARA') navigate('portal-bendahara');
         else navigate('portal-admin');
         return;
       }
@@ -64,7 +66,7 @@ export const Navbar: React.FC = () => {
     let tab: 'GURU' | 'ORANG_TUA' | 'SISWA' | 'ADMIN' = 'GURU';
     if (role === 'ORANG_TUA') tab = 'ORANG_TUA';
     else if (role === 'SISWA') tab = 'SISWA';
-    else if (role === 'ADMIN' || role === 'KEPALA_MADRASAH' || role === 'SUPER_ADMIN') tab = 'ADMIN';
+    else if (role === 'ADMIN' || role === 'KEPALA_MADRASAH' || role === 'SUPER_ADMIN' || role === 'BENDAHARA') tab = 'ADMIN';
     navigate('login', { role: tab });
   };
 
@@ -79,6 +81,8 @@ export const Navbar: React.FC = () => {
         return 'Portal Guru';
       case 'KEPALA_MADRASAH':
         return 'Portal Kepala Madrasah';
+      case 'BENDAHARA':
+        return 'Portal Bendahara';
       case 'ADMIN':
       case 'SUPER_ADMIN':
       default:
@@ -281,6 +285,17 @@ export const Navbar: React.FC = () => {
                     </button>
 
                     <button
+                      onClick={() => handleRoleSelect('BENDAHARA')}
+                      className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 flex items-center justify-between transition"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-bold">💳</span>
+                        <span>Portal Bendahara</span>
+                      </span>
+                      <span className="text-[10px] text-emerald-800 font-bold bg-emerald-100 px-1.5 py-0.5 rounded">SPP & Kas</span>
+                    </button>
+
+                    <button
                       onClick={() => handleRoleSelect('ADMIN')}
                       className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 flex items-center justify-between transition"
                     >
@@ -402,27 +417,33 @@ export const Navbar: React.FC = () => {
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => handleRoleSelect('SISWA')}
-                className="p-2.5 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-xl text-center border border-emerald-200"
+                className="p-2.5 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-xl text-center border border-emerald-200 cursor-pointer"
               >
                 👨‍🎓 Siswa
               </button>
               <button
                 onClick={() => handleRoleSelect('ORANG_TUA')}
-                className="p-2.5 bg-teal-50 text-teal-800 text-xs font-bold rounded-xl text-center border border-teal-200"
+                className="p-2.5 bg-teal-50 text-teal-800 text-xs font-bold rounded-xl text-center border border-teal-200 cursor-pointer"
               >
                 👨‍👩‍👧 Orang Tua
               </button>
               <button
                 onClick={() => handleRoleSelect('GURU')}
-                className="p-2.5 bg-blue-50 text-blue-800 text-xs font-bold rounded-xl text-center border border-blue-200"
+                className="p-2.5 bg-blue-50 text-blue-800 text-xs font-bold rounded-xl text-center border border-blue-200 cursor-pointer"
               >
                 👩‍🏫 Guru
               </button>
               <button
-                onClick={() => handleRoleSelect('ADMIN')}
-                className="p-2.5 bg-amber-50 text-amber-800 text-xs font-bold rounded-xl text-center border border-amber-200"
+                onClick={() => handleRoleSelect('BENDAHARA')}
+                className="p-2.5 bg-emerald-100 text-emerald-900 text-xs font-bold rounded-xl text-center border border-emerald-300 cursor-pointer"
               >
-                ⚙️ Admin
+                💳 Bendahara
+              </button>
+              <button
+                onClick={() => handleRoleSelect('ADMIN')}
+                className="col-span-2 p-2.5 bg-amber-50 text-amber-800 text-xs font-bold rounded-xl text-center border border-amber-200 cursor-pointer"
+              >
+                ⚙️ Admin & Kamad
               </button>
             </div>
 

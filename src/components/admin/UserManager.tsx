@@ -84,6 +84,8 @@ export const UserManager: React.FC = () => {
   const generateRandomPassword = (role: UserRole) => {
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     switch (role) {
+      case 'BENDAHARA':
+        return `BendaharaRPI#${randomNum}`;
       case 'GURU':
         return `GuruRPI#${randomNum}`;
       case 'ORANG_TUA':
@@ -323,6 +325,7 @@ export const UserManager: React.FC = () => {
           <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs">
             {[
               { id: 'ALL', label: 'Semua Akun' },
+              { id: 'BENDAHARA', label: '💳 Bendahara' },
               { id: 'GURU', label: '👩‍🏫 Guru' },
               { id: 'ORANG_TUA', label: '👨‍👩‍👧 Orang Tua' },
               { id: 'SISWA', label: '👦 Santri' },
@@ -385,7 +388,7 @@ export const UserManager: React.FC = () => {
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2.5">
                           <span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold shrink-0">
-                            {acc.role === 'GURU' ? '👩‍🏫' : acc.role === 'ORANG_TUA' ? '👨‍👩‍👧' : acc.role === 'SISWA' ? '👦' : '⚙️'}
+                            {acc.role === 'GURU' ? '👩‍🏫' : acc.role === 'ORANG_TUA' ? '👨‍👩‍👧' : acc.role === 'SISWA' ? '👦' : acc.role === 'BENDAHARA' ? '💳' : '⚙️'}
                           </span>
                           <div>
                             <p className="font-bold text-slate-900">{acc.name}</p>
@@ -397,6 +400,8 @@ export const UserManager: React.FC = () => {
                                   ? 'bg-teal-100 text-teal-800'
                                   : acc.role === 'SISWA'
                                   ? 'bg-emerald-100 text-emerald-800'
+                                  : acc.role === 'BENDAHARA'
+                                  ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
                                   : 'bg-amber-100 text-amber-800'
                               }`}
                             >
@@ -406,6 +411,8 @@ export const UserManager: React.FC = () => {
                                 ? `WALI SANTRI (${acc.studentName || '-'})`
                                 : acc.role === 'SISWA'
                                 ? 'SANTRI'
+                                : acc.role === 'BENDAHARA'
+                                ? 'BENDAHARA MADRASAH'
                                 : acc.role}
                             </span>
                           </div>
@@ -561,8 +568,9 @@ export const UserManager: React.FC = () => {
               {/* Role Select */}
               <div>
                 <label className="font-bold text-slate-700 block mb-1">Peran Akun *</label>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                   {[
+                    { id: 'BENDAHARA', label: '💳 Bendahara' },
                     { id: 'GURU', label: '👩‍🏫 Guru' },
                     { id: 'ORANG_TUA', label: '👨‍👩‍👧 Ortu' },
                     { id: 'SISWA', label: '👦 Siswa' },

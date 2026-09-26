@@ -1132,6 +1132,18 @@ export const initialUserAccounts: UserAccount[] = [
     lastLogin: '22 Sep 2026, 10:00',
   },
   {
+    id: 'acc-bendahara-001',
+    name: 'Hj. Siti Mutmainnah, S.E. (Bendahara Madrasah)',
+    username: 'bendahara',
+    password: 'BendaharaRPI#2026',
+    role: 'BENDAHARA',
+    email: 'bendahara@mirpi.sch.id',
+    phone: '081288886666',
+    createdAt: '2026-06-01',
+    status: 'Aktif',
+    lastLogin: '25 Sep 2026, 08:30',
+  },
+  {
     id: 'acc-kamad-001',
     name: 'Kepala Madrasah MI RPI',
     username: 'kamad',

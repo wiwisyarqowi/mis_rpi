@@ -18,6 +18,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     { role: 'SISWA', tab: 'SISWA', title: 'Portal Siswa (LMS & CBT)', name: 'Muhammad Al Fatih', desc: 'Kelas 4A • Tugas, Kuis CBT, Jurnal Ibadah & E-Library', icon: '👦' },
     { role: 'ORANG_TUA', tab: 'ORANG_TUA', title: 'Portal Orang Tua / Wali', name: 'Wali Murid Al Fatih', desc: 'Monitoring Presensi Real-Time, e-Rapor & Bayar SPP', icon: '👨‍👩‍👧' },
     { role: 'GURU', tab: 'GURU', title: 'Portal Pendidik (GTK)', name: 'Ustadz Ahmad Fauzi, S.Pd.I', desc: 'Input Nilai, Checklist Presensi, Poin Karakter & Bank Soal', icon: '👨‍🏫' },
+    { role: 'BENDAHARA', tab: 'ADMIN', title: 'Portal Bendahara Madrasah', name: 'Hj. Siti Mutmainnah, S.E.', desc: 'Kelola SPP, Kas Bank BSI, Tagihan Bulanan & Kwitansi', icon: '💳' },
     { role: 'KEPALA_MADRASAH', tab: 'ADMIN', title: 'Eksekutif Dashboard', name: 'Kepala Madrasah RPI', desc: 'Monitoring Kinerja Sekolah, Kehadiran, Keuangan & SPMB', icon: '🏛️' },
     { role: 'ADMIN', tab: 'ADMIN', title: 'Super Administrator', name: 'Admin Pusat Data RPI', desc: 'Pengaturan Sekolah (/admin/settings), SPMB & Suara Warga', icon: '⚙️' },
   ];

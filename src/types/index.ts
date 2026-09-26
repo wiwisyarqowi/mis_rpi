@@ -2,6 +2,7 @@ export type UserRole =
   | 'SUPER_ADMIN'
   | 'KEPALA_MADRASAH'
   | 'ADMIN'
+  | 'BENDAHARA'
   | 'GURU'
   | 'WALI_KELAS'
   | 'SISWA'

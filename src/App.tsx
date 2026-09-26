@@ -25,6 +25,7 @@ import { ParentPortal } from './pages/portal/ParentPortal';
 import { TeacherPortal } from './pages/portal/TeacherPortal';
 import { PrincipalPortal } from './pages/portal/PrincipalPortal';
 import { AdminPortal } from './pages/portal/AdminPortal';
+import { TreasurerPortal } from './pages/portal/TreasurerPortal';
 
 const AppContent: React.FC = () => {
   const { currentView } = useSchool();
@@ -70,6 +71,9 @@ const AppContent: React.FC = () => {
         return <TeacherPortal />;
       case 'portal-kamad':
         return <PrincipalPortal />;
+      case 'portal-bendahara':
+      case 'portal-keuangan':
+        return <TreasurerPortal />;
       case 'portal-admin':
       case 'admin-settings':
         return <AdminPortal />;
