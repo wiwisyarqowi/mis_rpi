@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Settings,
   ShieldCheck,
@@ -43,6 +43,11 @@ export const AdminPortal: React.FC = () => {
   const [formData, setFormData] = useState<SchoolSettings>(settings);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  // Keep formData in sync when settings change (e.g. from MediaManager or other tabs)
+  useEffect(() => {
+    setFormData(settings);
+  }, [settings]);
+
   // New Article State
   const [newsTitle, setNewsTitle] = useState('');
   const [newsCategory, setNewsCategory] = useState<any>('Berita Madrasah');
@@ -55,7 +60,10 @@ export const AdminPortal: React.FC = () => {
 
   const handleSettingsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateSettings(formData);
+    updateSettings({
+      ...settings,
+      ...formData,
+    });
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
   };

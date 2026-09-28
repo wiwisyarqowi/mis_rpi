@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Image as ImageIcon,
   Upload,
@@ -13,7 +13,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
-import { processImageFile } from '../../utils/imageUpload';
+import { processImageFile, uploadImageToServer } from '../../utils/imageUpload';
 import { GalleryItem } from '../../types';
 
 export const MediaManager: React.FC = () => {
@@ -102,14 +102,32 @@ export const MediaManager: React.FC = () => {
     },
   ];
 
+  // Keep inputs and previews in sync when settings update
+  useEffect(() => {
+    if (settings.logoUrl) {
+      setLogoInput(settings.logoUrl);
+      setLogoPreview(settings.logoUrl);
+    }
+    if (settings.heroImageUrl) {
+      setHeroInput(settings.heroImageUrl);
+      setHeroPreview(settings.heroImageUrl);
+    }
+    if (settings.principalPhotoUrl) {
+      setPrincipalInput(settings.principalPhotoUrl);
+      setPrincipalPreview(settings.principalPhotoUrl);
+    }
+  }, [settings.logoUrl, settings.heroImageUrl, settings.principalPhotoUrl]);
+
   // File Handlers
   const handleLogoFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
       const dataUrl = await processImageFile(file, 800, 800, 0.9);
-      setLogoInput(dataUrl);
       setLogoPreview(dataUrl);
+      const serverUrl = await uploadImageToServer(dataUrl, 'logo');
+      setLogoInput(serverUrl);
+      setLogoPreview(serverUrl);
     } catch (err) {
       alert('Gagal memproses file gambar. Pastikan format JPG, PNG, atau SVG.');
     }
@@ -120,8 +138,10 @@ export const MediaManager: React.FC = () => {
     if (!file) return;
     try {
       const dataUrl = await processImageFile(file, 1600, 1000, 0.85);
-      setHeroInput(dataUrl);
       setHeroPreview(dataUrl);
+      const serverUrl = await uploadImageToServer(dataUrl, 'hero');
+      setHeroInput(serverUrl);
+      setHeroPreview(serverUrl);
     } catch (err) {
       alert('Gagal memproses file gambar banner.');
     }
@@ -132,8 +152,10 @@ export const MediaManager: React.FC = () => {
     if (!file) return;
     try {
       const dataUrl = await processImageFile(file, 600, 600, 0.85);
-      setPrincipalInput(dataUrl);
       setPrincipalPreview(dataUrl);
+      const serverUrl = await uploadImageToServer(dataUrl, 'kamad');
+      setPrincipalInput(serverUrl);
+      setPrincipalPreview(serverUrl);
     } catch (err) {
       alert('Gagal memproses foto kepala madrasah.');
     }
@@ -144,8 +166,10 @@ export const MediaManager: React.FC = () => {
     if (!file) return;
     try {
       const dataUrl = await processImageFile(file, 1200, 900, 0.85);
-      setGalImageUrl(dataUrl);
       setGalImagePreview(dataUrl);
+      const serverUrl = await uploadImageToServer(dataUrl, 'galeri');
+      setGalImageUrl(serverUrl);
+      setGalImagePreview(serverUrl);
     } catch (err) {
       alert('Gagal memproses gambar kegiatan.');
     }
@@ -156,8 +180,10 @@ export const MediaManager: React.FC = () => {
     if (!file) return;
     try {
       const dataUrl = await processImageFile(file, 600, 600, 0.85);
-      setTeacherPhotoInput(dataUrl);
       setTeacherPhotoPreview(dataUrl);
+      const serverUrl = await uploadImageToServer(dataUrl, 'guru');
+      setTeacherPhotoInput(serverUrl);
+      setTeacherPhotoPreview(serverUrl);
     } catch (err) {
       alert('Gagal memproses foto guru.');
     }

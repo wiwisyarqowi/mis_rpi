@@ -1,5 +1,6 @@
 import express, { type Request, type Response } from 'express';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { GoogleGenAI, ThinkingLevel } from '@google/genai';
@@ -13,7 +14,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === 'production';
 
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Serve uploaded media statically
+const uploadsDir = path.resolve(__dirname, 'public', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
 
 // Initialize Gemini Client server-side
 const ai = new GoogleGenAI({
@@ -152,6 +161,48 @@ app.get('/api/health', (req: Request, res: Response) => {
     accreditation: 'A',
     timestamp: new Date().toISOString(),
   });
+});
+
+// Image upload and persistence endpoint
+app.post('/api/upload', (req: Request, res: Response) => {
+  try {
+    const { image, filename } = req.body;
+    if (!image || typeof image !== 'string') {
+      return res.status(400).json({ error: 'Data gambar tidak valid atau kosong' });
+    }
+
+    const uploadsDirectory = path.resolve(__dirname, 'public', 'uploads');
+    if (!fs.existsSync(uploadsDirectory)) {
+      fs.mkdirSync(uploadsDirectory, { recursive: true });
+    }
+
+    let base64Data = image;
+    let extension = 'jpg';
+
+    // Parse data URL scheme
+    const match = image.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
+    if (match) {
+      const mimeType = match[1].toLowerCase();
+      extension = mimeType === 'svg+xml' ? 'svg' : mimeType === 'png' ? 'png' : mimeType === 'webp' ? 'webp' : 'jpg';
+      base64Data = match[2];
+    }
+
+    const cleanPrefix = filename ? filename.replace(/[^a-zA-Z0-9_-]/g, '') : 'media';
+    const safeFileName = `${cleanPrefix}-${Date.now()}-${Math.floor(Math.random() * 10000)}.${extension}`;
+    const targetFilePath = path.join(uploadsDirectory, safeFileName);
+
+    fs.writeFileSync(targetFilePath, Buffer.from(base64Data, 'base64'));
+
+    const publicUrl = `/uploads/${safeFileName}`;
+    console.log(`[Media Upload] File saved successfully to ${publicUrl}`);
+    return res.json({
+      success: true,
+      url: publicUrl,
+    });
+  } catch (err: any) {
+    console.error('Error saving uploaded file:', err);
+    return res.status(500).json({ error: 'Gagal menyimpan file gambar di server' });
+  }
 });
 
 // Setup Vite middlewares in dev or static serve in prod

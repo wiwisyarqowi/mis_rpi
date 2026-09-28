@@ -141,7 +141,9 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         if (parsed.academicYear === '2026/2027') {
           parsed.academicYear = '2027/2028';
         }
-        parsed.logoUrl = '/images/logo-yayasan-rpi.svg';
+        if (!parsed.logoUrl) {
+          parsed.logoUrl = '/images/logo-yayasan-rpi.svg';
+        }
         localStorage.setItem('mi_rpi_settings', JSON.stringify(parsed));
         return parsed;
       } catch (e) {
@@ -247,7 +249,11 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   // Sync settings to LocalStorage
   const updateSettings = (newSettings: SchoolSettings) => {
     setSettings(newSettings);
-    localStorage.setItem('mi_rpi_settings', JSON.stringify(newSettings));
+    try {
+      localStorage.setItem('mi_rpi_settings', JSON.stringify(newSettings));
+    } catch (e) {
+      console.warn('LocalStorage error while saving settings:', e);
+    }
   };
 
   const resetSettingsToDefault = () => {

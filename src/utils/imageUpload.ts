@@ -60,3 +60,32 @@ export const processImageFile = (
     reader.readAsDataURL(file);
   });
 };
+
+/**
+ * Uploads an image to the backend disk storage (/api/upload).
+ * Returns the persistent static URL (e.g. /uploads/logo-1727...jpg).
+ * Falls back to the dataUrl if server endpoint is temporarily unavailable.
+ */
+export const uploadImageToServer = async (
+  dataUrl: string,
+  filename = 'media'
+): Promise<string> => {
+  try {
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: dataUrl, filename }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.url) {
+        return data.url;
+      }
+    }
+  } catch (err) {
+    console.warn('Backend upload unavailable, using base64 data URL', err);
+  }
+  return dataUrl;
+};
+
