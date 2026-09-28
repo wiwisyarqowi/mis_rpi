@@ -14,6 +14,8 @@ import {
   BookOpen,
   Award,
   HelpCircle,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
 import { UserRole } from '../../types';
@@ -37,6 +39,7 @@ export const LoginPage: React.FC = () => {
   // Form states
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleCustomLogin = (e: React.FormEvent) => {
@@ -159,13 +162,24 @@ export const LoginPage: React.FC = () => {
                       <label className="font-bold text-slate-700 block mb-1">
                         Kata Sandi / PIN *
                       </label>
-                      <input
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl outline-none focus:border-emerald-500"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 pl-3.5 pr-11 py-2.5 rounded-xl outline-none focus:border-emerald-500 font-medium"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 rounded-lg transition cursor-pointer"
+                          title={showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'}
+                          aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'}
+                        >
+                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
                     </div>
 
                     <button
@@ -242,6 +256,22 @@ export const LoginPage: React.FC = () => {
                       <span>Generator Kisi-kisi Asesmen Otomatis</span>
                     </li>
                   </ul>
+
+                  <div className="pt-3 border-t border-white/10 space-y-2">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">
+                      RDM Kemenag Server Resmi:
+                    </p>
+                    <a
+                      href="https://misrpi.sch.id/rdm/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-2.5 px-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                      title="Buka Aplikasi Rapor Digital Madrasah (RDM) di https://misrpi.sch.id/rdm/"
+                    >
+                      <span>Masuk RDM Kemenag (misrpi.sch.id/rdm)</span>
+                      <ArrowRight size={13} />
+                    </a>
+                  </div>
                 </div>
               </div>
             )}
@@ -280,13 +310,24 @@ export const LoginPage: React.FC = () => {
                       <label className="font-bold text-slate-700 block mb-1">
                         Kata Sandi / Tanggal Lahir Santri (DDMMYYYY) *
                       </label>
-                      <input
-                        type="password"
-                        placeholder="Contoh: 15052014"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl outline-none focus:border-emerald-500"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="Contoh: 15052014"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 pl-3.5 pr-11 py-2.5 rounded-xl outline-none focus:border-emerald-500 font-medium"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 rounded-lg transition cursor-pointer"
+                          title={showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'}
+                          aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'}
+                        >
+                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
                     </div>
 
                     <button
@@ -397,13 +438,24 @@ export const LoginPage: React.FC = () => {
 
                     <div>
                       <label className="font-bold text-slate-700 block mb-1">Kata Sandi *</label>
-                      <input
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl outline-none focus:border-emerald-500"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 pl-3.5 pr-11 py-2.5 rounded-xl outline-none focus:border-emerald-500 font-medium"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 rounded-lg transition cursor-pointer"
+                          title={showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'}
+                          aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'}
+                        >
+                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
                     </div>
 
                     <button
@@ -499,13 +551,24 @@ export const LoginPage: React.FC = () => {
                       <label className="font-bold text-slate-700 block mb-1">
                         Kata Sandi *
                       </label>
-                      <input
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl outline-none focus:border-emerald-500"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 pl-3.5 pr-11 py-2.5 rounded-xl outline-none focus:border-emerald-500 font-medium"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 rounded-lg transition cursor-pointer"
+                          title={showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'}
+                          aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'}
+                        >
+                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
                     </div>
 
                     <button

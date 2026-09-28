@@ -1,71 +1,127 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
   <defs>
-    <!-- Upper text arc for Latin text -->
-    <path id="upperArc" d="M 68,250 A 182,182 0 1,1 432,250" fill="none" />
-    <!-- Lower text arc for Arabic calligraphy text -->
-    <path id="lowerArc" d="M 426,260 A 178,178 0 0,1 74,260" fill="none" />
+    <!-- Upper text arc for: ★ YAYASAN RUMAH PENDIDIKAN ISLAM ★ -->
+    <path id="upperTextArc" d="M 72,300 A 228,228 0 1,1 528,300" fill="none" />
+    
+    <!-- Lower text arc for Arabic calligraphy -->
+    <path id="lowerTextArc" d="M 522,316 A 224,224 0 0,1 78,316" fill="none" />
+
+    <style>
+      .latin-text {
+        font-family: 'Plus Jakarta Sans', 'Arial Black', Arial, sans-serif;
+        font-size: 27px;
+        font-weight: 900;
+        letter-spacing: 2.2px;
+        fill: #007336;
+      }
+      .arabic-text {
+        font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Noto Naskh Arabic', serif;
+        font-size: 42px;
+        font-weight: bold;
+        fill: #007336;
+      }
+    </style>
   </defs>
 
-  <!-- Background Clean White Circle -->
-  <circle cx="250" cy="250" r="242" fill="#ffffff" stroke="#057a44" stroke-width="7" />
-  <circle cx="250" cy="250" r="230" fill="none" stroke="#057a44" stroke-width="1.8" />
+  <!-- Background White Disc -->
+  <circle cx="300" cy="300" r="294" fill="#ffffff" />
 
-  <!-- Upper Text: YAYASAN RUMAH PENDIDIKAN ISLAM -->
-  <text fill="#057a44" font-family="'Plus Jakarta Sans', Arial, Helvetica, sans-serif" font-size="24.5" font-weight="900" letter-spacing="2.8">
-    <textPath href="#upperArc" startOffset="50%" text-anchor="middle">
+  <!-- Outer Double Green Border -->
+  <circle cx="300" cy="300" r="288" fill="none" stroke="#007336" stroke-width="8.5" />
+  <circle cx="300" cy="300" r="275" fill="none" stroke="#007336" stroke-width="2" />
+
+  <!-- Upper Text: ★ YAYASAN RUMAH PENDIDIKAN ISLAM ★ -->
+  <text class="latin-text">
+    <textPath href="#upperTextArc" startOffset="50%" text-anchor="middle">
       ★ YAYASAN RUMAH PENDIDIKAN ISLAM ★
     </textPath>
   </text>
 
-  <!-- Lower Text: Arabic calligraphy دار التربية الإسلامية -->
-  <text fill="#057a44" font-family="'Amiri', 'Traditional Arabic', 'Scheherazade New', serif" font-size="33" font-weight="bold">
-    <textPath href="#lowerArc" startOffset="50%" text-anchor="middle">
-      دار التربية الإسلامية
+  <!-- Lower Calligraphy Text: دار التربية الإسلامية -->
+  <text class="arabic-text">
+    <textPath href="#lowerTextArc" startOffset="50%" text-anchor="middle">
+      دَارُ التَّرْبِيَةِ الإِسْلَامِيَّةِ
     </textPath>
   </text>
 
-  <!-- Inner Boundary Ring around Star -->
-  <circle cx="250" cy="255" r="148" fill="none" stroke="#057a44" stroke-width="2.2" />
+  <!-- Inner Border Ring Framing the Star -->
+  <circle cx="300" cy="305" r="186" fill="none" stroke="#007336" stroke-width="3" />
 
-  <!-- 5-Pointed Solid Green Star -->
-  <polygon points="250,108 288,204 391,212 314,277 338,377 250,323 162,377 186,277 109,212 212,204" fill="#057a44" stroke="#057a44" stroke-width="2" stroke-linejoin="round" />
+  <!-- Solid Islamic Green 5-Pointed Star -->
+  <polygon points="
+    300,97
+    350,236.2
+    497.8,240.7
+    380.8,331.3
+    422.3,473.3
+    300,390
+    177.7,473.3
+    219.2,331.3
+    102.2,240.7
+    250,236.2
+  " fill="#007336" stroke="#007336" stroke-width="3" stroke-linejoin="round" />
 
-  <!-- Center White Medallion -->
-  <circle cx="250" cy="256" r="77" fill="#ffffff" stroke="#057a44" stroke-width="4.5" />
+  <!-- Center White Medallion Disc -->
+  <circle cx="300" cy="305" r="102" fill="#ffffff" stroke="#007336" stroke-width="5.5" />
 
-  <!-- Sun Rays Radiating from Dome -->
-  <g stroke="#057a44" stroke-width="2.8" stroke-linecap="round">
-    <line x1="250" y1="202" x2="250" y2="186" />
-    <line x1="239" y1="205" x2="231" y2="191" />
-    <line x1="261" y1="205" x2="269" y2="191" />
-    <line x1="228" y1="210" x2="215" y2="198" />
-    <line x1="272" y1="210" x2="285" y2="198" />
-    <line x1="219" y1="218" x2="204" y2="209" />
-    <line x1="281" y1="218" x2="296" y2="209" />
-    <line x1="213" y1="228" x2="196" y2="223" />
-    <line x1="287" y1="228" x2="304" y2="223" />
+  <!-- Sun Rays Radiating from behind the Dome (13 Sharp Rays) -->
+  <g stroke="#007336" stroke-width="3.5" stroke-linecap="round">
+    <!-- Center top ray -->
+    <line x1="300" y1="236" x2="300" y2="214" />
+    
+    <!-- Left side rays -->
+    <line x1="288" y1="239" x2="279" y2="218" />
+    <line x1="277" y1="244" x2="259" y2="226" />
+    <line x1="267" y1="251" x2="243" y2="237" />
+    <line x1="260" y1="260" x2="231" y2="251" />
+    <line x1="255" y1="271" x2="223" y2="268" />
+    <line x1="253" y1="283" x2="219" y2="286" />
+
+    <!-- Right side rays -->
+    <line x1="312" y1="239" x2="321" y2="218" />
+    <line x1="323" y1="244" x2="341" y2="226" />
+    <line x1="333" y1="251" x2="357" y2="237" />
+    <line x1="340" y1="260" x2="369" y2="251" />
+    <line x1="345" y1="271" x2="377" y2="268" />
+    <line x1="347" y1="283" x2="381" y2="286" />
   </g>
 
-  <!-- Islamic Dome Silhouette (Kubah) -->
-  <path d="M 232,246 C 232,217 244,205 250,202 C 256,205 268,217 268,246 Z" fill="#057a44" />
-  <!-- Dome Top Finial -->
-  <circle cx="250" cy="200" r="3" fill="#057a44" />
-  <line x1="250" y1="200" x2="250" y2="193" stroke="#057a44" stroke-width="2.5" />
+  <!-- Mosque Dome (Kubah) with Finial Spire -->
+  <path d="M 276,295 C 276,256 292,238 300,233 C 308,238 324,256 324,295 Z" fill="#007336" />
+  <!-- Spire & Crescent Top -->
+  <line x1="300" y1="233" x2="300" y2="222" stroke="#007336" stroke-width="3" stroke-linecap="round" />
+  <circle cx="300" cy="222" r="3.5" fill="#007336" />
+  <path d="M 297,220 C 298,217 302,217 303,220 C 302,218 298,218 297,220 Z" fill="#007336" />
 
-  <!-- Two Pillars & Mihrab Gate Structure -->
-  <rect x="216" y="244" width="13" height="46" rx="2" fill="#057a44" />
-  <rect x="271" y="244" width="13" height="46" rx="2" fill="#057a44" />
-  <path d="M 229,252 C 229,241 271,241 271,252 L 271,288 L 229,288 Z" fill="none" stroke="#057a44" stroke-width="3" />
+  <!-- Flanking Twin Pillars (Pilar Gerbang Ilmu) -->
+  <rect x="256" y="286" width="16" height="54" rx="2" fill="#007336" />
+  <rect x="328" y="286" width="16" height="54" rx="2" fill="#007336" />
+  <rect x="254" y="283" width="20" height="5" rx="1.5" fill="#007336" />
+  <rect x="326" y="283" width="20" height="5" rx="1.5" fill="#007336" />
 
-  <!-- Open Quran on Rehal Ribbon -->
-  <path d="M 250,294 C 242,287 222,287 212,294 C 212,307 238,308 250,302 C 262,308 288,307 288,294 C 278,287 258,287 250,294 Z" fill="#ffffff" stroke="#057a44" stroke-width="3.2" />
-  <line x1="250" y1="294" x2="250" y2="302" stroke="#057a44" stroke-width="2" />
-  <!-- Quran Spine / Book Line markings -->
-  <path d="M 220,296 Q 235,293 245,297" stroke="#057a44" stroke-width="1.2" fill="none" />
-  <path d="M 280,296 Q 265,293 255,297" stroke="#057a44" stroke-width="1.2" fill="none" />
+  <!-- Archway Portal underneath Dome -->
+  <path d="M 274,340 L 274,298 C 274,284 326,284 326,298 L 326,340 Z" fill="none" stroke="#007336" stroke-width="3.5" />
+
+  <!-- Open Holy Quran (Kitab Suci Al-Qur'an Terbuka) -->
+  <!-- Left Page -->
+  <path d="M 300,344 C 290,336 266,335 252,343 C 250,358 284,360 300,354 Z" fill="#ffffff" stroke="#007336" stroke-width="3.8" stroke-linejoin="round" />
+  <!-- Right Page -->
+  <path d="M 300,344 C 310,336 334,335 348,343 C 350,358 316,360 300,354 Z" fill="#ffffff" stroke="#007336" stroke-width="3.8" stroke-linejoin="round" />
   
-  <!-- Rehal Stand (X Base) -->
-  <path d="M 225,304 L 238,318 L 221,326" fill="none" stroke="#057a44" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M 275,304 L 262,318 L 279,326" fill="none" stroke="#057a44" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
-  <circle cx="250" cy="318" r="2.5" fill="#057a44" />
+  <!-- Quran Center Fold Line -->
+  <line x1="300" y1="344" x2="300" y2="354" stroke="#007336" stroke-width="2.5" />
+
+  <!-- Quran Scripture Line Markings -->
+  <path d="M 262,346 Q 280,343 293,348" stroke="#007336" stroke-width="1.8" fill="none" stroke-linecap="round" />
+  <path d="M 264,351 Q 280,348 292,352" stroke="#007336" stroke-width="1.5" fill="none" stroke-linecap="round" />
+  <path d="M 338,346 Q 320,343 307,348" stroke="#007336" stroke-width="1.8" fill="none" stroke-linecap="round" />
+  <path d="M 336,351 Q 320,348 308,352" stroke="#007336" stroke-width="1.5" fill="none" stroke-linecap="round" />
+
+  <!-- Rehal Stand (Alas Baca Al-Qur'an / X-Base) -->
+  <path d="M 270,356 L 285,372 L 265,382" fill="none" stroke="#007336" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 330,356 L 315,372 L 335,382" fill="none" stroke="#007336" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="300" cy="372" r="3" fill="#007336" />
+
+  <!-- Arched Ribbon / Base below the Quran and Rehal -->
+  <path d="M 248,370 C 275,383 325,383 352,370 C 356,375 352,382 344,385 C 316,396 284,396 256,385 C 248,382 244,375 248,370 Z" fill="#ffffff" stroke="#007336" stroke-width="2.5" />
 </svg>

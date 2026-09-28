@@ -146,6 +146,16 @@ export const HomePage: React.FC = () => {
                   <span>Masuk Portal Guru</span>
                   <ArrowRight size={14} />
                 </button>
+                <a
+                  href="https://misrpi.sch.id/rdm/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2 bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-amber-400 text-amber-300 hover:text-amber-200 font-bold text-[11px] rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer"
+                  title="Buka Aplikasi RDM Kemenag RI di https://misrpi.sch.id/rdm/"
+                >
+                  <span>🏛️ RDM Kemenag (misrpi.sch.id/rdm)</span>
+                  <ArrowRight size={12} />
+                </a>
               </div>
             </div>
 
