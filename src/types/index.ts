@@ -153,6 +153,8 @@ export interface GradeItem {
   finalScore: number;
   predicate: 'A' | 'B' | 'C' | 'D';
   competencyAchievement: string;
+  source?: 'RDM' | 'MANUAL';
+  lastSyncedAt?: string;
 }
 
 export interface Assignment {

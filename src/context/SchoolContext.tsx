@@ -105,6 +105,7 @@ interface SchoolContextType {
   deletePaymentRecord: (id: string) => void;
   generateMonthlyInvoices: (month: string, year: number) => number;
   saveGrade: (grade: GradeItem) => void;
+  saveBatchGrades: (grades: GradeItem[]) => void;
   updateWorshipLog: (log: Partial<WorshipLog>) => void;
   borrowBook: (bookId: string, borrowerName: string, role: 'SISWA' | 'GURU') => boolean;
   returnBook: (bookId: string) => void;
@@ -176,7 +177,17 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   });
   const [schedules] = useState<ScheduleItem[]>(initialSchedules);
   const [attendance, setAttendance] = useState<AttendanceRecord[]>(initialAttendanceRecords);
-  const [grades, setGrades] = useState<GradeItem[]>(initialGrades);
+  const [grades, setGrades] = useState<GradeItem[]>(() => {
+    const saved = localStorage.getItem('mi_rpi_grades');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return initialGrades;
+      }
+    }
+    return initialGrades;
+  });
   const [assignments, setAssignments] = useState<Assignment[]>(initialAssignments);
   const [materials] = useState<LearningMaterial[]>(initialMaterials);
   const [exams, setExams] = useState<Exam[]>(initialExams);
@@ -237,6 +248,14 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   useEffect(() => {
     localStorage.setItem('mi_rpi_classes', JSON.stringify(classes));
   }, [classes]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mi_rpi_grades', JSON.stringify(grades));
+    } catch (e) {
+      console.warn('LocalStorage error while saving grades:', e);
+    }
+  }, [grades]);
 
   useEffect(() => {
     localStorage.setItem('mi_rpi_gallery', JSON.stringify(gallery));
@@ -637,6 +656,35 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         ...prev,
       ]);
     }
+  };
+
+  // Save Batch Grades (from RDM Kemenag sync or file import)
+  const saveBatchGrades = (newGrades: GradeItem[]) => {
+    setGrades((prev) => {
+      const copy = [...prev];
+      newGrades.forEach((ng) => {
+        const idx = copy.findIndex((g) => g.studentId === ng.studentId && g.subject === ng.subject);
+        if (idx >= 0) {
+          copy[idx] = { ...copy[idx], ...ng };
+        } else {
+          copy.unshift(ng);
+        }
+      });
+      return copy;
+    });
+
+    setNotifications((prev) => [
+      {
+        id: `notif-${Date.now()}`,
+        recipientRole: 'ORANG_TUA',
+        title: 'Sinkronisasi Nilai RDM Kemenag',
+        message: `Nilai e-Rapor resmi berhasil disinkronkan dari server RDM Kemenag (${newGrades.length} rekaman nilai).`,
+        timestamp: 'Baru saja',
+        read: false,
+        type: 'academic',
+      },
+      ...prev,
+    ]);
   };
 
   // Update Worship Log
@@ -1108,6 +1156,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         deletePaymentRecord,
         generateMonthlyInvoices,
         saveGrade,
+        saveBatchGrades,
         updateWorshipLog,
         borrowBook,
         returnBook,
