@@ -12,6 +12,13 @@ import {
   Image as ImageIcon,
   GraduationCap,
   CreditCard,
+  BookOpen,
+  Trash2,
+  HelpCircle,
+  ArrowRight,
+  ExternalLink,
+  Sparkles,
+  Info,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
 import { SchoolSettings, SPMBApplication, ComplaintTicket } from '../../types';
@@ -32,10 +39,12 @@ export const AdminPortal: React.FC = () => {
     complaints,
     updateComplaintStatus,
     addNewsArticle,
+    news,
+    deleteNewsArticle,
     viewParams,
   } = useSchool();
 
-  const [activeTab, setActiveTab] = useState<'masterdata' | 'users' | 'finance' | 'media' | 'settings' | 'spmb' | 'suarawarga' | 'berita'>(
+  const [activeTab, setActiveTab] = useState<'masterdata' | 'users' | 'finance' | 'media' | 'settings' | 'spmb' | 'suarawarga' | 'berita' | 'panduan'>(
     (viewParams?.tab as any) || 'masterdata'
   );
 
@@ -129,14 +138,15 @@ export const AdminPortal: React.FC = () => {
         <div className="flex justify-start overflow-x-auto pb-2 no-scrollbar">
           <div className="bg-white p-1 rounded-2xl border border-slate-200 shadow-xs inline-flex gap-1 overflow-x-auto max-w-full">
             {[
+              { id: 'panduan', label: '📖 Panduan Edit Semua Konten', icon: BookOpen },
+              { id: 'settings', label: '⚙️ Pengaturan & Profil (/admin/settings)', icon: Settings },
+              { id: 'media', label: '📸 Kelola Gambar & Media', icon: ImageIcon },
               { id: 'masterdata', label: '🎓 Guru, Santri & Kelas', icon: GraduationCap },
               { id: 'users', label: '👥 Kelola Akun & Sandi', icon: Users },
               { id: 'finance', label: '💳 SPP & Kas Madrasah', icon: CreditCard },
-              { id: 'media', label: '📸 Kelola Gambar & Media', icon: ImageIcon },
-              { id: 'settings', label: 'Pengaturan Madrasah (/admin/settings)', icon: Settings },
               { id: 'spmb', label: 'Verifikasi SPMB', icon: Users },
               { id: 'suarawarga', label: 'Respon Suara Warga', icon: MessageSquare },
-              { id: 'berita', label: 'Tambah Warta Berita', icon: FileText },
+              { id: 'berita', label: 'Warta Berita & Artikel', icon: FileText },
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -408,6 +418,157 @@ export const AdminPortal: React.FC = () => {
                 </div>
               </div>
 
+              {/* 4. Slogan & Teks Headline Halaman Depan */}
+              <div className="space-y-4">
+                <h4 className="font-bold text-sm text-emerald-800 border-b pb-1">4. Slogan & Teks Headline Halaman Utama</h4>
+                <div className="space-y-3">
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Slogan / Headline Utama (Muncul di Banner Depan) *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.tagline || ''}
+                      onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+                      placeholder="Contoh: Madrasah Unggul, Berakhlak Mulia, Cakap di Era Digital"
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500 font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Subheadline / Teks Pengantar Singkat (Muncul di Bawah Headline)
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={formData.subheadline || ''}
+                      onChange={(e) => setFormData({ ...formData, subheadline: e.target.value })}
+                      placeholder="Deskripsi singkat yang menjelaskan keunggulan dan visi madrasah..."
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 5. Visi, Misi & Tujuan Madrasah */}
+              <div className="space-y-4">
+                <h4 className="font-bold text-sm text-emerald-800 border-b pb-1">5. Visi, Misi & Tujuan Madrasah (Halaman Profil)</h4>
+                <div className="space-y-3">
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Visi Madrasah</label>
+                    <textarea
+                      rows={3}
+                      value={formData.vision || ''}
+                      onChange={(e) => setFormData({ ...formData, vision: e.target.value })}
+                      placeholder="Visi jangka panjang madrasah..."
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Misi Madrasah (Satu butir misi per baris baru)
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={Array.isArray(formData.missions) ? formData.missions.join('\n') : ''}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          missions: e.target.value.split('\n').filter((line) => line.trim().length > 0),
+                        })
+                      }
+                      placeholder="Tulis setiap poin misi dalam baris baru..."
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500 font-mono text-[11px]"
+                    />
+                    <p className="text-[10px] text-slate-400 mt-0.5">Tekan Enter untuk membuat butir misi baru.</p>
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Tujuan Madrasah (Satu butir tujuan per baris baru)
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={Array.isArray(formData.goals) ? formData.goals.join('\n') : ''}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          goals: e.target.value.split('\n').filter((line) => line.trim().length > 0),
+                        })
+                      }
+                      placeholder="Tulis setiap poin tujuan dalam baris baru..."
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500 font-mono text-[11px]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 6. Media Sosial, Email & Jam Madrasah */}
+              <div className="space-y-4">
+                <h4 className="font-bold text-sm text-emerald-800 border-b pb-1">6. Media Sosial, Email & Jam Belajar</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Email Resmi</label>
+                    <input
+                      type="text"
+                      value={formData.email || ''}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="info@mirpi.sch.id"
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Akun Instagram</label>
+                    <input
+                      type="text"
+                      value={formData.instagram || ''}
+                      onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                      placeholder="@mis_rpi"
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Akun YouTube</label>
+                    <input
+                      type="text"
+                      value={formData.youtube || ''}
+                      onChange={(e) => setFormData({ ...formData, youtube: e.target.value })}
+                      placeholder="MI RPI Official"
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Akun Facebook</label>
+                    <input
+                      type="text"
+                      value={formData.facebook || ''}
+                      onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
+                      placeholder="facebook.com/mirpi.official"
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Tahun Ajaran Aktif</label>
+                    <input
+                      type="text"
+                      value={formData.academicYear || ''}
+                      onChange={(e) => setFormData({ ...formData, academicYear: e.target.value })}
+                      placeholder="2027/2028"
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Jam Belajar Madrasah</label>
+                    <input
+                      type="text"
+                      value={formData.schoolHours || ''}
+                      onChange={(e) => setFormData({ ...formData, schoolHours: e.target.value })}
+                      placeholder="Senin - Jumat: 06.45 - 14.30 WIB"
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Submit Button */}
               <div className="pt-4 border-t border-slate-200 flex justify-end">
                 <button
@@ -624,6 +785,402 @@ export const AdminPortal: React.FC = () => {
                 <span>Publikasikan Berita</span>
               </button>
             </form>
+
+            {/* Arsip Berita yang Sedang Tayang */}
+            <div className="pt-6 border-t border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-sm text-slate-900">
+                    Arsip & Pengelolaan Warta Berita ({news.length} Artikel Tayang)
+                  </h4>
+                  <p className="text-xs text-slate-500">
+                    Daftar semua artikel yang sedang tampil di halaman Warta Berita website publik.
+                  </p>
+                </div>
+              </div>
+
+              <div className="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden bg-white">
+                {news.length === 0 ? (
+                  <div className="p-8 text-center text-slate-400 text-xs">
+                    Belum ada warta berita yang dipublikasikan.
+                  </div>
+                ) : (
+                  news.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50/80 transition"
+                    >
+                      <div className="flex items-center gap-3.5">
+                        <img
+                          src={
+                            item.imageUrl ||
+                            'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=200&auto=format&fit=crop&q=80'
+                          }
+                          alt={item.title}
+                          className="w-16 h-12 object-cover rounded-xl shrink-0 border border-slate-200 shadow-2xs"
+                        />
+                        <div>
+                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
+                            {item.category}
+                          </span>
+                          <h5 className="font-bold text-slate-900 text-xs mt-1 line-clamp-1">
+                            {item.title}
+                          </h5>
+                          <p className="text-[10px] text-slate-400 mt-0.5">
+                            {item.date} • Penulis: {item.author}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Hapus artikel berita "${item.title}"? Tindakan ini permanen.`)) {
+                            deleteNewsArticle(item.id);
+                          }
+                        }}
+                        className="px-3 py-1.5 bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer border border-rose-200"
+                        title="Hapus Artikel Berita"
+                      >
+                        <Trash2 size={13} />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 8: PANDUAN LENGKAP EDIT KONTEN (SEMUA HAL: GAMBAR & TULISAN) */}
+        {activeTab === 'panduan' && (
+          <div className="space-y-6 animate-in fade-in">
+            {/* Header Card Panduan */}
+            <div className="bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div>
+                <span className="bg-white/20 text-emerald-200 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  Buku Panduan Mandiri Admin
+                </span>
+                <h2 className="text-xl sm:text-2xl font-black mt-2 flex items-center gap-2">
+                  <span>📖 Panduan Mengedit Semua Konten, Gambar & Tulisan</span>
+                </h2>
+                <p className="text-xs text-emerald-100 mt-1 max-w-2xl leading-relaxed">
+                  Administrator MI RPI Jakarta memiliki kendali penuh atas seluruh isi website. Di bawah ini adalah peta navigasi dan langkah praktis untuk mengedit bagian mana pun yang Anda inginkan.
+                </p>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-xs p-4 rounded-2xl border border-white/20 text-xs shrink-0 space-y-1">
+                <p className="font-bold text-emerald-300">✅ Penyimpanan Otomatis</p>
+                <p className="text-[11px] text-white/90">
+                  Semua editan disimpan aman di server disk madrasah.
+                </p>
+              </div>
+            </div>
+
+            {/* Bagian 1: Mengedit GAMBAR & FOTO */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 space-y-4">
+              <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
+                <div className="w-10 h-10 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-lg">
+                  📸
+                </div>
+                <div>
+                  <h3 className="font-black text-base text-slate-900">1. Cara Mengedit GAMBAR & FOTO di Seluruh Website</h3>
+                  <p className="text-xs text-slate-500">
+                    Semua gambar dapat diganti dengan mengunggah file foto dari HP/Laptop atau menempelkan tautan (URL).
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                {/* 1A. Logo */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span className="text-base">🏷️</span> Logo Madrasah & Yayasan
+                      </span>
+                      <span className="text-[10px] bg-slate-200 px-2 py-0.5 rounded font-mono font-bold">Navbar & Footer</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Tampil di pojok kiri atas (Navbar), footer, dan kop surat transkrip rapor.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('media')}
+                    className="mt-2 w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Tab Kelola Gambar ➔ Subtab Logo</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+
+                {/* 1B. Hero Banner */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span className="text-base">🖼️</span> Foto Banner Halaman Depan
+                      </span>
+                      <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-bold">Hero Utama</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Foto besar di bagian atas website depan. Bisa upload foto asli kegiatan atau klik 6 preset template foto berkualitas tinggi.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('media')}
+                    className="mt-2 w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Tab Kelola Gambar ➔ Subtab Hero</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+
+                {/* 1C. Kepala Madrasah */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span className="text-base">👔</span> Foto Kepala Madrasah
+                      </span>
+                      <span className="text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-bold">Profil</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Foto resmi Kamad yang mendampingi teks Sambutan Kepala Madrasah di Halaman Profil.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('media')}
+                    className="mt-2 w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Tab Kelola Gambar ➔ Foto Kamad</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+
+                {/* 1D. Galeri Kegiatan */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span className="text-base">🎨</span> Foto Galeri Kegiatan
+                      </span>
+                      <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">Galeri</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Dokumentasi belajar, perkemahan, wisuda tahfiz, sains, dll. Bisa menambah foto baru atau menghapus foto lama.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('media')}
+                    className="mt-2 w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Tab Kelola Gambar ➔ Galeri</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+
+                {/* 1E. Foto Guru */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span className="text-base">👩‍🏫</span> Foto Profil Dewan Guru
+                      </span>
+                      <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Direktori GTK</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Pilih nama guru lalu unggah pas foto formal guru untuk ditampilkan di profil pendidik.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('media')}
+                    className="mt-2 w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Tab Kelola Gambar ➔ Foto Guru</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+
+                {/* 1F. Foto Berita */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span className="text-base">📰</span> Foto Liputan Berita
+                      </span>
+                      <span className="text-[10px] bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">Warta</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Foto dokumentasi yang menyertai artikel berita saat mempublikasikan berita baru.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('berita')}
+                    className="mt-2 w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Tab Warta Berita</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Bagian 2: Mengedit TULISAN & TEKS */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 space-y-4">
+              <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-lg">
+                  ✍️
+                </div>
+                <div>
+                  <h3 className="font-black text-base text-slate-900">2. Cara Mengedit TULISAN & TEKS di Seluruh Website</h3>
+                  <p className="text-xs text-slate-500">
+                    Lokasi formulir untuk mengganti kalimat, nama, visi-misi, alamat, kontak, dan biaya SPP.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                {/* 2A. Slogan & Headline Halaman Utama */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                      <span>📢 Slogan & Headline Halaman Utama</span>
+                    </h4>
+                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">Halaman Depan</span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Ubah tulisan besar <em>"Madrasah Unggul, Berakhlak Mulia..."</em> dan kalimat pengantar di bawahnya.
+                  </p>
+                  <p className="text-emerald-900 font-bold text-[11px]">
+                    📍 Lokasi: Tab <strong>Pengaturan Madrasah</strong> ➔ Bagian <strong>4. Slogan & Teks Headline</strong>.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('settings')}
+                    className="py-1.5 px-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg transition inline-flex items-center gap-1"
+                  >
+                    <span>Ke Pengaturan Madrasah</span>
+                    <ArrowRight size={12} />
+                  </button>
+                </div>
+
+                {/* 2B. Identitas Lembaga & NPSN */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                      <span>🏛️ Nama Sekolah, NPSN, Yayasan & Akreditasi</span>
+                    </h4>
+                    <span className="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded">Seluruh Web</span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Nama resmi madrasah, nama panggilan (MI RPI), kode madrasah, nama yayasan, dan akreditasi A.
+                  </p>
+                  <p className="text-emerald-900 font-bold text-[11px]">
+                    📍 Lokasi: Tab <strong>Pengaturan Madrasah</strong> ➔ Bagian <strong>1. Identitas Lembaga</strong>.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('settings')}
+                    className="py-1.5 px-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg transition inline-flex items-center gap-1"
+                  >
+                    <span>Ke Pengaturan Madrasah</span>
+                    <ArrowRight size={12} />
+                  </button>
+                </div>
+
+                {/* 2C. Alamat & Titik Koordinat Peta */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                      <span>📍 Alamat Jalan, RT/RW & Titik Peta (GPS)</span>
+                    </h4>
+                    <span className="text-[10px] font-bold text-teal-800 bg-teal-100 px-2 py-0.5 rounded">Kontak & Peta</span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Jalan HR. Rasuna Said, Kelurahan, Kecamatan, Kota, Kode Pos, serta Latitude dan Longitude untuk Google Maps.
+                  </p>
+                  <p className="text-emerald-900 font-bold text-[11px]">
+                    📍 Lokasi: Tab <strong>Pengaturan Madrasah</strong> ➔ Bagian <strong>2. Alamat & Lokasi</strong>.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('settings')}
+                    className="py-1.5 px-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg transition inline-flex items-center gap-1"
+                  >
+                    <span>Ke Pengaturan Madrasah</span>
+                    <ArrowRight size={12} />
+                  </button>
+                </div>
+
+                {/* 2D. Visi, Misi & Tujuan */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                      <span>📜 Visi, Misi, dan Tujuan Madrasah</span>
+                    </h4>
+                    <span className="text-[10px] font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded">Halaman Profil</span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Teks visi madrasah, butir-butir misi islami, dan target tujuan lulusan santri berakhlak mulia.
+                  </p>
+                  <p className="text-emerald-900 font-bold text-[11px]">
+                    📍 Lokasi: Tab <strong>Pengaturan Madrasah</strong> ➔ Bagian <strong>5. Visi, Misi & Tujuan</strong>.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('settings')}
+                    className="py-1.5 px-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg transition inline-flex items-center gap-1"
+                  >
+                    <span>Ke Pengaturan Madrasah</span>
+                    <ArrowRight size={12} />
+                  </button>
+                </div>
+
+                {/* 2E. Nomor WhatsApp, Rekening SPP & Bank */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                      <span>💳 Biaya SPP, Bank, dan No. Rekening Madrasah</span>
+                    </h4>
+                    <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">Tagihan & Kas</span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Nomor WhatsApp resmi, tarif SPP bulanan (Rp 650.000), nama bank (BSI), nomor rekening, dan atas nama rekening.
+                  </p>
+                  <p className="text-emerald-900 font-bold text-[11px]">
+                    📍 Lokasi: Tab <strong>Pengaturan Madrasah</strong> ➔ Bagian <strong>3. Kontak & Tagihan</strong>.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('settings')}
+                    className="py-1.5 px-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg transition inline-flex items-center gap-1"
+                  >
+                    <span>Ke Pengaturan Madrasah</span>
+                    <ArrowRight size={12} />
+                  </button>
+                </div>
+
+                {/* 2F. Edit Akun Pengguna (Guru / Ortu / Bendahara) */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                      <span>👥 Akun Pengguna & Sandi (Guru, Ortu, Bendahara)</span>
+                    </h4>
+                    <span className="text-[10px] font-bold text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded">Portal Akses</span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Untuk mengubah nama, username, kata sandi, peran, atau kontak pengguna, cukup klik tombol <strong>✏️ Edit</strong> di sebelah akun yang bersangkutan.
+                  </p>
+                  <p className="text-emerald-900 font-bold text-[11px]">
+                    📍 Lokasi: Tab <strong>Kelola Akun & Sandi</strong> ➔ Klik tombol <strong>✏️ Edit</strong> pada tabel.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('users')}
+                    className="py-1.5 px-3 bg-indigo-700 hover:bg-indigo-800 text-white font-bold rounded-lg transition inline-flex items-center gap-1"
+                  >
+                    <span>Ke Kelola Akun & Sandi</span>
+                    <ArrowRight size={12} />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

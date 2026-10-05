@@ -111,6 +111,8 @@ interface SchoolContextType {
   returnBook: (bookId: string) => void;
   generateAssessmentDraft: (subject: string, className: string, topic: string, totalQuestions: number) => Exam;
   addNewsArticle: (article: Omit<NewsItem, 'id' | 'slug'>) => void;
+  updateNewsArticle: (id: string, updates: Partial<NewsItem>) => void;
+  deleteNewsArticle: (id: string) => void;
   addGalleryItem: (item: Omit<GalleryItem, 'id'>) => void;
   deleteGalleryItem: (id: string) => void;
   addTeacher: (teacher: Omit<Teacher, 'id'>) => void;
@@ -225,7 +227,16 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const saved = localStorage.getItem('mi_rpi_user_accounts');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed: UserAccount[] = JSON.parse(saved);
+        return parsed.map((acc) => {
+          if (acc.role === 'BENDAHARA' || acc.role === 'ADMIN' || acc.role === 'KEPALA_MADRASAH') {
+            const copy = { ...acc };
+            delete copy.className;
+            delete copy.subject;
+            return copy;
+          }
+          return acc;
+        });
       } catch (e) {
         console.error('Failed to parse user accounts', e);
       }
@@ -287,9 +298,18 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               } catch (_) {}
             }
             if (Array.isArray(serverData.userAccounts) && serverData.userAccounts.length > 0) {
-              setUserAccounts(serverData.userAccounts);
+              const cleaned = serverData.userAccounts.map((acc: any) => {
+                if (acc.role === 'BENDAHARA' || acc.role === 'ADMIN' || acc.role === 'KEPALA_MADRASAH') {
+                  const copy = { ...acc };
+                  delete copy.className;
+                  delete copy.subject;
+                  return copy;
+                }
+                return acc;
+              });
+              setUserAccounts(cleaned);
               try {
-                localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(serverData.userAccounts));
+                localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(cleaned));
               } catch (_) {}
             }
             if (Array.isArray(serverData.news) && serverData.news.length > 0) {
@@ -932,6 +952,16 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setNews((prev) => [newArticle, ...prev]);
   };
 
+  const updateNewsArticle = (id: string, updates: Partial<NewsItem>) => {
+    setNews((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
+    );
+  };
+
+  const deleteNewsArticle = (id: string) => {
+    setNews((prev) => prev.filter((item) => item.id !== id));
+  };
+
   const addGalleryItem = (item: Omit<GalleryItem, 'id'>) => {
     const newItem: GalleryItem = {
       ...item,
@@ -1299,6 +1329,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         returnBook,
         generateAssessmentDraft,
         addNewsArticle,
+        updateNewsArticle,
+        deleteNewsArticle,
         addGalleryItem,
         deleteGalleryItem,
         addTeacher,

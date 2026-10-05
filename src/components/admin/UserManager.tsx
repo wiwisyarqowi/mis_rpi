@@ -605,14 +605,15 @@ export const UserManager: React.FC = () => {
 
                       {/* Actions */}
                       <td className="py-3 px-4 text-center">
-                        <div className="flex items-center justify-center gap-1.5">
-                          {/* Tombol Edit Akun (Permintaan Pengguna) */}
+                        <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                          {/* Tombol Edit Akun (Permintaan Pengguna: Dibuat jelas dengan label teks Edit) */}
                           <button
                             onClick={() => openEditModal(acc)}
-                            className="p-1.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white rounded-lg transition cursor-pointer shadow-2xs"
+                            className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white rounded-lg text-[11px] font-bold flex items-center gap-1 transition cursor-pointer border border-indigo-200 shadow-2xs"
                             title="Edit Data Akun (Nama, Username, Sandi, Peran, Kelas, dll.)"
                           >
-                            <Edit size={13} />
+                            <Edit size={12} />
+                            <span>Edit</span>
                           </button>
 
                           {/* Send WhatsApp */}
