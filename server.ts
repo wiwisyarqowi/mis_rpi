@@ -24,6 +24,76 @@ if (!fs.existsSync(uploadsDir)) {
 }
 app.use('/uploads', express.static(uploadsDir));
 
+// Persistent database storage on server disk
+const dataDir = path.resolve(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+const dbFilePath = path.join(dataDir, 'school_database.json');
+
+// Helper to convert base64 dataUrl into static file on server
+function extractBase64AndSave(val: string, prefix = 'media'): string {
+  if (!val || typeof val !== 'string' || !val.startsWith('data:image/')) {
+    return val;
+  }
+  try {
+    const match = val.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
+    if (!match) return val;
+    const mimeType = match[1].toLowerCase();
+    const extension = mimeType === 'svg+xml' ? 'svg' : mimeType === 'png' ? 'png' : mimeType === 'webp' ? 'webp' : 'jpg';
+    const base64Data = match[2];
+    const safeFileName = `${prefix}-${Date.now()}-${Math.floor(Math.random() * 10000)}.${extension}`;
+    const targetFilePath = path.join(uploadsDir, safeFileName);
+    fs.writeFileSync(targetFilePath, Buffer.from(base64Data, 'base64'));
+    console.log(`[Auto-Extracted Media] Saved base64 to /uploads/${safeFileName}`);
+    return `/uploads/${safeFileName}`;
+  } catch (e) {
+    console.error('Failed to extract base64 to file:', e);
+    return val;
+  }
+}
+
+// Deep sanitize object: converts any base64 images into physical files
+function sanitizeObjectImages(obj: any): any {
+  if (!obj || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) {
+    return obj.map((item) => sanitizeObjectImages(item));
+  }
+  const result: any = { ...obj };
+  for (const key of Object.keys(result)) {
+    if (typeof result[key] === 'string' && result[key].startsWith('data:image/')) {
+      result[key] = extractBase64AndSave(result[key], key.replace(/[^a-zA-Z0-9]/g, ''));
+    } else if (typeof result[key] === 'object' && result[key] !== null) {
+      result[key] = sanitizeObjectImages(result[key]);
+    }
+  }
+  return result;
+}
+
+function readDatabase(): Record<string, any> {
+  try {
+    if (fs.existsSync(dbFilePath)) {
+      const content = fs.readFileSync(dbFilePath, 'utf-8');
+      return JSON.parse(content);
+    }
+  } catch (e) {
+    console.error('Error reading school_database.json:', e);
+  }
+  return {};
+}
+
+function saveDatabase(newData: Record<string, any>): Record<string, any> {
+  try {
+    const current = readDatabase();
+    const merged = { ...current, ...newData, lastUpdated: new Date().toISOString() };
+    fs.writeFileSync(dbFilePath, JSON.stringify(merged, null, 2), 'utf-8');
+    return merged;
+  } catch (e) {
+    console.error('Error writing school_database.json:', e);
+    return newData;
+  }
+}
+
 // Initialize Gemini Client server-side
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -202,6 +272,74 @@ app.post('/api/upload', (req: Request, res: Response) => {
   } catch (err: any) {
     console.error('Error saving uploaded file:', err);
     return res.status(500).json({ error: 'Gagal menyimpan file gambar di server' });
+  }
+});
+
+// Settings GET & POST endpoints with automatic base64 conversion & server disk persistence
+app.get('/api/settings', (req: Request, res: Response) => {
+  const db = readDatabase();
+  return res.json({
+    success: true,
+    settings: db.settings || null,
+  });
+});
+
+app.post('/api/settings', (req: Request, res: Response) => {
+  try {
+    const { settings } = req.body;
+    if (!settings || typeof settings !== 'object') {
+      return res.status(400).json({ error: 'Data settings tidak valid' });
+    }
+
+    // Sanitize any base64 images inside settings (e.g. logoUrl, heroImageUrl, principalPhotoUrl)
+    const sanitizedSettings = sanitizeObjectImages(settings);
+    const updated = saveDatabase({ settings: sanitizedSettings });
+
+    console.log('[Settings Persistence] School settings updated and saved to server disk');
+    return res.json({
+      success: true,
+      settings: updated.settings,
+    });
+  } catch (err: any) {
+    console.error('Error saving settings to server:', err);
+    return res.status(500).json({ error: 'Gagal menyimpan pengaturan di server' });
+  }
+});
+
+// Unified School Data GET & POST endpoints for full-app persistence
+app.get('/api/school-data', (req: Request, res: Response) => {
+  const db = readDatabase();
+  return res.json({
+    success: true,
+    data: db,
+  });
+});
+
+app.post('/api/school-data', (req: Request, res: Response) => {
+  try {
+    const { key, data, payload } = req.body;
+    let dataToSave: Record<string, any> = {};
+
+    if (key && data !== undefined) {
+      dataToSave[key] = sanitizeObjectImages(data);
+    } else if (payload && typeof payload === 'object') {
+      dataToSave = sanitizeObjectImages(payload);
+    } else if (req.body && typeof req.body === 'object') {
+      const sanitized = sanitizeObjectImages(req.body);
+      delete sanitized.key;
+      delete sanitized.data;
+      dataToSave = sanitized;
+    }
+
+    const updated = saveDatabase(dataToSave);
+    console.log(`[School Data Persistence] Updated keys: ${Object.keys(dataToSave).join(', ')}`);
+    return res.json({
+      success: true,
+      data: updated,
+    });
+  } catch (err: any) {
+    console.error('Error persisting school data to server:', err);
+    return res.status(500).json({ error: 'Gagal menyimpan data ke server' });
   }
 });
 

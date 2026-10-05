@@ -233,20 +233,109 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return initialUserAccounts;
   });
 
+  // Helper to sync collections to server disk
+  const syncToServer = async (key: string, data: any) => {
+    try {
+      await fetch('/api/school-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, data }),
+      });
+    } catch (e) {
+      console.warn(`Sync to server failed for ${key}:`, e);
+    }
+  };
+
+  // Initial hydration from server database
   useEffect(() => {
-    localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(userAccounts));
+    let isMounted = true;
+    const hydrateFromServer = async () => {
+      try {
+        const res = await fetch('/api/school-data');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && isMounted) {
+            const serverData = json.data;
+            if (serverData.settings) {
+              setSettings(serverData.settings);
+              try {
+                localStorage.setItem('mi_rpi_settings', JSON.stringify(serverData.settings));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.gallery) && serverData.gallery.length > 0) {
+              setGallery(serverData.gallery);
+              try {
+                localStorage.setItem('mi_rpi_gallery', JSON.stringify(serverData.gallery));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.teachers) && serverData.teachers.length > 0) {
+              setTeachers(serverData.teachers);
+              try {
+                localStorage.setItem('mi_rpi_teachers', JSON.stringify(serverData.teachers));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.students) && serverData.students.length > 0) {
+              setStudents(serverData.students);
+              try {
+                localStorage.setItem('mi_rpi_students', JSON.stringify(serverData.students));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.classes) && serverData.classes.length > 0) {
+              setClasses(serverData.classes);
+              try {
+                localStorage.setItem('mi_rpi_classes', JSON.stringify(serverData.classes));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.userAccounts) && serverData.userAccounts.length > 0) {
+              setUserAccounts(serverData.userAccounts);
+              try {
+                localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(serverData.userAccounts));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.news) && serverData.news.length > 0) {
+              setNews(serverData.news);
+              try {
+                localStorage.setItem('mi_rpi_news', JSON.stringify(serverData.news));
+              } catch (_) {}
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Initial server hydration warning:', err);
+      }
+    };
+    hydrateFromServer();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(userAccounts));
+    } catch (_) {}
+    syncToServer('userAccounts', userAccounts);
   }, [userAccounts]);
 
   useEffect(() => {
-    localStorage.setItem('mi_rpi_teachers', JSON.stringify(teachers));
+    try {
+      localStorage.setItem('mi_rpi_teachers', JSON.stringify(teachers));
+    } catch (_) {}
+    syncToServer('teachers', teachers);
   }, [teachers]);
 
   useEffect(() => {
-    localStorage.setItem('mi_rpi_students', JSON.stringify(students));
+    try {
+      localStorage.setItem('mi_rpi_students', JSON.stringify(students));
+    } catch (_) {}
+    syncToServer('students', students);
   }, [students]);
 
   useEffect(() => {
-    localStorage.setItem('mi_rpi_classes', JSON.stringify(classes));
+    try {
+      localStorage.setItem('mi_rpi_classes', JSON.stringify(classes));
+    } catch (_) {}
+    syncToServer('classes', classes);
   }, [classes]);
 
   useEffect(() => {
@@ -258,26 +347,61 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [grades]);
 
   useEffect(() => {
-    localStorage.setItem('mi_rpi_gallery', JSON.stringify(gallery));
+    try {
+      localStorage.setItem('mi_rpi_gallery', JSON.stringify(gallery));
+    } catch (_) {}
+    syncToServer('gallery', gallery);
   }, [gallery]);
 
   useEffect(() => {
-    localStorage.setItem('mi_rpi_news', JSON.stringify(news));
+    try {
+      localStorage.setItem('mi_rpi_news', JSON.stringify(news));
+    } catch (_) {}
+    syncToServer('news', news);
   }, [news]);
 
-  // Sync settings to LocalStorage
-  const updateSettings = (newSettings: SchoolSettings) => {
+  // Sync settings to LocalStorage and Server Disk
+  const updateSettings = async (newSettings: SchoolSettings) => {
     setSettings(newSettings);
     try {
       localStorage.setItem('mi_rpi_settings', JSON.stringify(newSettings));
     } catch (e) {
       console.warn('LocalStorage error while saving settings:', e);
     }
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ settings: newSettings }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.settings) {
+          setSettings(json.settings);
+          try {
+            localStorage.setItem('mi_rpi_settings', JSON.stringify(json.settings));
+          } catch (_) {}
+        }
+      }
+    } catch (e) {
+      console.warn('Server settings sync failed:', e);
+    }
   };
 
-  const resetSettingsToDefault = () => {
+  const resetSettingsToDefault = async () => {
     setSettings(initialSchoolSettings);
-    localStorage.removeItem('mi_rpi_settings');
+    try {
+      localStorage.removeItem('mi_rpi_settings');
+    } catch (_) {}
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ settings: initialSchoolSettings }),
+      });
+    } catch (e) {
+      console.warn('Server reset settings failed:', e);
+    }
   };
 
   // Sync SPMB to LocalStorage
@@ -950,8 +1074,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const addUserAccount = (acc: Omit<UserAccount, 'id' | 'createdAt'>): UserAccount => {
+    const isNoClassRole = acc.role === 'BENDAHARA' || acc.role === 'ADMIN' || acc.role === 'KEPALA_MADRASAH';
     const newAcc: UserAccount = {
       ...acc,
+      className: isNoClassRole ? undefined : acc.className,
       id: `acc-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       createdAt: new Date().toISOString().split('T')[0],
       status: acc.status || 'Aktif',
@@ -962,7 +1088,18 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const updateUserAccount = (id: string, updates: Partial<UserAccount>) => {
     setUserAccounts((prev) =>
-      prev.map((acc) => (acc.id === id ? { ...acc, ...updates } : acc))
+      prev.map((acc) => {
+        if (acc.id === id) {
+          const targetRole = updates.role || acc.role;
+          const isNoClassRole = targetRole === 'BENDAHARA' || targetRole === 'ADMIN' || targetRole === 'KEPALA_MADRASAH';
+          const updated = { ...acc, ...updates };
+          if (isNoClassRole) {
+            delete updated.className;
+          }
+          return updated;
+        }
+        return acc;
+      })
     );
   };
 

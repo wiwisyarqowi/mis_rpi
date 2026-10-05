@@ -145,7 +145,7 @@ export const ProfilePage: React.FC = () => {
 
                 <div className="flex items-center gap-3 bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-200 self-start sm:self-auto">
                   <img
-                    src="/images/logo-yayasan-rpi.svg"
+                    src={settings.logoUrl || "/images/logo-yayasan-rpi.svg"}
                     alt="Logo Yayasan RPI"
                     className="w-10 h-10 object-contain"
                   />

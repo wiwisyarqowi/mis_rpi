@@ -1,0 +1,53 @@
+{
+  "settings": {
+    "schoolName": "Madrasah Ibtidaiyah RPI Jakarta",
+    "shortName": "MI RPI Jakarta / MIS RPI Jakarta",
+    "tagline": "Madrasah Unggul, Berakhlak Mulia, Cakap di Era Digital",
+    "subheadline": "Madrasah Ibtidaiyah RPI Jakarta hadir memadukan nilai-nilai Islam, pendidikan karakter, sains, teknologi, dan pembelajaran bermakna untuk membentuk generasi yang berakhlak mulia, cerdas, kreatif, dan siap menghadapi masa depan.",
+    "npsn": "60706249",
+    "madrasahCode": "111231740119",
+    "status": "Swasta",
+    "foundation": "Yayasan Rumah Pendidikan Islam",
+    "accreditation": "A",
+    "address": "Jl. HR. Rasuna Said Kav. X2-2",
+    "rtRw": "008/04",
+    "subDistrict": "Kuningan Timur",
+    "district": "Setiabudi",
+    "city": "Jakarta Selatan",
+    "province": "DKI Jakarta",
+    "postalCode": "12950",
+    "latitude": -6.2337,
+    "longitude": 106.8296,
+    "phone": "[DATA BELUM DIISI ADMIN]",
+    "whatsapp": "6281234567890",
+    "email": "[DATA BELUM DIISI ADMIN]",
+    "instagram": "@mis_rpi",
+    "youtube": "[DATA BELUM DIISI ADMIN]",
+    "facebook": "[DATA BELUM DIISI ADMIN]",
+    "vision": "Menjadi madrasah ibtidaiyah yang unggul dalam mengimplementasikan nilai-nilai Islam dan sains teknologi, menghasilkan generasi penerus bangsa yang berakhlak mulia, cerdas, dan cakap dalam menghadapi era digital.",
+    "missions": [
+      "Menanamkan aqidah yang kokoh dan akhlak mulia melalui pembiasaan ibadah dan keteladanan sehari-hari.",
+      "Menyelenggarakan proses pembelajaran bermakna yang mengintegrasikan kurikulum nasional, kurikulum keagamaan Kemenag, dan literasi teknologi.",
+      "Menerapkan lingkungan madrasah ramah anak yang aman, inklusif, dan mendukung perkembangan sosial-emosional (Social Emotional Learning).",
+      "Mengembangkan potensi sains, teknologi, seni, dan olahraga melalui program kokurikuler dan ekstrakurikuler terpadu.",
+      "Membangun sinergi harmonis antara madrasah, orang tua, yayasan, dan masyarakat dalam mencetak generasi qurani yang berdaya saing global."
+    ],
+    "goals": [
+      "Lulusan menguasai tahfidz minimal Juz 30 dan Juz 29 serta memiliki kecakapan adab islami yang tinggi.",
+      "Siswa memiliki nalar kritis dan literasi sains-digital yang kuat untuk melanjutkan ke jenjang MTs/SMP unggulan.",
+      "Terwujudnya lingkungan belajar madrasah ramah anak yang nyaman, menyenangkan, dan bebas perundungan."
+    ],
+    "academicYear": "2027/2028",
+    "activeSemester": "Ganjil",
+    "principalName": "H. Ahmad Fauzi, S.Pd.I., M.Pd.",
+    "principalNip": "197805122005011003",
+    "principalPhotoUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=240&auto=format&fit=crop&q=80",
+    "logoUrl": "/images/logo-yayasan-rpi.svg",
+    "heroImageUrl": "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1200&auto=format&fit=crop&q=80",
+    "monthlyTuitionFee": 650000,
+    "bankName": "Bank Syariah Indonesia (BSI)",
+    "bankAccountNumber": "7123456789",
+    "bankAccountHolder": "MI RPI JAKARTA"
+  },
+  "lastUpdated": "2026-09-28T09:17:22.430Z"
+}

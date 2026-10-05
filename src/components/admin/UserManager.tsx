@@ -54,6 +54,22 @@ export const UserManager: React.FC = () => {
   const [showPasswordIds, setShowPasswordIds] = useState<Record<string, boolean>>({});
   const [batchNotice, setBatchNotice] = useState<string | null>(null);
 
+  // Edit Account Form State
+  const [editingAccount, setEditingAccount] = useState<UserAccount | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editUsername, setEditUsername] = useState('');
+  const [editPassword, setEditPassword] = useState('');
+  const [editRole, setEditRole] = useState<UserRole>('GURU');
+  const [editEmail, setEditEmail] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editNip, setEditNip] = useState('');
+  const [editNisn, setEditNisn] = useState('');
+  const [editStudentName, setEditStudentName] = useState('');
+  const [editClassName, setEditClassName] = useState('');
+  const [editSubject, setEditSubject] = useState('');
+  const [editStatus, setEditStatus] = useState<'Aktif' | 'Nonaktif'>('Aktif');
+  const [editShowPassword, setEditShowPassword] = useState(false);
+
   // New Account Form State
   const [formName, setFormName] = useState('');
   const [formUsername, setFormUsername] = useState('');
@@ -114,30 +130,89 @@ export const UserManager: React.FC = () => {
     setIsAddModalOpen(true);
   };
 
+  // Open Edit Account Modal
+  const openEditModal = (acc: UserAccount) => {
+    setEditingAccount(acc);
+    setEditName(acc.name);
+    setEditUsername(acc.username);
+    setEditPassword(acc.password);
+    setEditRole(acc.role);
+    setEditEmail(acc.email || '');
+    setEditPhone(acc.phone || '');
+    setEditNip(acc.nip || '');
+    setEditNisn(acc.nisn || '');
+    setEditStudentName(acc.studentName || '');
+    // If Bendahara or Admin, ensure class is empty/undefined
+    if (acc.role === 'BENDAHARA' || acc.role === 'ADMIN' || acc.role === 'KEPALA_MADRASAH') {
+      setEditClassName('');
+      setEditSubject('');
+    } else {
+      setEditClassName(acc.className || '');
+      setEditSubject(acc.subject || '');
+    }
+    setEditStatus(acc.status || 'Aktif');
+    setEditShowPassword(false);
+  };
+
+  // Submit Updated Account
+  const handleUpdateAccount = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingAccount) return;
+    if (!editName.trim() || !editUsername.trim() || !editPassword.trim()) {
+      alert('Nama Lengkap, Username, dan Kata Sandi wajib diisi!');
+      return;
+    }
+
+    const isBendaharaOrAdmin = editRole === 'BENDAHARA' || editRole === 'ADMIN' || editRole === 'KEPALA_MADRASAH';
+
+    updateUserAccount(editingAccount.id, {
+      name: editName.trim(),
+      username: editUsername.trim(),
+      password: editPassword.trim(),
+      role: editRole,
+      email: editEmail.trim() || undefined,
+      phone: editPhone.trim() || undefined,
+      nip: editRole === 'GURU' ? editNip.trim() || editUsername.trim() : undefined,
+      nisn: (editRole === 'ORANG_TUA' || editRole === 'SISWA') ? editNisn.trim() || editUsername.trim() : undefined,
+      studentName: editRole === 'ORANG_TUA' ? editStudentName.trim() || undefined : undefined,
+      className: isBendaharaOrAdmin ? undefined : (editRole === 'GURU' ? (editClassName || undefined) : editClassName || undefined),
+      subject: editRole === 'GURU' ? editSubject.trim() || undefined : undefined,
+      status: editStatus,
+    });
+
+    setEditingAccount(null);
+    setBatchNotice(`Data akun "${editName}" (${editRole}) berhasil diperbarui!`);
+    setTimeout(() => setBatchNotice(null), 4000);
+  };
+
   // Submit New Account
   const handleCreateAccount = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formName || !formUsername || !formPassword) {
+    if (!formName.trim() || !formUsername.trim() || !formPassword.trim()) {
       alert('Nama, Username, dan Kata Sandi wajib diisi!');
       return;
     }
 
+    const isBendaharaOrAdmin = formRole === 'BENDAHARA' || formRole === 'ADMIN' || formRole === 'KEPALA_MADRASAH';
+
     addUserAccount({
-      name: formName,
-      username: formUsername,
-      password: formPassword,
+      name: formName.trim(),
+      username: formUsername.trim(),
+      password: formPassword.trim(),
       role: formRole,
-      email: formEmail,
-      phone: formPhone,
-      nip: formRole === 'GURU' ? formNip || formUsername : undefined,
-      nisn: formRole === 'ORANG_TUA' || formRole === 'SISWA' ? formNisn || formUsername : undefined,
-      studentName: formRole === 'ORANG_TUA' ? formStudentName : undefined,
-      className: formClassName,
-      subject: formRole === 'GURU' ? formSubject : undefined,
+      email: formEmail.trim() || undefined,
+      phone: formPhone.trim() || undefined,
+      nip: formRole === 'GURU' ? formNip.trim() || formUsername.trim() : undefined,
+      nisn: (formRole === 'ORANG_TUA' || formRole === 'SISWA') ? formNisn.trim() || formUsername.trim() : undefined,
+      studentName: formRole === 'ORANG_TUA' ? formStudentName.trim() : undefined,
+      className: isBendaharaOrAdmin ? undefined : (formRole === 'GURU' ? (formClassName || undefined) : formClassName),
+      subject: formRole === 'GURU' ? formSubject.trim() || undefined : undefined,
       status: formStatus,
     });
 
     setIsAddModalOpen(false);
+    setBatchNotice(`Akun baru untuk "${formName}" (${formRole}) berhasil dibuat!`);
+    setTimeout(() => setBatchNotice(null), 4000);
   };
 
   // Quick WhatsApp Share
@@ -199,6 +274,7 @@ export const UserManager: React.FC = () => {
   });
 
   // Role counters
+  const totalBendahara = userAccounts.filter((a) => a.role === 'BENDAHARA').length;
   const totalGuru = userAccounts.filter((a) => a.role === 'GURU').length;
   const totalOrtu = userAccounts.filter((a) => a.role === 'ORANG_TUA').length;
   const totalSiswa = userAccounts.filter((a) => a.role === 'SISWA').length;
@@ -207,14 +283,24 @@ export const UserManager: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Overview Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg">
+            💳
+          </div>
+          <div>
+            <p className="text-xl font-black text-slate-900">{totalBendahara}</p>
+            <p className="text-[11px] font-semibold text-slate-500">Bendahara</p>
+          </div>
+        </div>
+
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg">
             👩‍🏫
           </div>
           <div>
             <p className="text-xl font-black text-slate-900">{totalGuru}</p>
-            <p className="text-[11px] font-semibold text-slate-500">Akun Guru & GTK</p>
+            <p className="text-[11px] font-semibold text-slate-500">Guru & GTK</p>
           </div>
         </div>
 
@@ -224,7 +310,7 @@ export const UserManager: React.FC = () => {
           </div>
           <div>
             <p className="text-xl font-black text-slate-900">{totalOrtu}</p>
-            <p className="text-[11px] font-semibold text-slate-500">Akun Orang Tua</p>
+            <p className="text-[11px] font-semibold text-slate-500">Orang Tua</p>
           </div>
         </div>
 
@@ -234,7 +320,7 @@ export const UserManager: React.FC = () => {
           </div>
           <div>
             <p className="text-xl font-black text-slate-900">{totalSiswa}</p>
-            <p className="text-[11px] font-semibold text-slate-500">Akun Santri</p>
+            <p className="text-[11px] font-semibold text-slate-500">Santri</p>
           </div>
         </div>
 
@@ -244,7 +330,7 @@ export const UserManager: React.FC = () => {
           </div>
           <div>
             <p className="text-xl font-black text-slate-900">{totalAdmin}</p>
-            <p className="text-[11px] font-semibold text-slate-500">Admin & Pimpinan</p>
+            <p className="text-[11px] font-semibold text-slate-500">Admin & Kamad</p>
           </div>
         </div>
       </div>
@@ -366,10 +452,10 @@ export const UserManager: React.FC = () => {
                 <th className="py-3 px-4">Nama Lengkap & Peran</th>
                 <th className="py-3 px-4">Username / ID Masuk</th>
                 <th className="py-3 px-4">Kata Sandi</th>
-                <th className="py-3 px-4">Kelas / Subjek</th>
+                <th className="py-3 px-4">Kelas / Unit Tugas</th>
                 <th className="py-3 px-4">Kontak WA</th>
                 <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4 text-center">Aksi / Kirim Akun</th>
+                <th className="py-3 px-4 text-center">Aksi (Edit, WA, Cetak, Reset, Hapus)</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -462,13 +548,29 @@ export const UserManager: React.FC = () => {
 
                       {/* Class or Subject */}
                       <td className="py-3 px-4">
-                        <span className="text-slate-700 font-medium">
-                          {acc.className || acc.subject || '-'}
-                        </span>
-                        {acc.subject && acc.className && (
-                          <span className="text-[10px] text-slate-400 block">
-                            {acc.subject}
+                        {acc.role === 'BENDAHARA' ? (
+                          <span className="inline-flex items-center gap-1 bg-purple-50 text-purple-800 border border-purple-200 px-2.5 py-0.5 rounded-md font-bold text-[10px]">
+                            💳 Kas & Keuangan
                           </span>
+                        ) : acc.role === 'ADMIN' ? (
+                          <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-bold text-[10px]">
+                            ⚙️ Pusat Kendali
+                          </span>
+                        ) : acc.role === 'KEPALA_MADRASAH' ? (
+                          <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-bold text-[10px]">
+                            🏛️ Pimpinan Madrasah
+                          </span>
+                        ) : (
+                          <>
+                            <span className="text-slate-700 font-medium">
+                              {acc.className || acc.subject || '-'}
+                            </span>
+                            {acc.subject && acc.className && (
+                              <span className="text-[10px] text-slate-400 block">
+                                {acc.subject}
+                              </span>
+                            )}
+                          </>
                         )}
                       </td>
 
@@ -504,10 +606,19 @@ export const UserManager: React.FC = () => {
                       {/* Actions */}
                       <td className="py-3 px-4 text-center">
                         <div className="flex items-center justify-center gap-1.5">
+                          {/* Tombol Edit Akun (Permintaan Pengguna) */}
+                          <button
+                            onClick={() => openEditModal(acc)}
+                            className="p-1.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white rounded-lg transition cursor-pointer shadow-2xs"
+                            title="Edit Data Akun (Nama, Username, Sandi, Peran, Kelas, dll.)"
+                          >
+                            <Edit size={13} />
+                          </button>
+
                           {/* Send WhatsApp */}
                           <button
                             onClick={() => handleSendWhatsApp(acc)}
-                            className="p-1.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg transition"
+                            className="p-1.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg transition cursor-pointer"
                             title="Kirim Akun ke WhatsApp Guru / Wali Murid"
                           >
                             <Send size={13} />
@@ -516,7 +627,7 @@ export const UserManager: React.FC = () => {
                           {/* Print Account Card */}
                           <button
                             onClick={() => setPrintCardAccount(acc)}
-                            className="p-1.5 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded-lg transition"
+                            className="p-1.5 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded-lg transition cursor-pointer"
                             title="Cetak Lembar Kartu Login"
                           >
                             <Printer size={13} />
@@ -525,8 +636,8 @@ export const UserManager: React.FC = () => {
                           {/* Reset Password */}
                           <button
                             onClick={() => handleReset(acc)}
-                            className="p-1.5 bg-amber-50 hover:bg-amber-600 text-amber-700 hover:text-white rounded-lg transition"
-                            title="Reset Kata Sandi"
+                            className="p-1.5 bg-amber-50 hover:bg-amber-600 text-amber-700 hover:text-white rounded-lg transition cursor-pointer"
+                            title="Reset Kata Sandi Cepat"
                           >
                             <RefreshCw size={13} />
                           </button>
@@ -582,8 +693,17 @@ export const UserManager: React.FC = () => {
                       onClick={() => {
                         setFormRole(r.id as any);
                         setFormPassword(generateRandomPassword(r.id as any));
+                        if (r.id === 'BENDAHARA' || r.id === 'ADMIN') {
+                          setFormClassName('');
+                          setFormSubject('');
+                        } else if (r.id === 'GURU') {
+                          setFormClassName('Kelas 4A');
+                          setFormSubject('Pendidikan Agama Islam');
+                        } else if (r.id === 'ORANG_TUA' || r.id === 'SISWA') {
+                          setFormClassName('Kelas 4A');
+                        }
                       }}
-                      className={`py-2 px-2 rounded-xl font-bold transition text-center ${
+                      className={`py-2 px-2 rounded-xl font-bold transition text-center cursor-pointer ${
                         formRole === r.id
                           ? 'bg-emerald-600 text-white shadow-xs'
                           : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -594,6 +714,19 @@ export const UserManager: React.FC = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Informative card for Bendahara */}
+              {formRole === 'BENDAHARA' && (
+                <div className="bg-purple-50 p-3.5 rounded-2xl border border-purple-200 text-purple-950 flex items-start gap-3">
+                  <span className="text-2xl shrink-0">💳</span>
+                  <div className="space-y-0.5">
+                    <p className="font-extrabold text-xs text-purple-900">Unit Kerja: Bendahara & Kas Madrasah</p>
+                    <p className="text-[11px] text-purple-800 leading-relaxed">
+                      Akun Bendahara memiliki kewenangan mengelola SPP, kas masuk/keluar, dan verifikasi biaya SPMB di <strong>Portal Bendahara & Keuangan</strong>. Akun ini tidak membutuhkan atau terikat dengan kelas rombel tertentu.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Name */}
               <div>
@@ -825,12 +958,17 @@ export const UserManager: React.FC = () => {
                       : printCardAccount.role}
                   </span>
                 </div>
-                {printCardAccount.className && (
+                {printCardAccount.role === 'BENDAHARA' ? (
+                  <div className="flex justify-between items-center pb-1 border-b border-slate-100">
+                    <span className="text-slate-500 text-[11px]">Unit Kerja:</span>
+                    <span className="font-bold text-purple-800">Kantor Kas & Tata Usaha Madrasah</span>
+                  </div>
+                ) : printCardAccount.className ? (
                   <div className="flex justify-between items-center pb-1 border-b border-slate-100">
                     <span className="text-slate-500 text-[11px]">Kelas:</span>
                     <span className="font-semibold text-slate-700">{printCardAccount.className}</span>
                   </div>
-                )}
+                ) : null}
                 <div className="flex justify-between items-center pb-1 border-b border-slate-100">
                   <span className="text-slate-500 text-[11px]">Username / ID Masuk:</span>
                   <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded">
@@ -927,6 +1065,291 @@ export const UserManager: React.FC = () => {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL EDIT AKUN PENGGUNA ================= */}
+      {editingAccount && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl animate-in zoom-in-95 border border-slate-200 max-h-[90vh] flex flex-col">
+            <div className="bg-gradient-to-r from-indigo-800 via-indigo-900 to-slate-900 text-white p-6 shrink-0">
+              <span className="bg-white/20 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                Pusat Edit Akun Pengguna
+              </span>
+              <h3 className="text-lg font-bold mt-1 flex items-center gap-2">
+                <Edit size={18} className="text-indigo-300" />
+                <span>Edit Data Akun: {editingAccount.name}</span>
+              </h3>
+              <p className="text-xs text-indigo-200">
+                Perbarui nama, username, kata sandi, peran, atau kontak pengguna.
+              </p>
+            </div>
+
+            <form onSubmit={handleUpdateAccount} className="p-6 space-y-4 text-xs overflow-y-auto">
+              {/* Role Select */}
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Peran Akun *</label>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                  {[
+                    { id: 'BENDAHARA', label: '💳 Bendahara' },
+                    { id: 'GURU', label: '👩‍🏫 Guru' },
+                    { id: 'ORANG_TUA', label: '👨‍👩‍👧 Ortu' },
+                    { id: 'SISWA', label: '👦 Siswa' },
+                    { id: 'ADMIN', label: '⚙️ Admin' },
+                  ].map((r) => (
+                    <button
+                      key={r.id}
+                      type="button"
+                      onClick={() => {
+                        setEditRole(r.id as any);
+                        if (r.id === 'BENDAHARA' || r.id === 'ADMIN') {
+                          setEditClassName('');
+                          setEditSubject('');
+                        } else if (!editClassName && (r.id === 'GURU' || r.id === 'ORANG_TUA' || r.id === 'SISWA')) {
+                          setEditClassName('Kelas 4A');
+                        }
+                      }}
+                      className={`py-2 px-2 rounded-xl font-bold transition text-center cursor-pointer ${
+                        editRole === r.id
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      {r.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Informative card for Bendahara in Edit */}
+              {editRole === 'BENDAHARA' && (
+                <div className="bg-purple-50 p-3.5 rounded-2xl border border-purple-200 text-purple-950 flex items-start gap-3">
+                  <span className="text-2xl shrink-0">💳</span>
+                  <div className="space-y-0.5">
+                    <p className="font-extrabold text-xs text-purple-900">Unit Kerja: Bendahara & Kas Madrasah</p>
+                    <p className="text-[11px] text-purple-800 leading-relaxed">
+                      Akun Bendahara bertugas khusus di kas madrasah dan manajemen tagihan. Akun ini tidak memiliki asosiasi dengan kelas rombel siswa.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Name */}
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Nama Lengkap *</label>
+                <input
+                  type="text"
+                  required
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-indigo-500 font-semibold"
+                />
+              </div>
+
+              {/* Username & Password */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">
+                    Username / ID Masuk *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editUsername}
+                    onChange={(e) => setEditUsername(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-indigo-500 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1 flex items-center justify-between">
+                    <span>Kata Sandi *</span>
+                    <button
+                      type="button"
+                      onClick={() => setEditPassword(generateRandomPassword(editRole))}
+                      className="text-[10px] text-indigo-700 font-bold hover:underline cursor-pointer"
+                    >
+                      Acak Sandi Baru
+                    </button>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={editShowPassword ? 'text' : 'password'}
+                      required
+                      value={editPassword}
+                      onChange={(e) => setEditPassword(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 p-2.5 pr-9 rounded-xl outline-none focus:border-indigo-500 font-mono font-bold"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setEditShowPassword(!editShowPassword)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                    >
+                      {editShowPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Specific fields for Orang Tua */}
+              {editRole === 'ORANG_TUA' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-teal-50/60 p-3 rounded-2xl border border-teal-100">
+                  <div>
+                    <label className="font-bold text-teal-900 block mb-1">Nama Ananda (Santri)</label>
+                    <input
+                      type="text"
+                      placeholder="Nama ananda..."
+                      value={editStudentName}
+                      onChange={(e) => setEditStudentName(e.target.value)}
+                      className="w-full bg-white border border-teal-200 p-2 rounded-xl outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-teal-900 block mb-1">Kelas Santri</label>
+                    <select
+                      value={editClassName}
+                      onChange={(e) => setEditClassName(e.target.value)}
+                      className="w-full bg-white border border-teal-200 p-2 rounded-xl outline-none"
+                    >
+                      {['Kelas 1A', 'Kelas 1B', 'Kelas 2A', 'Kelas 2B', 'Kelas 3A', 'Kelas 3B', 'Kelas 4A', 'Kelas 4B', 'Kelas 5A', 'Kelas 5B', 'Kelas 6A', 'Kelas 6B'].map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Specific fields for Siswa */}
+              {editRole === 'SISWA' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-emerald-50/60 p-3 rounded-2xl border border-emerald-100">
+                  <div>
+                    <label className="font-bold text-emerald-900 block mb-1">NISN Santri</label>
+                    <input
+                      type="text"
+                      placeholder="001234..."
+                      value={editNisn}
+                      onChange={(e) => setEditNisn(e.target.value)}
+                      className="w-full bg-white border border-emerald-200 p-2 rounded-xl outline-none font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-emerald-900 block mb-1">Kelas Santri</label>
+                    <select
+                      value={editClassName}
+                      onChange={(e) => setEditClassName(e.target.value)}
+                      className="w-full bg-white border border-emerald-200 p-2 rounded-xl outline-none"
+                    >
+                      {['Kelas 1A', 'Kelas 1B', 'Kelas 2A', 'Kelas 2B', 'Kelas 3A', 'Kelas 3B', 'Kelas 4A', 'Kelas 4B', 'Kelas 5A', 'Kelas 5B', 'Kelas 6A', 'Kelas 6B'].map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Specific fields for Guru */}
+              {editRole === 'GURU' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-blue-50/60 p-3 rounded-2xl border border-blue-100">
+                  <div>
+                    <label className="font-bold text-blue-900 block mb-1">Mata Pelajaran Diampu</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: PAI / Sains / Robotika"
+                      value={editSubject}
+                      onChange={(e) => setEditSubject(e.target.value)}
+                      className="w-full bg-white border border-blue-200 p-2 rounded-xl outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-blue-900 block mb-1">Wali Kelas (Jika Ada)</label>
+                    <select
+                      value={editClassName}
+                      onChange={(e) => setEditClassName(e.target.value)}
+                      className="w-full bg-white border border-blue-200 p-2 rounded-xl outline-none"
+                    >
+                      <option value="">Bukan Wali Kelas</option>
+                      {['Kelas 1A', 'Kelas 1B', 'Kelas 2A', 'Kelas 2B', 'Kelas 3A', 'Kelas 3B', 'Kelas 4A', 'Kelas 4B', 'Kelas 5A', 'Kelas 5B', 'Kelas 6A', 'Kelas 6B'].map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Phone & Email */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">
+                    No. WhatsApp
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="081234567890"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-indigo-500 font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Email</label>
+                  <input
+                    type="email"
+                    placeholder="email@domain.com"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:border-indigo-500"
+                  />
+                </div>
+              </div>
+
+              {/* Status Akun */}
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Status Keaktifan Akun</label>
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="editStatus"
+                      value="Aktif"
+                      checked={editStatus === 'Aktif'}
+                      onChange={() => setEditStatus('Aktif')}
+                      className="text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <span className="font-bold text-emerald-800">Aktif (Dapat Login)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="editStatus"
+                      value="Nonaktif"
+                      checked={editStatus === 'Nonaktif'}
+                      onChange={() => setEditStatus('Nonaktif')}
+                      className="text-rose-600 focus:ring-rose-500"
+                    />
+                    <span className="font-bold text-rose-800">Nonaktif (Diblokir Sementara)</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Footer Buttons */}
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setEditingAccount(null)}
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 bg-indigo-700 hover:bg-indigo-800 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer"
+                >
+                  <CheckCircle2 size={16} />
+                  <span>Simpan Perubahan Akun</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -118,16 +118,24 @@ export const MediaManager: React.FC = () => {
     }
   }, [settings.logoUrl, settings.heroImageUrl, settings.principalPhotoUrl]);
 
-  // File Handlers
+  // File Handlers with Immediate Auto-Save to Server & LocalStorage
   const handleLogoFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
+      showFeedback('⏳ Sedang memproses dan menyimpan file logo...');
       const dataUrl = await processImageFile(file, 800, 800, 0.9);
       setLogoPreview(dataUrl);
       const serverUrl = await uploadImageToServer(dataUrl, 'logo');
       setLogoInput(serverUrl);
       setLogoPreview(serverUrl);
+      
+      // Auto-save immediately so user never loses changes
+      updateSettings({
+        ...settings,
+        logoUrl: serverUrl,
+      });
+      showFeedback('✅ Logo resmi berhasil diunggah dan langsung tersimpan permanen di server!');
     } catch (err) {
       alert('Gagal memproses file gambar. Pastikan format JPG, PNG, atau SVG.');
     }
@@ -137,11 +145,19 @@ export const MediaManager: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
+      showFeedback('⏳ Sedang memproses dan menyimpan banner...');
       const dataUrl = await processImageFile(file, 1600, 1000, 0.85);
       setHeroPreview(dataUrl);
       const serverUrl = await uploadImageToServer(dataUrl, 'hero');
       setHeroInput(serverUrl);
       setHeroPreview(serverUrl);
+      
+      // Auto-save immediately
+      updateSettings({
+        ...settings,
+        heroImageUrl: serverUrl,
+      });
+      showFeedback('✅ Banner utama berhasil diunggah dan langsung tersimpan permanen!');
     } catch (err) {
       alert('Gagal memproses file gambar banner.');
     }
@@ -151,11 +167,19 @@ export const MediaManager: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
+      showFeedback('⏳ Sedang memproses foto kepala madrasah...');
       const dataUrl = await processImageFile(file, 600, 600, 0.85);
       setPrincipalPreview(dataUrl);
       const serverUrl = await uploadImageToServer(dataUrl, 'kamad');
       setPrincipalInput(serverUrl);
       setPrincipalPreview(serverUrl);
+      
+      // Auto-save immediately
+      updateSettings({
+        ...settings,
+        principalPhotoUrl: serverUrl,
+      });
+      showFeedback('✅ Foto Kepala Madrasah berhasil diunggah dan tersimpan!');
     } catch (err) {
       alert('Gagal memproses foto kepala madrasah.');
     }
@@ -165,11 +189,13 @@ export const MediaManager: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
+      showFeedback('⏳ Sedang memproses foto kegiatan...');
       const dataUrl = await processImageFile(file, 1200, 900, 0.85);
       setGalImagePreview(dataUrl);
       const serverUrl = await uploadImageToServer(dataUrl, 'galeri');
       setGalImageUrl(serverUrl);
       setGalImagePreview(serverUrl);
+      showFeedback('✅ Gambar kegiatan siap disimpan! Lengkapi judul dan klik "Simpan Foto ke Galeri".');
     } catch (err) {
       alert('Gagal memproses gambar kegiatan.');
     }
@@ -179,11 +205,20 @@ export const MediaManager: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
+      showFeedback('⏳ Sedang memproses foto guru...');
       const dataUrl = await processImageFile(file, 600, 600, 0.85);
       setTeacherPhotoPreview(dataUrl);
       const serverUrl = await uploadImageToServer(dataUrl, 'guru');
       setTeacherPhotoInput(serverUrl);
       setTeacherPhotoPreview(serverUrl);
+      
+      // Auto-save immediately for the selected teacher
+      if (selectedTeacherId) {
+        updateTeacher(selectedTeacherId, {
+          photoUrl: serverUrl,
+        });
+        showFeedback(`✅ Foto ${selectedTeacher?.name} berhasil diunggah dan tersimpan permanen!`);
+      }
     } catch (err) {
       alert('Gagal memproses foto guru.');
     }
@@ -195,7 +230,7 @@ export const MediaManager: React.FC = () => {
       ...settings,
       logoUrl: logoInput,
     });
-    showFeedback('Logo resmi madrasah berhasil diperbarui di seluruh website!');
+    showFeedback('✅ Logo resmi madrasah berhasil disimpan dan tersinkron ke server disk!');
   };
 
   const handleResetOfficialLogo = () => {
@@ -206,7 +241,7 @@ export const MediaManager: React.FC = () => {
       ...settings,
       logoUrl: officialSvg,
     });
-    showFeedback('Logo telah dikembalikan ke Logo Resmi Vektor Yayasan RPI!');
+    showFeedback('✅ Logo telah dikembalikan ke Logo Resmi Vektor Yayasan RPI!');
   };
 
   const handleSaveHero = () => {
@@ -214,7 +249,7 @@ export const MediaManager: React.FC = () => {
       ...settings,
       heroImageUrl: heroInput,
     });
-    showFeedback('Banner utama di beranda berhasil disimpan!');
+    showFeedback('✅ Banner utama di beranda berhasil disimpan permanen ke server!');
   };
 
   const handleSavePrincipal = () => {
@@ -222,7 +257,7 @@ export const MediaManager: React.FC = () => {
       ...settings,
       principalPhotoUrl: principalInput,
     });
-    showFeedback('Foto Kepala Madrasah berhasil diperbarui di Halaman Profil!');
+    showFeedback('✅ Foto Kepala Madrasah berhasil diperbarui dan disimpan!');
   };
 
   const handleAddGallery = (e: React.FormEvent) => {
@@ -305,6 +340,25 @@ export const MediaManager: React.FC = () => {
             <ImageIcon size={14} />
             <span>Foto Galeri</span>
           </button>
+        </div>
+      </div>
+
+      {/* Storage & Persistence Status Banner */}
+      <div className="bg-emerald-50 border border-emerald-300/80 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2.5">
+          <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+          <div>
+            <span className="font-extrabold text-emerald-950">
+              Penyimpanan Server & Perangkat Aktif:
+            </span>
+            <span className="text-emerald-800 ml-1">
+              Setiap kali Anda mengunggah atau mengganti gambar, sistem langsung menyimpannya secara permanen ke server backend dan memori perangkat (Anti-hilang saat reload / buka di perangkat lain).
+            </span>
+          </div>
+        </div>
+        <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-200/60 text-emerald-900 rounded-lg font-bold text-[11px] shrink-0 self-start sm:self-auto">
+          <CheckCircle2 size={13} className="text-emerald-700" />
+          <span>Tersimpan Otomatis</span>
         </div>
       </div>
 
@@ -544,6 +598,11 @@ export const MediaManager: React.FC = () => {
                       onClick={() => {
                         setHeroInput(preset.url);
                         setHeroPreview(preset.url);
+                        updateSettings({
+                          ...settings,
+                          heroImageUrl: preset.url,
+                        });
+                        showFeedback(`✅ Banner utama diganti: "${preset.title}" dan langsung tersimpan!`);
                       }}
                       className="p-2 text-left bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded-xl text-[11px] font-semibold text-slate-700 transition"
                     >
