@@ -21,12 +21,14 @@ import { initialPrograms } from '../../data/initialData';
 import { useSchool } from '../../context/SchoolContext';
 
 export const ProgramsPreviewSection: React.FC = () => {
-  const { navigate } = useSchool();
+  const { navigate, programs: ctxPrograms } = useSchool();
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
+
+  const programs = ctxPrograms && ctxPrograms.length > 0 ? ctxPrograms : initialPrograms;
 
   const categories = ['Semua', 'Pendidikan Karakter', 'Keagamaan Unggulan', 'Sains & Riset', 'Olahraga Sunnah', 'Kurikulum Merdeka'];
 
-  const getIcon = (iconName: string) => {
+  const getIcon = (iconName?: string) => {
     switch (iconName) {
       case 'ShieldCheck': return <ShieldCheck size={22} />;
       case 'Sparkles': return <Sparkles size={22} />;
@@ -49,8 +51,8 @@ export const ProgramsPreviewSection: React.FC = () => {
   };
 
   const filteredPrograms = selectedCategory === 'Semua'
-    ? initialPrograms.slice(0, 6)
-    : initialPrograms.filter((p) => p.category.toLowerCase().includes(selectedCategory.toLowerCase())).slice(0, 6);
+    ? programs.slice(0, 6)
+    : programs.filter((p) => p.category.toLowerCase().includes(selectedCategory.toLowerCase())).slice(0, 6);
 
   return (
     <section className="py-20 bg-white border-b border-slate-100">

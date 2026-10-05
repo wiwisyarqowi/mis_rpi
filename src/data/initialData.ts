@@ -77,43 +77,7 @@ export const initialSchoolSettings: SchoolSettings = {
   logoUrl: '/images/logo-yayasan-rpi.svg',
   heroImageUrl: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1200&auto=format&fit=crop&q=80',
   principalPhotoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=240&auto=format&fit=crop&q=80',
-  history: 'Madrasah Ibtidaiyah RPI Jakarta didirikan di bawah naungan Yayasan Rumah Pendidikan Islam (RPI) dengan tekad kuat menghadirkan oase pendidikan Islam berkualitas di jantung kota Jakarta Selatan. Berlokasi di kawasan strategis Jl. HR. Rasuna Said Kav. X2-2, Kuningan Timur, madrasah ini tumbuh dan berkembang seiring dinamika peradaban ibu kota.\n\nSejak masa pendiriannya, MI RPI berikhtiar memadukan kedalaman nilai-nilai keagamaan dengan keunggulan akademik sains. Berbekal komitmen dewan pendiri, para asatidz, dan dukungan penuh orang tua, MI RPI secara konsisten mempertahankan Akreditasi A (Unggul) dari Badan Akreditasi Nasional Sekolah/Madrasah (BAN-S/M).\n\nMenapaki era digital, MI RPI bertransformasi menjadi Smart Madrasah terintegrasi melalui konsep Super School Platform, penerapan kurikulum ramah anak (Social Emotional Learning), pembelajaran komputasi cilik (Scratch & Robotika), serta penguatan hafalan Al-Qur\'an bersanad.',
-  principalGreeting: 'Kami berkomitmen mendidik setiap anak dengan cinta, keteladanan akhlak mulia, dan rasa ingin tahu ilmiah yang tinggi. Selamat datang di era baru pendidikan madrasah terpadu.',
-  skKemenag: 'Kd.09.02/4/PP.00.4/1529/2016',
-  operationalPermit: 'SK BAN-S/M No. 1347/BAN-SM/SK/2021 (Akreditasi A)',
-  curriculumTitle: 'Kurikulum Merdeka Terintegrasi Keislaman & Digital',
-  curriculumDescription: 'Menyelenggarakan proses pembelajaran berdiferensiasi yang memerdekakan potensi siswa, berpusat pada penanaman adab islami, literasi sains, komputasi cilik, dan proyek penguatan profil pelajar rahmatan lil \'alamin.',
 };
-
-export const initialFacilities = [
-  { id: 'fac-1', title: 'Laboratorium Komputer & Koding', desc: 'Dilengkapi PC modern, jaringan internet serat optik aman anak, dan kit robotika Scratch.', icon: '💻' },
-  { id: 'fac-2', title: 'Musholla Madrasah Ramah Anak', desc: 'Pusat pembiasaan shalat berjamaah Dhuha & Dzuhur serta halaqah tahfiz harian.', icon: '🕌' },
-  { id: 'fac-3', title: 'Perpustakaan Digital (E-Library)', desc: 'Koleksi ribuan buku fiksi, ensiklopedia sains Islami, dan akses baca e-book terpadu.', icon: '📚' },
-  { id: 'fac-4', title: 'Smart Classroom Interaktif', desc: 'Ruang kelas ber-AC, proyektor interaktif, audio visual, dan tata ruang ergonomis.', icon: '🏫' },
-  { id: 'fac-5', title: 'Area Olahraga & Panahan', desc: 'Lapangan serbaguna untuk upacara, senam pagi bersama, pencak silat, dan panahan sunnah.', icon: '🏹' },
-  { id: 'fac-6', title: 'UKS Ramah Anak & Ruang Konseling', desc: 'Fasilitas kesehatan dasar anak dengan tenaga medis dan ruang bimbingan SEL.', icon: '🏥' },
-  { id: 'fac-7', title: 'Kantin Sehat & Halal', desc: 'Penyedia makanan bergizi higienis tanpa pengawet sintetis dan bebas plastik sekali pakai.', icon: '🥗' },
-  { id: 'fac-8', title: 'Area Bermain & Taman Literasi', desc: 'Ruang terbuka hijau asri di tengah kawasan Kuningan untuk relaksasi motorik anak.', icon: '🌳' },
-];
-
-export const initialExtracurriculars = [
-  { id: 'ex-1', name: 'Klub Robotik & Coding Scratch', category: 'Teknologi', icon: '🤖', desc: 'Membangun logika komputasi anak dengan membuat game Islami dan robot sederhana.' },
-  { id: 'ex-2', name: 'Panahan Sunnah (Archery)', category: 'Olahraga', icon: '🏹', desc: 'Melatih konsentrasi, ketenangan emosi, dan ketepatan fokus bidikan.' },
-  { id: 'ex-3', name: 'Pencak Silat Tradisi', category: 'Bela Diri', icon: '🥋', desc: 'Membina ketangkasan gerak, perlindungan diri, dan sportivitas ksatria.' },
-  { id: 'ex-4', name: 'Seni Hadrah & Marawis', category: 'Seni Religi', icon: '🥁', desc: 'Menghidupkan mahabbah shalawat Nabi dengan alunan tabuhan rebana harmonis.' },
-  { id: 'ex-5', name: 'Tari Saman Nusantara', category: 'Seni Tradisi', icon: '🪕', desc: 'Melatih kedisiplinan gerak sinkron cepat dan syair zikir puji-pujian.' },
-  { id: 'ex-6', name: 'Pramuka Siaga & Penggalang', category: 'Kepanduan', icon: '⚜️', desc: 'Keterampilan survival, simpul tali, kemandirian, dan bakti peduli sesama.' },
-  { id: 'ex-7', name: 'Klub Sains Cilik (STEM)', category: 'Sains', icon: '🔬', desc: 'Eksperimen alam, roket air, eko-enzim, dan observasi botani madrasah.' },
-  { id: 'ex-8', name: 'Kaligrafi Arab & Desain', category: 'Seni Rupa', icon: '✒️', desc: 'Menulis indah khat Naskhi dan Riq\'ah serta ornamen geometri Islami.' },
-];
-
-export const initialHabits = [
-  { id: 'hb-1', title: 'Sambut Senyum Santri Pagi', desc: 'Guru menyambut murid di gerbang madrasah dengan senyum, sapa, dan doa keberkahan.', time: '06.30 - 07.00 WIB' },
-  { id: 'hb-2', title: 'Shalat Dhuha Berjamaah & Zikir', desc: 'Membiasakan shalat sunnah Dhuha 4 rakaat dilanjutkan doa pembuka pintu rezeki ilmu.', time: '07.00 - 07.30 WIB' },
-  { id: 'hb-3', title: 'Halaqah Tahsin & Tahfiz Quran', desc: 'Bimbingan intensif makharijul huruf dan setoran hafalan mutqin Juz 30/29.', time: '07.30 - 08.00 WIB' },
-  { id: 'hb-4', title: 'Shalat Dzuhur Berjamaah', desc: 'Membina adab shaf shalat berjamaah, muadzin cilik, dan kultum santri.', time: '12.00 - 12.45 WIB' },
-  { id: 'hb-5', title: 'Makan Siang Beradab & Gotong Royong', desc: 'Makan bersama dengan adab Rasulullah (tangan kanan, duduk, tidak bersisa) dan membersihkan meja.', time: '12.45 - 13.15 WIB' },
-];
 
 export const initialCoreValues = [
   {
@@ -1206,6 +1170,42 @@ export const initialClasses: SchoolClass[] = [
   { id: 'cls-5b', name: 'Kelas 5B', grade: 5, homeroomTeacherName: 'Ustadzah Aisyah Rahma, S.Pd', room: 'Gedung C, Lt. 3 - R.302', academicYear: '2025/2026', capacity: 32 },
   { id: 'cls-6a', name: 'Kelas 6A', grade: 6, homeroomTeacherName: 'Ustadz Zulkifli, S.Pd.I', room: 'Gedung C, Lt. 3 - R.303', academicYear: '2025/2026', capacity: 32 },
   { id: 'cls-6b', name: 'Kelas 6B', grade: 6, homeroomTeacherName: 'Ustadzah Maryam Dewi, S.Pd', room: 'Gedung C, Lt. 3 - R.304', academicYear: '2025/2026', capacity: 32 },
+];
+
+export const initialDimensions = [
+  { id: 1, title: 'Beriman & Bertaqwa kepada Allah SWT', desc: 'Memiliki akidah salimah, gemar beribadah fardhu & sunnah, serta mencintai Rasulullah SAW.' },
+  { id: 2, title: 'Berakhlak Mulia & Beradab', desc: 'Menerapkan 5S (Senyum, Salam, Sapa, Sopan, Santun) dan berbakti kepada orang tua serta guru.' },
+  { id: 3, title: 'Bernalar Kritis & Literat', desc: 'Mampu menganalisis masalah, gemar membaca buku, dan memiliki daya logika yang terstruktur.' },
+  { id: 4, title: 'Kreatif & Inovatif', desc: 'Menghasilkan ide orisinal dalam proyek sains sederhana, seni Islami, dan koding anak.' },
+  { id: 5, title: 'Bergotong Royong & Peduli', desc: 'Memiliki kepekaan sosial, empati kepada sesama teman, dan aktif dalam aksi sedekah berkah.' },
+  { id: 6, title: 'Mandiri & Tangguh', desc: 'Mampu mengurus perlengkapan pribadi, disiplin waktu belajar, dan pantang menyerah.' },
+  { id: 7, title: 'Berkebinekaan Global & Toleran', desc: 'Menghormati keragaman budaya bangsa dalam bingkai Islam Rahmatan Lil \'Alamin.' },
+  { id: 8, title: 'Cakap Digital & Beretika', desc: 'Menggunakan teknologi informasi secara produktif, bijak, dan aman dari pengaruh negatif.' },
+];
+
+export const initialAcademicSubjects = [
+  { id: 'sub-1', category: 'Pendidikan Agama Islam (Kemenag)', items: ['Al-Qur\'an Hadits', 'Akidah Akhlak', 'Fikih Ibadah', 'Sejarah Kebudayaan Islam (SKI)', 'Bahasa Arab', 'Tahsin & Tahfiz Juz 30-29'] },
+  { id: 'sub-2', category: 'Mata Pelajaran Umum (Kemendikbudristek)', items: ['Pendidikan Pancasila', 'Bahasa Indonesia', 'Matematika Terpadu', 'IPAS (Ilmu Pengetahuan Alam & Sosial)', 'Seni Rupa & Budaya', 'Pendidikan Jasmani & Olahraga'] },
+  { id: 'sub-3', category: 'Muatan Lokal & Digital Unggulan RPI', items: ['Informatika & Logika Koding Cilik (Scratch)', 'Pramuka Siaga/Penggalang', 'Bahasa Inggris Dasar', 'Khat Kaligrafi Arab'] },
+];
+
+export const initialHabits = [
+  { id: 'hbt-1', title: 'Sambut Senyum Santri Pagi', desc: 'Guru menyambut murid di gerbang madrasah dengan senyum, sapa, dan doa keberkahan.', time: '06.30 - 07.00 WIB' },
+  { id: 'hbt-2', title: 'Shalat Dhuha Berjamaah & Zikir', desc: 'Membiasakan shalat sunnah Dhuha 4 rakaat dilanjutkan doa pembuka pintu rezeki ilmu.', time: '07.00 - 07.30 WIB' },
+  { id: 'hbt-3', title: 'Halaqah Tahsin & Tahfiz Quran', desc: 'Bimbingan intensif makharijul huruf dan setoran hafalan mutqin Juz 30/29.', time: '07.30 - 08.00 WIB' },
+  { id: 'hbt-4', title: 'Shalat Dzuhur Berjamaah', desc: 'Membina adab shaf shalat berjamaah, muadzin cilik, dan kultum santri.', time: '12.00 - 12.45 WIB' },
+  { id: 'hbt-5', title: 'Makan Siang Beradab & Gotong Royong', desc: 'Makan bersama dengan adab Rasulullah (tangan kanan, duduk, tidak bersisa) dan membersihkan meja.', time: '12.45 - 13.15 WIB' },
+];
+
+export const initialExtracurriculars = [
+  { id: 'ex-1', name: 'Klub Robotik & Coding Scratch', category: 'Teknologi', icon: '🤖', desc: 'Membangun logika komputasi anak dengan membuat game Islami dan robot sederhana.' },
+  { id: 'ex-2', name: 'Panahan Sunnah (Archery)', category: 'Olahraga', icon: '🏹', desc: 'Melatih konsentrasi, ketenangan emosi, dan ketepatan fokus bidikan.' },
+  { id: 'ex-3', name: 'Pencak Silat Tradisi', category: 'Bela Diri', icon: '🥋', desc: 'Membina ketangkasan gerak, perlindungan diri, dan sportivitas ksatria.' },
+  { id: 'ex-4', name: 'Seni Hadrah & Marawis', category: 'Seni Religi', icon: '🥁', desc: 'Menghidupkan mahabbah shalawat Nabi dengan alunan tabuhan rebana harmonis.' },
+  { id: 'ex-5', name: 'Tari Saman Nusantara', category: 'Seni Tradisi', icon: '🪕', desc: 'Melatih kedisiplinan gerak sinkron cepat dan syair zikir puji-pujian.' },
+  { id: 'ex-6', name: 'Pramuka Siaga & Penggalang', category: 'Kepanduan', icon: '⚜️', desc: 'Keterampilan survival, simpul tali, kemandirian, dan bakti peduli sesama.' },
+  { id: 'ex-7', name: 'Klub Sains Cilik (STEM)', category: 'Sains', icon: '🔬', desc: 'Eksperimen alam, roket air, eko-enzim, dan observasi botani madrasah.' },
+  { id: 'ex-8', name: 'Kaligrafi Arab & Desain', category: 'Seni Rupa', icon: '✒️', desc: 'Menulis indah khat Naskhi dan Riq\'ah serta ornamen geometri Islami.' },
 ];
 
 

@@ -18,12 +18,15 @@ import {
   CheckCircle2,
   Search,
 } from 'lucide-react';
+import { initialPrograms } from '../../data/initialData';
 import { useSchool } from '../../context/SchoolContext';
 
 export const ProgramsPage: React.FC = () => {
-  const { programs } = useSchool();
+  const { programs: ctxPrograms } = useSchool();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCat, setSelectedCat] = useState('Semua');
+
+  const programs = ctxPrograms && ctxPrograms.length > 0 ? ctxPrograms : initialPrograms;
 
   const categories = ['Semua', 'Pendidikan Karakter', 'Keagamaan Unggulan', 'Akademik & Literasi', 'Sains & Riset', 'Teknologi Informasi', 'Olahraga Sunnah', 'Seni & Budaya', 'Kurikulum Merdeka'];
 

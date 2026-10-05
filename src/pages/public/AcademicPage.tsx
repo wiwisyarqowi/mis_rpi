@@ -13,27 +13,14 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
+import { initialDimensions, initialAcademicSubjects } from '../../data/initialData';
 
 export const AcademicPage: React.FC = () => {
-  const { schedules, materials } = useSchool();
+  const { schedules, materials, dimensions: ctxDimensions, academicSubjects: ctxSubjects } = useSchool();
   const [activeDay, setActiveDay] = useState<'Senin' | 'Selasa' | 'Rabu' | 'Kamis' | 'Jumat'>('Senin');
 
-  const dimensions = [
-    { title: 'Beriman & Bertaqwa kepada Allah SWT', desc: 'Memiliki akidah salimah, gemar beribadah fardhu & sunnah, serta mencintai Rasulullah SAW.' },
-    { title: 'Berakhlak Mulia & Beradab', desc: 'Menerapkan 5S (Senyum, Salam, Sapa, Sopan, Santun) dan berbakti kepada orang tua serta guru.' },
-    { title: 'Bernalar Kritis & Literat', desc: 'Mampu menganalisis masalah, gemar membaca buku, dan memiliki daya logika yang terstruktur.' },
-    { title: 'Kreatif & Inovatif', desc: 'Menghasilkan ide orisinal dalam proyek sains sederhana, seni Islami, dan koding anak.' },
-    { title: 'Bergotong Royong & Peduli', desc: 'Memiliki kepekaan sosial, empati kepada sesama teman, dan aktif dalam aksi sedekah berkah.' },
-    { title: 'Mandiri & Tangguh', desc: 'Mampu mengurus perlengkapan pribadi, disiplin waktu belajar, dan pantang menyerah.' },
-    { title: 'Berkebinekaan Global & Toleran', desc: 'Menghormati keragaman budaya bangsa dalam bingkai Islam Rahmatan Lil \'Alamin.' },
-    { title: 'Cakap Digital & Beretika', desc: 'Menggunakan teknologi informasi secara produktif, bijak, dan aman dari pengaruh negatif.' },
-  ];
-
-  const subjects = [
-    { category: 'Pendidikan Agama Islam (Kemenag)', items: ['Al-Qur\'an Hadits', 'Akidah Akhlak', 'Fikih Ibadah', 'Sejarah Kebudayaan Islam (SKI)', 'Bahasa Arab', 'Tahsin & Tahfiz Juz 30-29'] },
-    { category: 'Mata Pelajaran Umum (Kemendikbudristek)', items: ['Pendidikan Pancasila', 'Bahasa Indonesia', 'Matematika Terpadu', 'IPAS (Ilmu Pengetahuan Alam & Sosial)', 'Seni Rupa & Budaya', 'Pendidikan Jasmani & Olahraga'] },
-    { category: 'Muatan Lokal & Digital Unggulan RPI', items: ['Informatika & Logika Koding Cilik (Scratch)', 'Pramuka Siaga/Penggalang', 'Bahasa Inggris Dasar', 'Khat Kaligrafi Arab'] },
-  ];
+  const dimensions = ctxDimensions && ctxDimensions.length > 0 ? ctxDimensions : initialDimensions;
+  const subjects = ctxSubjects && ctxSubjects.length > 0 ? ctxSubjects : initialAcademicSubjects;
 
   return (
     <div className="bg-slate-50 min-h-screen py-10">

@@ -38,6 +38,7 @@ import { MediaManager } from '../../components/admin/MediaManager';
 import { UserManager } from '../../components/admin/UserManager';
 import { MasterDataManager } from '../../components/admin/MasterDataManager';
 import { PaymentFinanceManager } from '../../components/admin/PaymentFinanceManager';
+import { CurriculumProgramsManager } from '../../components/admin/CurriculumProgramsManager';
 import { processImageFile } from '../../utils/imageUpload';
 import { PortalAccessGuard } from '../../components/common/PortalAccessGuard';
 
@@ -56,8 +57,8 @@ export const AdminPortal: React.FC = () => {
     viewParams,
   } = useSchool();
 
-  const [activeTab, setActiveTab] = useState<'masterdata' | 'users' | 'finance' | 'media' | 'settings' | 'spmb' | 'suarawarga' | 'berita' | 'panduan'>(
-    (viewParams?.tab as any) || 'masterdata'
+  const [activeTab, setActiveTab] = useState<'masterdata' | 'users' | 'finance' | 'media' | 'curriculum' | 'settings' | 'spmb' | 'suarawarga' | 'berita' | 'panduan'>(
+    (viewParams?.tab as any) || 'panduan'
   );
 
   // Form Settings State
@@ -204,6 +205,7 @@ export const AdminPortal: React.FC = () => {
           <div className="bg-white p-1 rounded-2xl border border-slate-200 shadow-xs inline-flex gap-1 overflow-x-auto max-w-full">
             {[
               { id: 'panduan', label: '📖 Panduan Edit Semua Konten', icon: BookOpen },
+              { id: 'curriculum', label: '🌟 Akademik & Program', icon: Sparkles },
               { id: 'settings', label: '⚙️ Pengaturan & Profil (/admin/settings)', icon: Settings },
               { id: 'media', label: '📸 Kelola Gambar & Media', icon: ImageIcon },
               { id: 'masterdata', label: '🎓 Guru, Santri & Kelas', icon: GraduationCap },
@@ -231,6 +233,9 @@ export const AdminPortal: React.FC = () => {
             })}
           </div>
         </div>
+
+        {/* TAB CURRICULUM: AKADEMIK, 15 PROGRAM UNGGULAN & KESISWAAN */}
+        {activeTab === 'curriculum' && <CurriculumProgramsManager />}
 
         {/* TAB MASTERDATA: DATA GURU & SANTRI */}
         {activeTab === 'masterdata' && (
@@ -1675,6 +1680,125 @@ export const AdminPortal: React.FC = () => {
                   >
                     <span>Ke Kelola Akun & Sandi</span>
                     <ArrowRight size={12} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Bagian 3: Mengedit AKADEMIK, 15 PROGRAM UNGGULAN & KESISWAAN */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 space-y-4">
+              <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-lg">
+                  🌟
+                </div>
+                <div>
+                  <h3 className="font-black text-base text-slate-900">
+                    3. Cara Mengedit AKADEMIK, 15 PROGRAM UNGGULAN & KESISWAAN
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Semua isi kurikulum, 15 program madrasah, rutinitas adab harian, dan ekstrakurikuler dapat diubah, ditambah, atau dihapus langsung di tab <strong>🌟 Akademik & Program</strong>.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                {/* 3A. 15 Program Unggulan */}
+                <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span>🌟 15 Program Unggulan Madrasah</span>
+                      </h4>
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">Halaman Publik & Depan</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Mengubah nama program, kategori, deskripsi, tujuan santri, indikator capaian (KPI), dokumentasi kegiatan, dan ikon visual. Anda juga dapat menambahkan program baru atau menghapus program yang tidak aktif.
+                    </p>
+                    <p className="text-emerald-900 font-bold text-[11px]">
+                      📍 Lokasi: Tab <strong>🌟 Akademik & Program</strong> ➔ Subtab <strong>15 Program Unggulan</strong>.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('curriculum')}
+                    className="mt-2 w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Kelola 15 Program Unggulan</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+
+                {/* 3B. Kurikulum & 8 Dimensi Profil Lulusan */}
+                <div className="p-4 bg-blue-50/60 rounded-2xl border border-blue-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span>📖 Kurikulum & 8 Dimensi Profil Lulusan</span>
+                      </h4>
+                      <span className="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded">Menu Akademik</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Mengubah 8 dimensi capaian santri (akidah, akhlak, nalar kritis, koding digital, dll.), serta mengelola daftar mata pelajaran di kelompok Kemenag, Kemendikbudristek, dan Muatan Lokal Unggulan RPI.
+                    </p>
+                    <p className="text-blue-900 font-bold text-[11px]">
+                      📍 Lokasi: Tab <strong>🌟 Akademik & Program</strong> ➔ Subtab <strong>Struktur Akademik & Kurikulum</strong>.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('curriculum')}
+                    className="mt-2 w-full py-2 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Kelola Kurikulum & Mapel</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+
+                {/* 3C. Pembiasaan Adab & Ibadah Harian */}
+                <div className="p-4 bg-amber-50/60 rounded-2xl border border-amber-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span>⏰ Pembiasaan Adab & Ibadah Harian Santri</span>
+                      </h4>
+                      <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">Menu Kesiswaan</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Mengubah jam dan isi rutinitas spiritual (Sambut Senyum Santri 06.30, Shalat Dhuha Berjamaah, Halaqah Tahsin Juz 30, Shalat Dzuhur Berjamaah, Makan Siang Beradab). Bisa menambah rutinitas baru.
+                    </p>
+                    <p className="text-amber-900 font-bold text-[11px]">
+                      📍 Lokasi: Tab <strong>🌟 Akademik & Program</strong> ➔ Subtab <strong>Kesiswaan & Pembiasaan</strong>.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('curriculum')}
+                    className="mt-2 w-full py-2 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Kelola Pembiasaan Karakter</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+
+                {/* 3D. Ekstrakurikuler Pilihan */}
+                <div className="p-4 bg-purple-50/60 rounded-2xl border border-purple-200 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span>🏹 Ekstrakurikuler Pilihan Santri</span>
+                      </h4>
+                      <span className="text-[10px] font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded">Menu Kesiswaan</span>
+                    </div>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Mengubah nama ekskul, kategori (Teknologi, Olahraga, Bela Diri, Seni Religi, dll.), simbol emoji, dan uraian aktivitas (Klub Robotik, Panahan Sunnah, Pencak Silat, Hadrah, Tari Saman, STEM).
+                    </p>
+                    <p className="text-purple-900 font-bold text-[11px]">
+                      📍 Lokasi: Tab <strong>🌟 Akademik & Program</strong> ➔ Subtab <strong>Kesiswaan & Pembiasaan</strong>.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('curriculum')}
+                    className="mt-2 w-full py-2 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition shadow-2xs"
+                  >
+                    <span>Buka Kelola Ekstrakurikuler</span>
+                    <ArrowRight size={13} />
                   </button>
                 </div>
               </div>

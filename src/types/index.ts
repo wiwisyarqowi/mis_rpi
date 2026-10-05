@@ -49,45 +49,8 @@ export interface SchoolSettings {
   logoUrl?: string;
   heroImageUrl?: string;
   principalPhotoUrl?: string;
-  history?: string;
   principalGreeting?: string;
-  skKemenag?: string;
-  operationalPermit?: string;
-  curriculumTitle?: string;
-  curriculumDescription?: string;
-}
-
-export interface SchoolProgram {
-  id: string | number;
-  name: string;
-  category: string;
-  icon?: string;
-  description: string;
-  objective: string;
-  documentation: string;
-  kpi: string;
-}
-
-export interface ExtracurricularItem {
-  id: string;
-  name: string;
-  category: string;
-  icon: string;
-  desc: string;
-}
-
-export interface HabitItem {
-  id: string;
-  title: string;
-  desc: string;
-  time: string;
-}
-
-export interface FacilityItem {
-  id: string;
-  title: string;
-  desc: string;
-  icon: string;
+  history?: string;
 }
 
 export interface User {
@@ -410,3 +373,42 @@ export interface NotificationAlert {
   read: boolean;
   type: 'attendance' | 'academic' | 'character' | 'payment' | 'general';
 }
+
+export interface FlagshipProgram {
+  id: number | string;
+  name: string;
+  category: string;
+  icon?: string;
+  description: string;
+  objective: string;
+  documentation: string;
+  kpi: string;
+}
+
+export interface GraduateDimension {
+  id?: number | string;
+  title: string;
+  desc: string;
+}
+
+export interface AcademicSubjectGroup {
+  id?: string;
+  category: string;
+  items: string[];
+}
+
+export interface StudentHabit {
+  id?: string;
+  title: string;
+  desc: string;
+  time: string;
+}
+
+export interface Extracurricular {
+  id?: string;
+  name: string;
+  category: string;
+  icon: string;
+  desc: string;
+}
+

@@ -24,6 +24,11 @@ import {
   NotificationAlert,
   UserAccount,
   SchoolClass,
+  FlagshipProgram,
+  GraduateDimension,
+  AcademicSubjectGroup,
+  StudentHabit,
+  Extracurricular,
 } from '../types';
 import {
   initialSchoolSettings,
@@ -48,6 +53,11 @@ import {
   initialEvents,
   initialNotifications,
   initialUserAccounts,
+  initialPrograms,
+  initialDimensions,
+  initialAcademicSubjects,
+  initialHabits,
+  initialExtracurriculars,
 } from '../data/initialData';
 
 interface SchoolContextType {
@@ -84,6 +94,24 @@ interface SchoolContextType {
   events: EventItem[];
   notifications: NotificationAlert[];
   userAccounts: UserAccount[];
+
+  // Curriculum & Programs Management
+  programs: FlagshipProgram[];
+  addProgram: (prog: Omit<FlagshipProgram, 'id'>) => void;
+  updateProgram: (id: number | string, updates: Partial<FlagshipProgram>) => void;
+  deleteProgram: (id: number | string) => void;
+
+  dimensions: GraduateDimension[];
+  updateDimensions: (newDims: GraduateDimension[]) => void;
+
+  academicSubjects: AcademicSubjectGroup[];
+  updateAcademicSubjects: (newSubjects: AcademicSubjectGroup[]) => void;
+
+  habits: StudentHabit[];
+  updateHabits: (newHabits: StudentHabit[]) => void;
+
+  extracurriculars: Extracurricular[];
+  updateExtracurriculars: (newExcurs: Extracurricular[]) => void;
 
   // Interactive Actions
   addUserAccount: (account: Omit<UserAccount, 'id' | 'createdAt'>) => UserAccount;
@@ -244,6 +272,31 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return initialUserAccounts;
   });
 
+  const [programs, setPrograms] = useState<FlagshipProgram[]>(() => {
+    const saved = localStorage.getItem('mi_rpi_programs');
+    return saved ? JSON.parse(saved) : initialPrograms;
+  });
+
+  const [dimensions, setDimensions] = useState<GraduateDimension[]>(() => {
+    const saved = localStorage.getItem('mi_rpi_dimensions');
+    return saved ? JSON.parse(saved) : initialDimensions;
+  });
+
+  const [academicSubjects, setAcademicSubjects] = useState<AcademicSubjectGroup[]>(() => {
+    const saved = localStorage.getItem('mi_rpi_academic_subjects');
+    return saved ? JSON.parse(saved) : initialAcademicSubjects;
+  });
+
+  const [habits, setHabits] = useState<StudentHabit[]>(() => {
+    const saved = localStorage.getItem('mi_rpi_habits');
+    return saved ? JSON.parse(saved) : initialHabits;
+  });
+
+  const [extracurriculars, setExtracurriculars] = useState<Extracurricular[]>(() => {
+    const saved = localStorage.getItem('mi_rpi_extracurriculars');
+    return saved ? JSON.parse(saved) : initialExtracurriculars;
+  });
+
   // Helper to sync collections to server disk
   const syncToServer = async (key: string, data: any) => {
     try {
@@ -324,6 +377,36 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 localStorage.setItem('mi_rpi_spmb', JSON.stringify(serverData.spmbApplications));
               } catch (_) {}
             }
+            if (Array.isArray(serverData.programs) && serverData.programs.length > 0) {
+              setPrograms(serverData.programs);
+              try {
+                localStorage.setItem('mi_rpi_programs', JSON.stringify(serverData.programs));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.dimensions) && serverData.dimensions.length > 0) {
+              setDimensions(serverData.dimensions);
+              try {
+                localStorage.setItem('mi_rpi_dimensions', JSON.stringify(serverData.dimensions));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.academicSubjects) && serverData.academicSubjects.length > 0) {
+              setAcademicSubjects(serverData.academicSubjects);
+              try {
+                localStorage.setItem('mi_rpi_academic_subjects', JSON.stringify(serverData.academicSubjects));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.habits) && serverData.habits.length > 0) {
+              setHabits(serverData.habits);
+              try {
+                localStorage.setItem('mi_rpi_habits', JSON.stringify(serverData.habits));
+              } catch (_) {}
+            }
+            if (Array.isArray(serverData.extracurriculars) && serverData.extracurriculars.length > 0) {
+              setExtracurriculars(serverData.extracurriculars);
+              try {
+                localStorage.setItem('mi_rpi_extracurriculars', JSON.stringify(serverData.extracurriculars));
+              } catch (_) {}
+            }
           }
         }
       } catch (err) {
@@ -392,6 +475,41 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (_) {}
     syncToServer('spmbApplications', spmbApplications);
   }, [spmbApplications]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mi_rpi_programs', JSON.stringify(programs));
+    } catch (_) {}
+    syncToServer('programs', programs);
+  }, [programs]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mi_rpi_dimensions', JSON.stringify(dimensions));
+    } catch (_) {}
+    syncToServer('dimensions', dimensions);
+  }, [dimensions]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mi_rpi_academic_subjects', JSON.stringify(academicSubjects));
+    } catch (_) {}
+    syncToServer('academicSubjects', academicSubjects);
+  }, [academicSubjects]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mi_rpi_habits', JSON.stringify(habits));
+    } catch (_) {}
+    syncToServer('habits', habits);
+  }, [habits]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mi_rpi_extracurriculars', JSON.stringify(extracurriculars));
+    } catch (_) {}
+    syncToServer('extracurriculars', extracurriculars);
+  }, [extracurriculars]);
 
   // Sync settings to LocalStorage and Server Disk
   const updateSettings = async (newSettings: SchoolSettings) => {
@@ -1284,6 +1402,40 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return { success: true, role: account.role };
   };
 
+  const addProgram = (prog: Omit<FlagshipProgram, 'id'>) => {
+    const newProg: FlagshipProgram = {
+      ...prog,
+      id: Date.now(),
+    };
+    setPrograms((prev) => [newProg, ...prev]);
+  };
+
+  const updateProgram = (id: number | string, updates: Partial<FlagshipProgram>) => {
+    setPrograms((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
+    );
+  };
+
+  const deleteProgram = (id: number | string) => {
+    setPrograms((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const updateDimensions = (newDims: GraduateDimension[]) => {
+    setDimensions(newDims);
+  };
+
+  const updateAcademicSubjects = (newSubjects: AcademicSubjectGroup[]) => {
+    setAcademicSubjects(newSubjects);
+  };
+
+  const updateHabits = (newHabits: StudentHabit[]) => {
+    setHabits(newHabits);
+  };
+
+  const updateExtracurriculars = (newExcurs: Extracurricular[]) => {
+    setExtracurriculars(newExcurs);
+  };
+
   return (
     <SchoolContext.Provider
       value={{
@@ -1317,6 +1469,18 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         events,
         notifications,
         userAccounts,
+        programs,
+        addProgram,
+        updateProgram,
+        deleteProgram,
+        dimensions,
+        updateDimensions,
+        academicSubjects,
+        updateAcademicSubjects,
+        habits,
+        updateHabits,
+        extracurriculars,
+        updateExtracurriculars,
         addUserAccount,
         updateUserAccount,
         deleteUserAccount,

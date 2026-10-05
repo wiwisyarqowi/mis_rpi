@@ -14,8 +14,19 @@ import {
 import { useSchool } from '../../context/SchoolContext';
 
 export const ProfilePage: React.FC = () => {
-  const { settings, teachers, gallery, facilities } = useSchool();
+  const { settings, teachers, gallery } = useSchool();
   const [activeTab, setActiveTab] = useState<'profil' | 'gtk' | 'sarpras' | 'legalitas'>('profil');
+
+  const facilities: Array<{ title: string; icon: string; desc: string }> = [
+    { title: 'Ruang Kelas Ber-AC & Multimedia', icon: '❄️', desc: 'Kelas nyaman dilengkapi smart board, proyektor, dan tata ruang ergonomis.' },
+    { title: 'Laboratorium Komputer & Koding', icon: '💻', desc: 'Perangkat PC modern untuk pembelajaran Scratch, robotika, dan literasi digital.' },
+    { title: 'Perpustakaan Digital (e-Library)', icon: '📚', desc: 'Ribuan judul buku bacaan anak, literatur keislaman, dan ensiklopedia sains.' },
+    { title: 'Masjid & Ruang Tahfiz Quran', icon: '🕌', desc: 'Sarana ibadah shalat berjamaah dan halaqah tahsin mutqin harian.' },
+    { title: 'Lapangan Olahraga Multifungsi', icon: '🏀', desc: 'Area panahan sunnah, futsal, senam ceria, dan latihan pencak silat.' },
+    { title: 'UKS & Ruang Konseling Ramah Anak', icon: '🏥', desc: 'Layanan kesehatan pertama siswa dan pendampingan psikososial SEL.' },
+    { title: 'Kantin Sehat Bersertifikat Halal', icon: '🥗', desc: 'Penyedia konsumsi bergizi dan terbebas dari bahan berbahaya (5P).' },
+    { title: 'Taman Toga & Area Hidroponik', icon: '🌱', desc: 'Wahana observasi botani alam, eko-enzim, dan proyek sains lingkungan.' },
+  ];
 
   return (
     <div className="bg-slate-50 min-h-screen py-10">
@@ -147,7 +158,7 @@ export const ProfilePage: React.FC = () => {
 
               <div className="prose prose-emerald text-xs sm:text-sm text-slate-600 leading-relaxed space-y-4">
                 {settings.history ? (
-                  settings.history.split('\n\n').map((paragraph, pIdx) => (
+                  settings.history.split('\n\n').map((paragraph: string, pIdx: number) => (
                     <p key={pIdx}>{paragraph}</p>
                   ))
                 ) : (
