@@ -77,7 +77,43 @@ export const initialSchoolSettings: SchoolSettings = {
   logoUrl: '/images/logo-yayasan-rpi.svg',
   heroImageUrl: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1200&auto=format&fit=crop&q=80',
   principalPhotoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=240&auto=format&fit=crop&q=80',
+  history: 'Madrasah Ibtidaiyah RPI Jakarta didirikan di bawah naungan Yayasan Rumah Pendidikan Islam (RPI) dengan tekad kuat menghadirkan oase pendidikan Islam berkualitas di jantung kota Jakarta Selatan. Berlokasi di kawasan strategis Jl. HR. Rasuna Said Kav. X2-2, Kuningan Timur, madrasah ini tumbuh dan berkembang seiring dinamika peradaban ibu kota.\n\nSejak masa pendiriannya, MI RPI berikhtiar memadukan kedalaman nilai-nilai keagamaan dengan keunggulan akademik sains. Berbekal komitmen dewan pendiri, para asatidz, dan dukungan penuh orang tua, MI RPI secara konsisten mempertahankan Akreditasi A (Unggul) dari Badan Akreditasi Nasional Sekolah/Madrasah (BAN-S/M).\n\nMenapaki era digital, MI RPI bertransformasi menjadi Smart Madrasah terintegrasi melalui konsep Super School Platform, penerapan kurikulum ramah anak (Social Emotional Learning), pembelajaran komputasi cilik (Scratch & Robotika), serta penguatan hafalan Al-Qur\'an bersanad.',
+  principalGreeting: 'Kami berkomitmen mendidik setiap anak dengan cinta, keteladanan akhlak mulia, dan rasa ingin tahu ilmiah yang tinggi. Selamat datang di era baru pendidikan madrasah terpadu.',
+  skKemenag: 'Kd.09.02/4/PP.00.4/1529/2016',
+  operationalPermit: 'SK BAN-S/M No. 1347/BAN-SM/SK/2021 (Akreditasi A)',
+  curriculumTitle: 'Kurikulum Merdeka Terintegrasi Keislaman & Digital',
+  curriculumDescription: 'Menyelenggarakan proses pembelajaran berdiferensiasi yang memerdekakan potensi siswa, berpusat pada penanaman adab islami, literasi sains, komputasi cilik, dan proyek penguatan profil pelajar rahmatan lil \'alamin.',
 };
+
+export const initialFacilities = [
+  { id: 'fac-1', title: 'Laboratorium Komputer & Koding', desc: 'Dilengkapi PC modern, jaringan internet serat optik aman anak, dan kit robotika Scratch.', icon: '💻' },
+  { id: 'fac-2', title: 'Musholla Madrasah Ramah Anak', desc: 'Pusat pembiasaan shalat berjamaah Dhuha & Dzuhur serta halaqah tahfiz harian.', icon: '🕌' },
+  { id: 'fac-3', title: 'Perpustakaan Digital (E-Library)', desc: 'Koleksi ribuan buku fiksi, ensiklopedia sains Islami, dan akses baca e-book terpadu.', icon: '📚' },
+  { id: 'fac-4', title: 'Smart Classroom Interaktif', desc: 'Ruang kelas ber-AC, proyektor interaktif, audio visual, dan tata ruang ergonomis.', icon: '🏫' },
+  { id: 'fac-5', title: 'Area Olahraga & Panahan', desc: 'Lapangan serbaguna untuk upacara, senam pagi bersama, pencak silat, dan panahan sunnah.', icon: '🏹' },
+  { id: 'fac-6', title: 'UKS Ramah Anak & Ruang Konseling', desc: 'Fasilitas kesehatan dasar anak dengan tenaga medis dan ruang bimbingan SEL.', icon: '🏥' },
+  { id: 'fac-7', title: 'Kantin Sehat & Halal', desc: 'Penyedia makanan bergizi higienis tanpa pengawet sintetis dan bebas plastik sekali pakai.', icon: '🥗' },
+  { id: 'fac-8', title: 'Area Bermain & Taman Literasi', desc: 'Ruang terbuka hijau asri di tengah kawasan Kuningan untuk relaksasi motorik anak.', icon: '🌳' },
+];
+
+export const initialExtracurriculars = [
+  { id: 'ex-1', name: 'Klub Robotik & Coding Scratch', category: 'Teknologi', icon: '🤖', desc: 'Membangun logika komputasi anak dengan membuat game Islami dan robot sederhana.' },
+  { id: 'ex-2', name: 'Panahan Sunnah (Archery)', category: 'Olahraga', icon: '🏹', desc: 'Melatih konsentrasi, ketenangan emosi, dan ketepatan fokus bidikan.' },
+  { id: 'ex-3', name: 'Pencak Silat Tradisi', category: 'Bela Diri', icon: '🥋', desc: 'Membina ketangkasan gerak, perlindungan diri, dan sportivitas ksatria.' },
+  { id: 'ex-4', name: 'Seni Hadrah & Marawis', category: 'Seni Religi', icon: '🥁', desc: 'Menghidupkan mahabbah shalawat Nabi dengan alunan tabuhan rebana harmonis.' },
+  { id: 'ex-5', name: 'Tari Saman Nusantara', category: 'Seni Tradisi', icon: '🪕', desc: 'Melatih kedisiplinan gerak sinkron cepat dan syair zikir puji-pujian.' },
+  { id: 'ex-6', name: 'Pramuka Siaga & Penggalang', category: 'Kepanduan', icon: '⚜️', desc: 'Keterampilan survival, simpul tali, kemandirian, dan bakti peduli sesama.' },
+  { id: 'ex-7', name: 'Klub Sains Cilik (STEM)', category: 'Sains', icon: '🔬', desc: 'Eksperimen alam, roket air, eko-enzim, dan observasi botani madrasah.' },
+  { id: 'ex-8', name: 'Kaligrafi Arab & Desain', category: 'Seni Rupa', icon: '✒️', desc: 'Menulis indah khat Naskhi dan Riq\'ah serta ornamen geometri Islami.' },
+];
+
+export const initialHabits = [
+  { id: 'hb-1', title: 'Sambut Senyum Santri Pagi', desc: 'Guru menyambut murid di gerbang madrasah dengan senyum, sapa, dan doa keberkahan.', time: '06.30 - 07.00 WIB' },
+  { id: 'hb-2', title: 'Shalat Dhuha Berjamaah & Zikir', desc: 'Membiasakan shalat sunnah Dhuha 4 rakaat dilanjutkan doa pembuka pintu rezeki ilmu.', time: '07.00 - 07.30 WIB' },
+  { id: 'hb-3', title: 'Halaqah Tahsin & Tahfiz Quran', desc: 'Bimbingan intensif makharijul huruf dan setoran hafalan mutqin Juz 30/29.', time: '07.30 - 08.00 WIB' },
+  { id: 'hb-4', title: 'Shalat Dzuhur Berjamaah', desc: 'Membina adab shaf shalat berjamaah, muadzin cilik, dan kultum santri.', time: '12.00 - 12.45 WIB' },
+  { id: 'hb-5', title: 'Makan Siang Beradab & Gotong Royong', desc: 'Makan bersama dengan adab Rasulullah (tangan kanan, duduk, tidak bersisa) dan membersihkan meja.', time: '12.45 - 13.15 WIB' },
+];
 
 export const initialCoreValues = [
   {

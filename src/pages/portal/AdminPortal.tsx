@@ -19,6 +19,18 @@ import {
   ExternalLink,
   Sparkles,
   Info,
+  Eye,
+  Printer,
+  Send,
+  Search,
+  Filter,
+  Phone,
+  Calendar,
+  MapPin,
+  School,
+  UserCheck,
+  Check,
+  AlertCircle,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
 import { SchoolSettings, SPMBApplication, ComplaintTicket } from '../../types';
@@ -66,6 +78,59 @@ export const AdminPortal: React.FC = () => {
   const [newsAuthor, setNewsAuthor] = useState('Humas MI RPI');
   const [newsSuccess, setNewsSuccess] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
+
+  // SPMB Management & Detail Modal State
+  const [selectedSpmbApp, setSelectedSpmbApp] = useState<SPMBApplication | null>(null);
+  const [spmbSearchQuery, setSpmbSearchQuery] = useState('');
+  const [spmbStatusFilter, setSpmbStatusFilter] = useState<'ALL' | SPMBApplication['status']>('ALL');
+  const [spmbNotesInput, setSpmbNotesInput] = useState('');
+  const [spmbFeedback, setSpmbFeedback] = useState<string | null>(null);
+
+  const handleOpenSpmbDetail = (app: SPMBApplication) => {
+    setSelectedSpmbApp(app);
+    setSpmbNotesInput(app.notes || '');
+  };
+
+  const handleSaveSpmbNotes = () => {
+    if (!selectedSpmbApp) return;
+    updateSPMBStatus(selectedSpmbApp.id, selectedSpmbApp.status, spmbNotesInput);
+    setSelectedSpmbApp({ ...selectedSpmbApp, notes: spmbNotesInput });
+    setSpmbFeedback('Catatan verifikasi formulir berhasil disimpan!');
+    setTimeout(() => setSpmbFeedback(null), 3000);
+  };
+
+  const handleSendSpmbWhatsApp = (app: SPMBApplication) => {
+    let cleanPhone = (app.parentPhone || '').replace(/[^0-9]/g, '');
+    if (cleanPhone.startsWith('0')) {
+      cleanPhone = '62' + cleanPhone.slice(1);
+    }
+
+    const message = encodeURIComponent(
+      `*PEMBERITAHUAN RESMI SPMB MI RPI JAKARTA*\n\n` +
+      `Assalamu'alaikum Wr. Wb.\n` +
+      `Yth. Bapak/Ibu *${app.parentName}*,\n` +
+      `Orang Tua / Wali dari ananda *${app.studentName}*,\n\n` +
+      `Panitia Penerimaan Murid Baru (SPMB) Madrasah Ibtidaiyah RPI Jakarta memberitahukan perkembangan status pendaftaran ananda:\n\n` +
+      `• *Nomor Registrasi:* \`${app.registrationNumber}\`\n` +
+      `• *Pilihan Program:* ${app.programChosen}\n` +
+      `• *Status Saat Ini:* *${app.status.toUpperCase()}*\n` +
+      (app.notes ? `• *Catatan Panitia:* ${app.notes}\n` : '') +
+      `\n` +
+      (app.status === 'Lolos Berkas' || app.status === 'Jadwal Observasi'
+        ? `Mohon mempersiapkan ananda untuk tahapan observasi dan tes kemandirian/bacaan Qur'an di kampus MI RPI.\n\n`
+        : app.status === 'Diterima'
+        ? `Selamat atas diterimanya ananda di MI RPI Jakarta! Silakan lakukan proses administrasi daftar ulang.\n\n`
+        : `Untuk informasi dan konfirmasi berkas lebih lanjut, silakan hubungi Panitia SPMB di Tata Usaha MI RPI.\n\n`) +
+      `Wassalamu'alaikum Wr. Wb.\n` +
+      `_Panitia SPMB MI RPI Jakarta_`
+    );
+
+    if (cleanPhone) {
+      window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
+    } else {
+      alert('Nomor WhatsApp orang tua tidak terdaftar.');
+    }
+  };
 
   const handleSettingsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -585,49 +650,482 @@ export const AdminPortal: React.FC = () => {
 
         {/* TAB 2: VERIFIKASI SPMB */}
         {activeTab === 'spmb' && (
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6 animate-in fade-in">
-            <h3 className="text-lg font-bold text-slate-900">Daftar & Verifikasi Pendaftaran Siswa Baru (SPMB)</h3>
+          <div className="space-y-6 animate-in fade-in">
+            {/* SPMB Overview Stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg">
+                  📑
+                </div>
+                <div>
+                  <p className="text-xl font-black text-slate-900">{spmbApplications.length}</p>
+                  <p className="text-[11px] font-semibold text-slate-500">Total Formulir</p>
+                </div>
+              </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 text-slate-400 uppercase tracking-wider font-semibold">
-                    <th className="py-3 px-4">No. Registrasi</th>
-                    <th className="py-3 px-4">Nama Calon Siswa</th>
-                    <th className="py-3 px-4">Program Pilihan</th>
-                    <th className="py-3 px-4">Orang Tua & WA</th>
-                    <th className="py-3 px-4">Status</th>
-                    <th className="py-3 px-4 text-right">Tindakan</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {spmbApplications.map((app) => (
-                    <tr key={app.id} className="hover:bg-slate-50 transition">
-                      <td className="py-3.5 px-4 font-mono font-bold text-emerald-800">{app.registrationNumber}</td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900">{app.studentName}</td>
-                      <td className="py-3.5 px-4 text-slate-600">{app.programChosen}</td>
-                      <td className="py-3.5 px-4 text-slate-600">{app.parentName} ({app.parentPhone})</td>
-                      <td className="py-3.5 px-4">
-                        <select
-                          value={app.status}
-                          onChange={(e) => updateSPMBStatus(app.id, e.target.value as any)}
-                          className="bg-slate-100 border border-slate-200 p-1.5 rounded-lg text-xs font-bold outline-none"
-                        >
-                          <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
-                          <option value="Lolos Berkas">Lolos Berkas</option>
-                          <option value="Jadwal Observasi">Jadwal Observasi</option>
-                          <option value="Diterima">Diterima</option>
-                          <option value="Tidak Lolos">Tidak Lolos</option>
-                        </select>
-                      </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <span className="text-[11px] text-emerald-700 font-semibold">Tersimpan</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg">
+                  ⏳
+                </div>
+                <div>
+                  <p className="text-xl font-black text-amber-700">
+                    {spmbApplications.filter((a) => a.status === 'Menunggu Verifikasi').length}
+                  </p>
+                  <p className="text-[11px] font-semibold text-slate-500">Perlu Verifikasi</p>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-lg">
+                  📋
+                </div>
+                <div>
+                  <p className="text-xl font-black text-teal-700">
+                    {spmbApplications.filter((a) => a.status === 'Lolos Berkas' || a.status === 'Jadwal Observasi').length}
+                  </p>
+                  <p className="text-[11px] font-semibold text-slate-500">Lolos & Observasi</p>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
+                  🎓
+                </div>
+                <div>
+                  <p className="text-xl font-black text-emerald-700">
+                    {spmbApplications.filter((a) => a.status === 'Diterima').length}
+                  </p>
+                  <p className="text-[11px] font-semibold text-slate-500">Diterima</p>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-lg">
+                  ❌
+                </div>
+                <div>
+                  <p className="text-xl font-black text-rose-700">
+                    {spmbApplications.filter((a) => a.status === 'Tidak Lolos').length}
+                  </p>
+                  <p className="text-[11px] font-semibold text-slate-500">Tidak Lolos</p>
+                </div>
+              </div>
             </div>
+
+            {/* Container Card */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase">
+                      Pusat SPMB Online {settings.academicYear || '2027/2028'}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mt-1">
+                    Daftar Formulir Pendaftaran Siswa Baru (SPMB)
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Klik tombol <strong>"Lihat Formulir"</strong> pada setiap baris untuk memeriksa biodata lengkap, NIK, asal TK/RA, alamat, dan menghubungi wali murid.
+                  </p>
+                </div>
+              </div>
+
+              {/* Search & Filters */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                {/* Status Filter Buttons */}
+                <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs">
+                  {[
+                    { id: 'ALL', label: 'Semua Formulir' },
+                    { id: 'Menunggu Verifikasi', label: '⏳ Menunggu Verifikasi' },
+                    { id: 'Lolos Berkas', label: '📋 Lolos Berkas' },
+                    { id: 'Jadwal Observasi', label: '🔍 Observasi' },
+                    { id: 'Diterima', label: '🎓 Diterima' },
+                    { id: 'Tidak Lolos', label: '❌ Tidak Lolos' },
+                  ].map((f) => (
+                    <button
+                      key={f.id}
+                      onClick={() => setSpmbStatusFilter(f.id as any)}
+                      className={`px-3 py-1.5 rounded-lg font-bold transition cursor-pointer ${
+                        spmbStatusFilter === f.id
+                          ? 'bg-white text-emerald-800 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Search Box */}
+                <div className="relative w-full sm:w-72">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Cari nama santri, reg, wali, TK..."
+                    value={spmbSearchQuery}
+                    onChange={(e) => setSpmbSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+
+              {/* Table */}
+              <div className="overflow-x-auto rounded-2xl border border-slate-200">
+                <table className="w-full text-xs text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-100/80 text-slate-600 font-bold border-b border-slate-200">
+                      <th className="py-3 px-4">No. Registrasi & Tanggal</th>
+                      <th className="py-3 px-4">Nama Calon Siswa</th>
+                      <th className="py-3 px-4">Asal TK / RA</th>
+                      <th className="py-3 px-4">Program Pilihan</th>
+                      <th className="py-3 px-4">Wali & WhatsApp</th>
+                      <th className="py-3 px-4">Status Verifikasi</th>
+                      <th className="py-3 px-4 text-center">Tindakan Admin</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {spmbApplications
+                      .filter((app) => {
+                        const matchSearch =
+                          app.studentName.toLowerCase().includes(spmbSearchQuery.toLowerCase()) ||
+                          app.registrationNumber.toLowerCase().includes(spmbSearchQuery.toLowerCase()) ||
+                          app.parentName.toLowerCase().includes(spmbSearchQuery.toLowerCase()) ||
+                          (app.previousSchool && app.previousSchool.toLowerCase().includes(spmbSearchQuery.toLowerCase())) ||
+                          (app.nik && app.nik.includes(spmbSearchQuery));
+                        const matchStatus = spmbStatusFilter === 'ALL' ? true : app.status === spmbStatusFilter;
+                        return matchSearch && matchStatus;
+                      })
+                      .length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="py-10 text-center text-slate-400">
+                          Tidak ditemukan formulir pendaftaran SPMB yang cocok dengan filter atau kata kunci.
+                        </td>
+                      </tr>
+                    ) : (
+                      spmbApplications
+                        .filter((app) => {
+                          const matchSearch =
+                            app.studentName.toLowerCase().includes(spmbSearchQuery.toLowerCase()) ||
+                            app.registrationNumber.toLowerCase().includes(spmbSearchQuery.toLowerCase()) ||
+                            app.parentName.toLowerCase().includes(spmbSearchQuery.toLowerCase()) ||
+                            (app.previousSchool && app.previousSchool.toLowerCase().includes(spmbSearchQuery.toLowerCase())) ||
+                            (app.nik && app.nik.includes(spmbSearchQuery));
+                          const matchStatus = spmbStatusFilter === 'ALL' ? true : app.status === spmbStatusFilter;
+                          return matchSearch && matchStatus;
+                        })
+                        .map((app) => (
+                          <tr key={app.id} className="hover:bg-slate-50/80 transition">
+                            {/* Reg No & Date */}
+                            <td className="py-3.5 px-4">
+                              <span className="font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                {app.registrationNumber}
+                              </span>
+                              <span className="text-[10px] text-slate-400 block mt-1">
+                                {app.registrationDate}
+                              </span>
+                            </td>
+
+                            {/* Student Name */}
+                            <td className="py-3.5 px-4">
+                              <div className="flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center font-bold text-xs shrink-0">
+                                  {app.gender === 'L' ? '👦' : '👧'}
+                                </span>
+                                <div>
+                                  <p className="font-bold text-slate-900">{app.studentName}</p>
+                                  <span className="text-[10px] text-slate-400 block">
+                                    NIK: {app.nik || '-'} {app.birthPlace ? `• ${app.birthPlace}, ${app.birthDate}` : ''}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* Asal TK */}
+                            <td className="py-3.5 px-4">
+                              <span className="text-slate-700 font-medium">
+                                {app.previousSchool || 'Belum diisi'}
+                              </span>
+                            </td>
+
+                            {/* Program */}
+                            <td className="py-3.5 px-4">
+                              <span
+                                className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                                  app.programChosen.includes('Tahfiz')
+                                    ? 'bg-purple-100 text-purple-800'
+                                    : 'bg-blue-100 text-blue-800'
+                                }`}
+                              >
+                                {app.programChosen}
+                              </span>
+                            </td>
+
+                            {/* Parent & WA */}
+                            <td className="py-3.5 px-4">
+                              <p className="font-medium text-slate-800">{app.parentName}</p>
+                              <p className="text-[11px] font-mono text-slate-500 mt-0.5">{app.parentPhone}</p>
+                            </td>
+
+                            {/* Status */}
+                            <td className="py-3.5 px-4">
+                              <select
+                                value={app.status}
+                                onChange={(e) => updateSPMBStatus(app.id, e.target.value as any)}
+                                className={`p-1.5 rounded-lg text-[11px] font-bold border outline-none cursor-pointer transition ${
+                                  app.status === 'Diterima'
+                                    ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                    : app.status === 'Lolos Berkas' || app.status === 'Jadwal Observasi'
+                                    ? 'bg-teal-50 text-teal-800 border-teal-300'
+                                    : app.status === 'Tidak Lolos'
+                                    ? 'bg-rose-50 text-rose-800 border-rose-300'
+                                    : 'bg-amber-50 text-amber-900 border-amber-300'
+                                }`}
+                              >
+                                <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+                                <option value="Lolos Berkas">Lolos Berkas</option>
+                                <option value="Jadwal Observasi">Jadwal Observasi</option>
+                                <option value="Diterima">Diterima</option>
+                                <option value="Tidak Lolos">Tidak Lolos</option>
+                              </select>
+                            </td>
+
+                            {/* Action Buttons */}
+                            <td className="py-3.5 px-4 text-center">
+                              <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                                {/* Tombol Lihat Formulir Lengkap */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenSpmbDetail(app)}
+                                  className="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-[11px] font-bold flex items-center gap-1 transition shadow-2xs cursor-pointer"
+                                  title="Lihat Formulir Pendaftaran Lengkap"
+                                >
+                                  <Eye size={12} />
+                                  <span>Lihat Formulir</span>
+                                </button>
+
+                                {/* Tombol WA Wali */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleSendSpmbWhatsApp(app)}
+                                  className="p-1.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white rounded-lg transition cursor-pointer border border-emerald-200"
+                                  title="Kirim Pemberitahuan Status via WhatsApp"
+                                >
+                                  <Send size={13} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* ================= MODAL DETAIL FORMULIR SPMB ================= */}
+            {selectedSpmbApp && (
+              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl animate-in zoom-in-95 border border-slate-200 max-h-[92vh] flex flex-col">
+                  {/* Header Modal */}
+                  <div className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white p-6 shrink-0 flex items-center justify-between">
+                    <div>
+                      <span className="bg-white/20 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        Lembar Formulir Pendaftaran Resmi
+                      </span>
+                      <h3 className="text-lg font-bold mt-1">
+                        Formulir Calon Santri: {selectedSpmbApp.studentName}
+                      </h3>
+                      <p className="text-xs text-emerald-100">
+                        Nomor Registrasi: <span className="font-mono font-bold text-white bg-white/20 px-2 py-0.5 rounded">{selectedSpmbApp.registrationNumber}</span>
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setSelectedSpmbApp(null)}
+                      className="text-white/70 hover:text-white font-bold text-lg cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  {/* Body Content */}
+                  <div className="p-6 space-y-5 overflow-y-auto text-xs">
+                    {/* Kop Madrasah Preview */}
+                    <div className="flex items-center gap-3 pb-3 border-b border-slate-200">
+                      <img
+                        src={settings.logoUrl || '/images/logo-yayasan-rpi.svg'}
+                        alt="Logo"
+                        className="w-12 h-12 object-contain"
+                      />
+                      <div>
+                        <p className="font-bold text-[11px] text-emerald-950 uppercase">{settings.foundation}</p>
+                        <h4 className="font-black text-sm text-emerald-800">{settings.schoolName}</h4>
+                        <p className="text-[10px] text-slate-500">
+                          NPSN: {settings.npsn} • {settings.address}, {settings.city}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Section: Status & Program */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                      <div>
+                        <label className="font-bold text-slate-500 block mb-1">Program Pilihan</label>
+                        <span className="font-bold text-slate-900 text-xs bg-white px-2.5 py-1 rounded-lg border border-slate-200 inline-block">
+                          {selectedSpmbApp.programChosen}
+                        </span>
+                      </div>
+                      <div>
+                        <label className="font-bold text-slate-500 block mb-1">Status Verifikasi Berkas</label>
+                        <select
+                          value={selectedSpmbApp.status}
+                          onChange={(e) => {
+                            const newStatus = e.target.value as any;
+                            updateSPMBStatus(selectedSpmbApp.id, newStatus, spmbNotesInput);
+                            setSelectedSpmbApp({ ...selectedSpmbApp, status: newStatus });
+                          }}
+                          className="w-full bg-white border border-slate-300 p-1.5 rounded-lg text-xs font-bold outline-none cursor-pointer"
+                        >
+                          <option value="Menunggu Verifikasi">⏳ Menunggu Verifikasi</option>
+                          <option value="Lolos Berkas">📋 Lolos Berkas</option>
+                          <option value="Jadwal Observasi">🔍 Jadwal Observasi</option>
+                          <option value="Diterima">🎓 Diterima Resmi</option>
+                          <option value="Tidak Lolos">❌ Tidak Lolos</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Section: Data Santri */}
+                    <div className="space-y-3">
+                      <h4 className="font-bold text-sm text-slate-900 border-b pb-1">
+                        1. Data Pribadi Calon Siswa
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                          <span className="text-[10px] text-slate-400 block">Nama Lengkap Santri</span>
+                          <span className="font-bold text-slate-900">{selectedSpmbApp.studentName}</span>
+                        </div>
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                          <span className="text-[10px] text-slate-400 block">Jenis Kelamin</span>
+                          <span className="font-bold text-slate-900">
+                            {selectedSpmbApp.gender === 'L' ? 'Laki-laki (Ikhwan)' : 'Perempuan (Akhwat)'}
+                          </span>
+                        </div>
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                          <span className="text-[10px] text-slate-400 block">NIK Calon Siswa</span>
+                          <span className="font-mono font-bold text-slate-900">{selectedSpmbApp.nik || '-'}</span>
+                        </div>
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                          <span className="text-[10px] text-slate-400 block">NISN (Jika Ada)</span>
+                          <span className="font-mono font-bold text-slate-900">{selectedSpmbApp.nisn || '-'}</span>
+                        </div>
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                          <span className="text-[10px] text-slate-400 block">Tempat, Tanggal Lahir</span>
+                          <span className="font-bold text-slate-900">
+                            {selectedSpmbApp.birthPlace || '-'}, {selectedSpmbApp.birthDate || '-'}
+                          </span>
+                        </div>
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                          <span className="text-[10px] text-slate-400 block">Asal Sekolah TK / RA</span>
+                          <span className="font-bold text-slate-900">{selectedSpmbApp.previousSchool || '-'}</span>
+                        </div>
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 sm:col-span-2">
+                          <span className="text-[10px] text-slate-400 block">Alamat Tempat Tinggal Lengkap</span>
+                          <span className="font-semibold text-slate-900">{selectedSpmbApp.address || '-'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Section: Data Orang Tua */}
+                    <div className="space-y-3">
+                      <h4 className="font-bold text-sm text-slate-900 border-b pb-1">
+                        2. Data Orang Tua / Wali
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                          <span className="text-[10px] text-slate-400 block">Nama Orang Tua / Wali</span>
+                          <span className="font-bold text-slate-900">{selectedSpmbApp.parentName}</span>
+                        </div>
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] text-slate-400 block">Nomor Kontak WhatsApp</span>
+                            <span className="font-mono font-bold text-slate-900">{selectedSpmbApp.parentPhone}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleSendSpmbWhatsApp(selectedSpmbApp)}
+                            className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold flex items-center gap-1 cursor-pointer"
+                          >
+                            <Send size={11} />
+                            <span>Kirim WA</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Section: Catatan Panitia */}
+                    <div className="space-y-2 bg-amber-50/60 p-3.5 rounded-2xl border border-amber-200">
+                      <div className="flex items-center justify-between">
+                        <label className="font-bold text-amber-950 block">
+                          📝 Catatan Tim Panitia / Verifikator SPMB
+                        </label>
+                        {spmbFeedback && (
+                          <span className="text-[10px] font-bold text-emerald-700 animate-in fade-in">
+                            {spmbFeedback}
+                          </span>
+                        )}
+                      </div>
+                      <textarea
+                        rows={2}
+                        value={spmbNotesInput}
+                        onChange={(e) => setSpmbNotesInput(e.target.value)}
+                        placeholder="Contoh: Berkas Akta & KK lengkap. Jadwal observasi Sabtu, 10 Oktober 2026 jam 09.00 WIB."
+                        className="w-full bg-white border border-amber-300 p-2.5 rounded-xl outline-none focus:border-amber-500 text-xs"
+                      />
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={handleSaveSpmbNotes}
+                          className="px-3 py-1.5 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-lg text-[11px] transition cursor-pointer flex items-center gap-1"
+                        >
+                          <Save size={12} />
+                          <span>Simpan Catatan</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer Modal */}
+                  <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer transition"
+                    >
+                      <Printer size={13} />
+                      <span>Cetak Lembar Formulir</span>
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleSendSpmbWhatsApp(selectedSpmbApp)}
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer transition shadow-2xs"
+                      >
+                        <Send size={13} />
+                        <span>Kirim Update ke WhatsApp Wali</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setSelectedSpmbApp(null)}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs cursor-pointer transition"
+                      >
+                        Tutup
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

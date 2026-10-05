@@ -18,15 +18,16 @@ import {
   CheckCircle2,
   Search,
 } from 'lucide-react';
-import { initialPrograms } from '../../data/initialData';
+import { useSchool } from '../../context/SchoolContext';
 
 export const ProgramsPage: React.FC = () => {
+  const { programs } = useSchool();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCat, setSelectedCat] = useState('Semua');
 
   const categories = ['Semua', 'Pendidikan Karakter', 'Keagamaan Unggulan', 'Akademik & Literasi', 'Sains & Riset', 'Teknologi Informasi', 'Olahraga Sunnah', 'Seni & Budaya', 'Kurikulum Merdeka'];
 
-  const getIcon = (iconName: string) => {
+  const getIcon = (iconName?: string) => {
     switch (iconName) {
       case 'ShieldCheck': return <ShieldCheck size={28} />;
       case 'Sparkles': return <Sparkles size={28} />;
@@ -48,7 +49,7 @@ export const ProgramsPage: React.FC = () => {
     }
   };
 
-  const filtered = initialPrograms.filter((prog) => {
+  const filtered = programs.filter((prog) => {
     const matchesCat = selectedCat === 'Semua' || prog.category.toLowerCase().includes(selectedCat.toLowerCase());
     const matchesSearch =
       prog.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

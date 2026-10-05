@@ -49,6 +49,45 @@ export interface SchoolSettings {
   logoUrl?: string;
   heroImageUrl?: string;
   principalPhotoUrl?: string;
+  history?: string;
+  principalGreeting?: string;
+  skKemenag?: string;
+  operationalPermit?: string;
+  curriculumTitle?: string;
+  curriculumDescription?: string;
+}
+
+export interface SchoolProgram {
+  id: string | number;
+  name: string;
+  category: string;
+  icon?: string;
+  description: string;
+  objective: string;
+  documentation: string;
+  kpi: string;
+}
+
+export interface ExtracurricularItem {
+  id: string;
+  name: string;
+  category: string;
+  icon: string;
+  desc: string;
+}
+
+export interface HabitItem {
+  id: string;
+  title: string;
+  desc: string;
+  time: string;
+}
+
+export interface FacilityItem {
+  id: string;
+  title: string;
+  desc: string;
+  icon: string;
 }
 
 export interface User {

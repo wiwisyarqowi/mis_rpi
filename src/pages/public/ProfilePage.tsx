@@ -14,19 +14,8 @@ import {
 import { useSchool } from '../../context/SchoolContext';
 
 export const ProfilePage: React.FC = () => {
-  const { settings, teachers, gallery } = useSchool();
+  const { settings, teachers, gallery, facilities } = useSchool();
   const [activeTab, setActiveTab] = useState<'profil' | 'gtk' | 'sarpras' | 'legalitas'>('profil');
-
-  const facilities = [
-    { title: 'Laboratorium Komputer & Koding', desc: 'Dilengkapi PC modern, jaringan internet serat optik aman anak, dan kit robotika Scratch.', icon: '💻' },
-    { title: 'Musholla Madrasah Ramah Anak', desc: 'Pusat pembiasaan shalat berjamaah Dhuha & Dzuhur serta halaqah tahfiz harian.', icon: '🕌' },
-    { title: 'Perpustakaan Digital (E-Library)', desc: 'Koleksi ribuan buku fiksi, ensiklopedia sains Islami, dan akses baca e-book terpadu.', icon: '📚' },
-    { title: 'Smart Classroom Interaktif', desc: 'Ruang kelas ber-AC, proyektor interaktif, audio visual, dan tata ruang ergonomis.', icon: '🏫' },
-    { title: 'Area Olahraga & Panahan', desc: 'Lapangan serbaguna untuk upacara, senam pagi bersama, pencak silat, dan panahan sunnah.', icon: '🏹' },
-    { title: 'UKS Ramah Anak & Ruang Konseling', desc: 'Fasilitas kesehatan dasar anak dengan tenaga medis dan ruang bimbingan SEL.', icon: '🏥' },
-    { title: 'Kantin Sehat & Halal', desc: 'Penyedia makanan bergizi higienis tanpa pengawet sintetis dan bebas plastik sekali pakai.', icon: '🥗' },
-    { title: 'Area Bermain & Taman Literasi', desc: 'Ruang terbuka hijau asri di tengah kawasan Kuningan untuk relaksasi motorik anak.', icon: '🌳' },
-  ];
 
   return (
     <div className="bg-slate-50 min-h-screen py-10">
@@ -157,15 +146,23 @@ export const ProfilePage: React.FC = () => {
               </div>
 
               <div className="prose prose-emerald text-xs sm:text-sm text-slate-600 leading-relaxed space-y-4">
-                <p>
-                  Madrasah Ibtidaiyah RPI Jakarta didirikan di bawah naungan <strong>Yayasan Rumah Pendidikan Islam (RPI)</strong> dengan tekad kuat menghadirkan oase pendidikan Islam berkualitas di jantung kota Jakarta Selatan. Berlokasi di kawasan strategis Jl. HR. Rasuna Said Kav. X2-2, Kuningan Timur, madrasah ini tumbuh dan berkembang seiring dinamika peradaban ibu kota.
-                </p>
-                <p>
-                  Sejak masa pendiriannya, MI RPI berikhtiar memadukan kedalaman nilai-nilai keagamaan dengan keunggulan akademik sains. Berbekal komitmen dewan pendiri, para asatidz, dan dukungan penuh orang tua, MI RPI secara konsisten mempertahankan <strong>Akreditasi A (Unggul)</strong> dari Badan Akreditasi Nasional Sekolah/Madrasah (BAN-S/M).
-                </p>
-                <p>
-                  Menapaki era digital, MI RPI bertransformasi menjadi <em>Smart Madrasah</em> terintegrasi melalui konsep Super School Platform, penerapan kurikulum ramah anak (Social Emotional Learning), pembelajaran komputasi cilik (Scratch & Robotika), serta penguatan hafalan Al-Qur'an bersanad.
-                </p>
+                {settings.history ? (
+                  settings.history.split('\n\n').map((paragraph, pIdx) => (
+                    <p key={pIdx}>{paragraph}</p>
+                  ))
+                ) : (
+                  <>
+                    <p>
+                      Madrasah Ibtidaiyah RPI Jakarta didirikan di bawah naungan <strong>Yayasan Rumah Pendidikan Islam (RPI)</strong> dengan tekad kuat menghadirkan oase pendidikan Islam berkualitas di jantung kota Jakarta Selatan. Berlokasi di kawasan strategis Jl. HR. Rasuna Said Kav. X2-2, Kuningan Timur, madrasah ini tumbuh dan berkembang seiring dinamika peradaban ibu kota.
+                    </p>
+                    <p>
+                      Sejak masa pendiriannya, MI RPI berikhtiar memadukan kedalaman nilai-nilai keagamaan dengan keunggulan akademik sains. Berbekal komitmen dewan pendiri, para asatidz, dan dukungan penuh orang tua, MI RPI secara konsisten mempertahankan <strong>Akreditasi A (Unggul)</strong> dari Badan Akreditasi Nasional Sekolah/Madrasah (BAN-S/M).
+                    </p>
+                    <p>
+                      Menapaki era digital, MI RPI bertransformasi menjadi <em>Smart Madrasah</em> terintegrasi melalui konsep Super School Platform, penerapan kurikulum ramah anak (Social Emotional Learning), pembelajaran komputasi cilik (Scratch & Robotika), serta penguatan hafalan Al-Qur'an bersanad.
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -191,7 +188,7 @@ export const ProfilePage: React.FC = () => {
                 <p className="text-xs text-slate-500 font-medium">Pemimpin Pembelajaran MI RPI Jakarta</p>
               </div>
               <p className="text-xs text-slate-600 italic max-w-lg mx-auto">
-                "Kami berkomitmen mendidik setiap anak dengan cinta, keteladanan akhlak mulia, dan rasa ingin tahu ilmiah yang tinggi."
+                "{settings.principalGreeting || 'Kami berkomitmen mendidik setiap anak dengan cinta, keteladanan akhlak mulia, dan rasa ingin tahu ilmiah yang tinggi.'}"
               </p>
             </div>
 

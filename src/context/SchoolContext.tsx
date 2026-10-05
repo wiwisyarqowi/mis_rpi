@@ -318,6 +318,12 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 localStorage.setItem('mi_rpi_news', JSON.stringify(serverData.news));
               } catch (_) {}
             }
+            if (Array.isArray(serverData.spmbApplications) && serverData.spmbApplications.length > 0) {
+              setSpmbApplications(serverData.spmbApplications);
+              try {
+                localStorage.setItem('mi_rpi_spmb', JSON.stringify(serverData.spmbApplications));
+              } catch (_) {}
+            }
           }
         }
       } catch (err) {
@@ -379,6 +385,13 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (_) {}
     syncToServer('news', news);
   }, [news]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mi_rpi_spmb', JSON.stringify(spmbApplications));
+    } catch (_) {}
+    syncToServer('spmbApplications', spmbApplications);
+  }, [spmbApplications]);
 
   // Sync settings to LocalStorage and Server Disk
   const updateSettings = async (newSettings: SchoolSettings) => {

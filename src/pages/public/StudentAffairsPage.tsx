@@ -1,25 +1,9 @@
 import React from 'react';
 import { Sparkles, HeartHandshake, ShieldCheck, SunMedium, Compass, Award } from 'lucide-react';
+import { useSchool } from '../../context/SchoolContext';
 
 export const StudentAffairsPage: React.FC = () => {
-  const habits = [
-    { title: 'Sambut Senyum Santri Pagi', desc: 'Guru menyambut murid di gerbang madrasah dengan senyum, sapa, dan doa keberkahan.', time: '06.30 - 07.00 WIB' },
-    { title: 'Shalat Dhuha Berjamaah & Zikir', desc: 'Membiasakan shalat sunnah Dhuha 4 rakaat dilanjutkan doa pembuka pintu rezeki ilmu.', time: '07.00 - 07.30 WIB' },
-    { title: 'Halaqah Tahsin & Tahfiz Quran', desc: 'Bimbingan intensif makharijul huruf dan setoran hafalan mutqin Juz 30/29.', time: '07.30 - 08.00 WIB' },
-    { title: 'Shalat Dzuhur Berjamaah', desc: 'Membina adab shaf shalat berjamaah, muadzin cilik, dan kultum santri.', time: '12.00 - 12.45 WIB' },
-    { title: 'Makan Siang Beradab & Gotong Royong', desc: 'Makan bersama dengan adab Rasulullah (tangan kanan, duduk, tidak bersisa) dan membersihkan meja.', time: '12.45 - 13.15 WIB' },
-  ];
-
-  const excur = [
-    { name: 'Klub Robotik & Coding Scratch', category: 'Teknologi', icon: '🤖', desc: 'Membangun logika komputasi anak dengan membuat game Islami dan robot sederhana.' },
-    { name: 'Panahan Sunnah (Archery)', category: 'Olahraga', icon: '🏹', desc: 'Melatih konsentrasi, ketenangan emosi, dan ketepatan fokus bidikan.' },
-    { name: 'Pencak Silat Tradisi', category: 'Bela Diri', icon: '🥋', desc: 'Membina ketangkasan gerak, perlindungan diri, dan sportivitas ksatria.' },
-    { name: 'Seni Hadrah & Marawis', category: 'Seni Religi', icon: '🥁', desc: 'Menghidupkan mahabbah shalawat Nabi dengan alunan tabuhan rebana harmonis.' },
-    { name: 'Tari Saman Nusantara', category: 'Seni Tradisi', icon: '🪕', desc: 'Melatih kedisiplinan gerak sinkron cepat dan syair zikir puji-pujian.' },
-    { name: 'Pramuka Siaga & Penggalang', category: 'Kepanduan', icon: '⚜️', desc: 'Keterampilan survival, simpul tali, kemandirian, dan bakti peduli sesama.' },
-    { name: 'Klub Sains Cilik (STEM)', category: 'Sains', icon: '🔬', desc: 'Eksperimen alam, roket air, eko-enzim, dan observasi botani madrasah.' },
-    { name: 'Kaligrafi Arab & Desain', category: 'Seni Rupa', icon: '✒️', desc: 'Menulis indah khat Naskhi dan Riq\'ah serta ornamen geometri Islami.' },
-  ];
+  const { habits, extracurriculars } = useSchool();
 
   return (
     <div className="bg-slate-50 min-h-screen py-10">
@@ -76,8 +60,8 @@ export const StudentAffairsPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
-            {excur.map((ex, i) => (
-              <div key={i} className="p-6 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-emerald-300 hover:shadow-lg transition">
+            {extracurriculars.map((ex, i) => (
+              <div key={ex.id || i} className="p-6 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-emerald-300 hover:shadow-lg transition">
                 <span className="text-3xl mb-2 block">{ex.icon}</span>
                 <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
                   {ex.category}
