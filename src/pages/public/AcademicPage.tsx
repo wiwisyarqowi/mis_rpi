@@ -18,9 +18,15 @@ import { initialDimensions, initialAcademicSubjects } from '../../data/initialDa
 export const AcademicPage: React.FC = () => {
   const { schedules, materials, dimensions: ctxDimensions, academicSubjects: ctxSubjects } = useSchool();
   const [activeDay, setActiveDay] = useState<'Senin' | 'Selasa' | 'Rabu' | 'Kamis' | 'Jumat'>('Senin');
+  const [selectedClass, setSelectedClass] = useState<string>('Kelas 4A');
 
   const dimensions = ctxDimensions && ctxDimensions.length > 0 ? ctxDimensions : initialDimensions;
   const subjects = ctxSubjects && ctxSubjects.length > 0 ? ctxSubjects : initialAcademicSubjects;
+
+  const availableClasses = Array.from(new Set(schedules.map((s) => s.className))).filter(Boolean);
+  const daySchedules = schedules.filter(
+    (s) => s.day === activeDay && (!selectedClass || s.className === selectedClass)
+  );
 
   return (
     <div className="bg-slate-50 min-h-screen py-10">
@@ -105,27 +111,47 @@ export const AcademicPage: React.FC = () => {
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <div className="flex items-center gap-2">
                 <Clock size={20} className="text-emerald-700" />
-                <span>Simulasi Jadwal KBM Harian (Kelas 4A)</span>
-              </h2>
-              <p className="text-xs text-slate-500">Jadwal pembelajaran aktif seimbang antara sains, agama, dan istirahat</p>
+                <h2 className="text-xl font-bold text-slate-900">
+                  Simulasi Jadwal KBM Harian ({selectedClass})
+                </h2>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Jadwal pembelajaran aktif seimbang antara sains, agama, dan pembiasaan adab
+              </p>
             </div>
 
-            <div className="flex gap-1.5 overflow-x-auto">
-              {(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as const).map((day) => (
-                <button
-                  key={day}
-                  onClick={() => setActiveDay(day)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${
-                    activeDay === day
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
+            <div className="flex flex-wrap items-center gap-2">
+              {availableClasses.length > 1 && (
+                <select
+                  value={selectedClass}
+                  onChange={(e) => setSelectedClass(e.target.value)}
+                  className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-hidden"
                 >
-                  {day}
-                </button>
-              ))}
+                  {availableClasses.map((cls) => (
+                    <option key={cls} value={cls}>
+                      {cls}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              <div className="flex gap-1.5 overflow-x-auto">
+                {(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as const).map((day) => (
+                  <button
+                    key={day}
+                    onClick={() => setActiveDay(day)}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                      activeDay === day
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -140,20 +166,25 @@ export const AcademicPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {schedules
-                  .filter((s) => s.day === activeDay)
-                  .map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-50 transition">
-                      <td className="py-3.5 px-4 font-mono font-bold text-emerald-800">{item.time}</td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900">{item.subject}</td>
-                      <td className="py-3.5 px-4 text-slate-600">{item.teacherName}</td>
-                      <td className="py-3.5 px-4">
-                        <span className="bg-slate-100 text-slate-700 font-semibold px-2 py-0.5 rounded-md text-[11px]">
-                          {item.room}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                {daySchedules.map((item) => (
+                  <tr key={item.id} className="hover:bg-slate-50 transition">
+                    <td className="py-3.5 px-4 font-mono font-bold text-emerald-800">{item.time}</td>
+                    <td className="py-3.5 px-4 font-bold text-slate-900">{item.subject}</td>
+                    <td className="py-3.5 px-4 text-slate-600">{item.teacherName}</td>
+                    <td className="py-3.5 px-4">
+                      <span className="bg-slate-100 text-slate-700 font-semibold px-2 py-0.5 rounded-md text-[11px]">
+                        {item.room}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+                {daySchedules.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-slate-400">
+                      Belum ada simulasi jadwal untuk hari {activeDay} pada {selectedClass}.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

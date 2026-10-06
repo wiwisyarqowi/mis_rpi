@@ -388,15 +388,41 @@ export const initialTeachers: Teacher[] = [
 ];
 
 export const initialSchedules: ScheduleItem[] = [
-  { id: 'sch-1', day: 'Senin', time: '07.00 - 07.45', className: 'Kelas 4A', subject: 'Upacara Bendera & Doa Pagi', teacherName: 'Tim Guru', room: 'Lapangan Utama' },
+  // SENIN
+  { id: 'sch-1', day: 'Senin', time: '07.00 - 07.45', className: 'Kelas 4A', subject: 'Upacara Bendera & Doa Pagi', teacherName: 'Tim Guru & Wali Kelas', room: 'Lapangan Utama' },
   { id: 'sch-2', day: 'Senin', time: '07.45 - 08.45', className: 'Kelas 4A', subject: 'Tahsin & Tahfiz Al-Qur\'an', teacherName: 'Ustadzah Nurul Hidayati, Lc', room: 'Ruang Kelas 4A' },
   { id: 'sch-3', day: 'Senin', time: '09.00 - 10.30', className: 'Kelas 4A', subject: 'Matematika Terpadu', teacherName: 'Ustadzah Siti Rahmah, M.Pd', room: 'Ruang Kelas 4A' },
   { id: 'sch-4', day: 'Senin', time: '10.30 - 11.45', className: 'Kelas 4A', subject: 'Informatika & Koding Scratch', teacherName: 'Ustadz Ridwan Hakim, S.Kom', room: 'Lab Komputer' },
-  { id: 'sch-5', day: 'Senin', time: '12.00 - 13.00', className: 'Kelas 4A', subject: 'Shalat Dzuhur Berjamaah & Makan Bersama', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Musholla' },
-  { id: 'sch-6', day: 'Senin', time: '13.00 - 14.15', className: 'Kelas 4A', subject: 'Bahasa Indonesia', teacherName: 'Ustadzah Siti Rahmah, M.Pd', room: 'Ruang Kelas 4A' },
-  { id: 'sch-7', day: 'Selasa', time: '07.00 - 08.00', className: 'Kelas 4A', subject: 'Shalat Dhuha & Muraja\'ah', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Musholla' },
-  { id: 'sch-8', day: 'Selasa', time: '08.00 - 09.30', className: 'Kelas 4A', subject: 'IPAS (Ilmu Pengetahuan Alam & Sosial)', teacherName: 'Ustadzah Siti Rahmah, M.Pd', room: 'Ruang Kelas 4A' },
-  { id: 'sch-9', day: 'Selasa', time: '10.00 - 11.30', className: 'Kelas 4A', subject: 'Fikih Ibadah', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Ruang Kelas 4A' },
+  { id: 'sch-5', day: 'Senin', time: '12.00 - 13.00', className: 'Kelas 4A', subject: 'Shalat Dzuhur Berjamaah & Makan Siang Beradab', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Musholla & Kelas' },
+  { id: 'sch-6', day: 'Senin', time: '13.00 - 14.15', className: 'Kelas 4A', subject: 'Bahasa Indonesia & Literasi GELIS', teacherName: 'Ustadzah Siti Rahmah, M.Pd', room: 'Ruang Kelas 4A' },
+
+  // SELASA
+  { id: 'sch-7', day: 'Selasa', time: '07.00 - 08.00', className: 'Kelas 4A', subject: 'Shalat Dhuha & Muraja\'ah Juz 30', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Musholla' },
+  { id: 'sch-8', day: 'Selasa', time: '08.00 - 09.30', className: 'Kelas 4A', subject: 'IPAS (Eksperimen Sains & Lingkungan)', teacherName: 'Ustadzah Siti Rahmah, M.Pd', room: 'Laboratorium Sains' },
+  { id: 'sch-9', day: 'Selasa', time: '10.00 - 11.30', className: 'Kelas 4A', subject: 'Fikih Ibadah & Praktik Wudhu', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Ruang Kelas 4A' },
+  { id: 'sch-10', day: 'Selasa', time: '12.00 - 13.00', className: 'Kelas 4A', subject: 'Shalat Dzuhur Berjamaah & Istirahat', teacherName: 'Tim Guru Piket', room: 'Musholla' },
+  { id: 'sch-11', day: 'Selasa', time: '13.00 - 14.15', className: 'Kelas 4A', subject: 'Pendidikan Pancasila & Karakter SEL', teacherName: 'Ustadzah Maryam Dewi, S.Pd', room: 'Ruang Kelas 4A' },
+
+  // RABU
+  { id: 'sch-12', day: 'Rabu', time: '07.00 - 08.00', className: 'Kelas 4A', subject: 'Halaqah Tahfiz & Zikir Al-Ma\'tsurat', teacherName: 'Ustadzah Nurul Hidayati, Lc', room: 'Musholla' },
+  { id: 'sch-13', day: 'Rabu', time: '08.00 - 09.30', className: 'Kelas 4A', subject: 'Bahasa Arab Dasar & Muhadatsah', teacherName: 'Ustadz Zulkifli, S.Pd.I', room: 'Ruang Kelas 4A' },
+  { id: 'sch-14', day: 'Rabu', time: '10.00 - 11.30', className: 'Kelas 4A', subject: 'Akidah Akhlak & Adab Islami', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Ruang Kelas 4A' },
+  { id: 'sch-15', day: 'Rabu', time: '12.00 - 13.00', className: 'Kelas 4A', subject: 'Shalat Dzuhur Berjamaah & Makan Sehat', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Musholla' },
+  { id: 'sch-16', day: 'Rabu', time: '13.00 - 14.15', className: 'Kelas 4A', subject: 'Seni Budaya & Khat Kaligrafi Arab', teacherName: 'Ustadz Ridwan Hakim, S.Kom', room: 'Ruang Seni' },
+
+  // KAMIS
+  { id: 'sch-17', day: 'Kamis', time: '07.00 - 08.00', className: 'Kelas 4A', subject: 'Senam Pagi Ceria & Shalat Dhuha', teacherName: 'Ustadz Zulkifli, S.Pd.I', room: 'Lapangan & Musholla' },
+  { id: 'sch-18', day: 'Kamis', time: '08.00 - 09.30', className: 'Kelas 4A', subject: 'Matematika Terpadu & Logika Nalar', teacherName: 'Ustadzah Siti Rahmah, M.Pd', room: 'Ruang Kelas 4A' },
+  { id: 'sch-19', day: 'Kamis', time: '10.00 - 11.30', className: 'Kelas 4A', subject: 'Sejarah Kebudayaan Islam (SKI)', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Ruang Kelas 4A' },
+  { id: 'sch-20', day: 'Kamis', time: '12.00 - 13.00', className: 'Kelas 4A', subject: 'Shalat Dzuhur Berjamaah & Kultum Santri', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Musholla' },
+  { id: 'sch-21', day: 'Kamis', time: '13.00 - 14.30', className: 'Kelas 4A', subject: 'Pramuka Wajib Siaga/Penggalang', teacherName: 'Tim Pembina Pramuka', room: 'Halaman Madrasah' },
+
+  // JUMAT
+  { id: 'sch-22', day: 'Jumat', time: '06.45 - 07.30', className: 'Kelas 4A', subject: 'Jumat Berkah, Infaq & Surah Al-Kahfi', teacherName: 'Seluruh Wali Kelas', room: 'Ruang Kelas 4A' },
+  { id: 'sch-23', day: 'Jumat', time: '07.30 - 08.45', className: 'Kelas 4A', subject: 'Penjasorkes / Panahan Sunnah', teacherName: 'Ustadz Zulkifli, S.Pd.I', room: 'Lapangan Olahraga' },
+  { id: 'sch-24', day: 'Jumat', time: '09.00 - 10.30', className: 'Kelas 4A', subject: 'Bahasa Inggris Dasar (Fun English)', teacherName: 'Ustadzah Aisyah Rahma, S.Pd', room: 'Ruang Kelas 4A' },
+  { id: 'sch-25', day: 'Jumat', time: '10.30 - 11.15', className: 'Kelas 4A', subject: 'Pembersihan Kelas & Adab Shalat Jumat', teacherName: 'Ustadz Ahmad Fauzi, S.Pd.I', room: 'Ruang Kelas 4A' },
+  { id: 'sch-26', day: 'Jumat', time: '11.30 - 12.45', className: 'Kelas 4A', subject: 'Shalat Jumat Berjamaah & Kepulangan Santri', teacherName: 'Dewan Guru MI RPI', room: 'Masjid RPI' },
 ];
 
 export const initialAttendanceRecords: AttendanceRecord[] = [

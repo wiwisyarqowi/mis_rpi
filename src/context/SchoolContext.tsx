@@ -113,6 +113,12 @@ interface SchoolContextType {
   extracurriculars: Extracurricular[];
   updateExtracurriculars: (newExcurs: Extracurricular[]) => void;
 
+  // Schedules (Simulasi Jadwal Pelajaran)
+  addScheduleItem: (item: Omit<ScheduleItem, 'id'>) => void;
+  updateScheduleItem: (id: string, updates: Partial<ScheduleItem>) => void;
+  deleteScheduleItem: (id: string) => void;
+  resetSchedulesToDefault: () => void;
+
   // Interactive Actions
   addUserAccount: (account: Omit<UserAccount, 'id' | 'createdAt'>) => UserAccount;
   updateUserAccount: (id: string, updates: Partial<UserAccount>) => void;
@@ -205,7 +211,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const saved = localStorage.getItem('mi_rpi_classes');
     return saved ? JSON.parse(saved) : initialClasses;
   });
-  const [schedules] = useState<ScheduleItem[]>(initialSchedules);
+  const [schedules, setSchedules] = useState<ScheduleItem[]>(() => {
+    const saved = localStorage.getItem('mi_rpi_schedules');
+    return saved ? JSON.parse(saved) : initialSchedules;
+  });
   const [attendance, setAttendance] = useState<AttendanceRecord[]>(initialAttendanceRecords);
   const [grades, setGrades] = useState<GradeItem[]>(() => {
     const saved = localStorage.getItem('mi_rpi_grades');
@@ -407,6 +416,12 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 localStorage.setItem('mi_rpi_extracurriculars', JSON.stringify(serverData.extracurriculars));
               } catch (_) {}
             }
+            if (Array.isArray(serverData.schedules) && serverData.schedules.length > 0) {
+              setSchedules(serverData.schedules);
+              try {
+                localStorage.setItem('mi_rpi_schedules', JSON.stringify(serverData.schedules));
+              } catch (_) {}
+            }
           }
         }
       } catch (err) {
@@ -510,6 +525,13 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (_) {}
     syncToServer('extracurriculars', extracurriculars);
   }, [extracurriculars]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('mi_rpi_schedules', JSON.stringify(schedules));
+    } catch (_) {}
+    syncToServer('schedules', schedules);
+  }, [schedules]);
 
   // Sync settings to LocalStorage and Server Disk
   const updateSettings = async (newSettings: SchoolSettings) => {
@@ -1436,6 +1458,28 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setExtracurriculars(newExcurs);
   };
 
+  const addScheduleItem = (item: Omit<ScheduleItem, 'id'>) => {
+    const newItem: ScheduleItem = {
+      ...item,
+      id: `sch-${Date.now()}`,
+    };
+    setSchedules((prev) => [...prev, newItem]);
+  };
+
+  const updateScheduleItem = (id: string, updates: Partial<ScheduleItem>) => {
+    setSchedules((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
+    );
+  };
+
+  const deleteScheduleItem = (id: string) => {
+    setSchedules((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const resetSchedulesToDefault = () => {
+    setSchedules(initialSchedules);
+  };
+
   return (
     <SchoolContext.Provider
       value={{
@@ -1481,6 +1525,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         updateHabits,
         extracurriculars,
         updateExtracurriculars,
+        addScheduleItem,
+        updateScheduleItem,
+        deleteScheduleItem,
+        resetSchedulesToDefault,
         addUserAccount,
         updateUserAccount,
         deleteUserAccount,

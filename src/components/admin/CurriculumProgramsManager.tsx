@@ -26,9 +26,18 @@ import {
   Music2,
   Users,
   Lightbulb,
+  Clock,
+  Calendar,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
-import { FlagshipProgram, GraduateDimension, AcademicSubjectGroup, StudentHabit, Extracurricular } from '../../types';
+import {
+  FlagshipProgram,
+  GraduateDimension,
+  AcademicSubjectGroup,
+  StudentHabit,
+  Extracurricular,
+  ScheduleItem,
+} from '../../types';
 import {
   initialPrograms,
   initialDimensions,
@@ -51,6 +60,13 @@ export const CurriculumProgramsManager: React.FC = () => {
     updateHabits,
     extracurriculars,
     updateExtracurriculars,
+    schedules,
+    addScheduleItem,
+    updateScheduleItem,
+    deleteScheduleItem,
+    resetSchedulesToDefault,
+    teachers,
+    classes,
   } = useSchool();
 
   const [activeTab, setActiveTab] = useState<'programs' | 'academic' | 'kesiswaan'>('programs');
@@ -74,6 +90,20 @@ export const CurriculumProgramsManager: React.FC = () => {
     objective: '',
     documentation: '',
     kpi: '',
+  });
+
+  // --- SCHEDULES (SIMULASI KBM) STATE ---
+  const [scheduleDayFilter, setScheduleDayFilter] = useState<string>('Semua');
+  const [scheduleSearch, setScheduleSearch] = useState('');
+  const [editingSchedule, setEditingSchedule] = useState<ScheduleItem | null>(null);
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [schFormData, setSchFormData] = useState<Omit<ScheduleItem, 'id'>>({
+    day: 'Senin',
+    time: '07.45 - 08.45',
+    className: 'Kelas 4A',
+    subject: '',
+    teacherName: '',
+    room: 'Ruang Kelas 4A',
   });
 
   // --- DIMENSIONS STATE ---
@@ -460,6 +490,72 @@ export const CurriculumProgramsManager: React.FC = () => {
       showToast('Daftar ekstrakurikuler berhasil direset.');
     }
   };
+
+  // --- SCHEDULE HANDLERS ---
+  const handleOpenAddSchedule = () => {
+    setEditingSchedule(null);
+    setSchFormData({
+      day: (scheduleDayFilter !== 'Semua' ? scheduleDayFilter : 'Senin') as any,
+      time: '07.45 - 08.45',
+      className: 'Kelas 4A',
+      subject: '',
+      teacherName: teachers[0]?.name || 'Ustadz Ahmad Fauzi, S.Pd.I',
+      room: 'Ruang Kelas 4A',
+    });
+    setIsScheduleModalOpen(true);
+  };
+
+  const handleOpenEditSchedule = (sch: ScheduleItem) => {
+    setEditingSchedule(sch);
+    setSchFormData({
+      day: sch.day,
+      time: sch.time,
+      className: sch.className,
+      subject: sch.subject,
+      teacherName: sch.teacherName,
+      room: sch.room,
+    });
+    setIsScheduleModalOpen(true);
+  };
+
+  const handleSaveSchedule = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!schFormData.subject.trim()) return;
+
+    if (editingSchedule) {
+      updateScheduleItem(editingSchedule.id, schFormData);
+      showToast(`Jadwal "${schFormData.subject}" berhasil diperbarui!`);
+    } else {
+      addScheduleItem(schFormData);
+      showToast(`Jadwal baru "${schFormData.subject}" berhasil ditambahkan!`);
+    }
+    setIsScheduleModalOpen(false);
+  };
+
+  const handleDeleteSchedule = (sch: ScheduleItem) => {
+    if (confirm(`Hapus jadwal "${sch.subject}" (${sch.day}, ${sch.time})?`)) {
+      deleteScheduleItem(sch.id);
+      showToast(`Jadwal "${sch.subject}" berhasil dihapus.`);
+    }
+  };
+
+  const handleResetSchedules = () => {
+    if (confirm('Kembalikan jadwal KBM simulasi ke jadwal standar bawaan madrasah?')) {
+      resetSchedulesToDefault();
+      showToast('Jadwal pembelajaran berhasil direset ke standar awal.');
+    }
+  };
+
+  // Filtered schedules
+  const filteredSchedules = schedules.filter((s) => {
+    const matchDay = scheduleDayFilter === 'Semua' || s.day === scheduleDayFilter;
+    const matchSearch =
+      s.subject.toLowerCase().includes(scheduleSearch.toLowerCase()) ||
+      s.teacherName.toLowerCase().includes(scheduleSearch.toLowerCase()) ||
+      s.room.toLowerCase().includes(scheduleSearch.toLowerCase()) ||
+      s.className.toLowerCase().includes(scheduleSearch.toLowerCase());
+    return matchDay && matchSearch;
+  });
 
   return (
     <div className="space-y-6">
@@ -911,6 +1007,150 @@ export const CurriculumProgramsManager: React.FC = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* SECTION C: SIMULASI JADWAL PELAJARAN KBM HARIAN */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                  <Clock size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Simulasi Jadwal Pembelajaran KBM ({schedules.length} Sesi Terjadwal)
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Jadwal ini ditampilkan pada menu publik <strong>/akademik</strong> sebagai simulasi interaktif belajar santri per hari.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleResetSchedules}
+                  className="px-3.5 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs rounded-xl flex items-center gap-1.5 transition cursor-pointer"
+                  title="Kembalikan jadwal ke jadwal standar bawaan"
+                >
+                  <RotateCcw size={14} />
+                  <span>Reset Default</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenAddSchedule}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition cursor-pointer"
+                >
+                  <Plus size={16} />
+                  <span>Tambah Jadwal KBM</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+              <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
+                {['Semua', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'].map((day) => (
+                  <button
+                    key={day}
+                    type="button"
+                    onClick={() => setScheduleDayFilter(day)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                      scheduleDayFilter === day
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200'
+                    }`}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
+
+              <div className="relative flex-1 max-w-xs">
+                <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Cari mapel, guru, ruang..."
+                  value={scheduleSearch}
+                  onChange={(e) => setScheduleSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-hidden"
+                />
+              </div>
+            </div>
+
+            {/* Table of Schedules */}
+            <div className="overflow-x-auto border border-slate-200 rounded-2xl">
+              <table className="w-full text-xs text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-bold">
+                    <th className="py-3 px-4">Hari</th>
+                    <th className="py-3 px-4">Waktu / Jam</th>
+                    <th className="py-3 px-4">Kelas</th>
+                    <th className="py-3 px-4">Mata Pelajaran</th>
+                    <th className="py-3 px-4">Guru Pengampu</th>
+                    <th className="py-3 px-4">Ruang</th>
+                    <th className="py-3 px-4 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredSchedules.map((sch) => (
+                    <tr key={sch.id} className="hover:bg-slate-50/80 transition">
+                      <td className="py-3 px-4">
+                        <span className="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md text-[11px]">
+                          {sch.day}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 font-mono font-bold text-slate-700">
+                        {sch.time}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium text-[11px]">
+                          {sch.className}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 font-extrabold text-slate-900">
+                        {sch.subject}
+                      </td>
+                      <td className="py-3 px-4 text-slate-600 font-medium">
+                        {sch.teacherName}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200 text-[11px]">
+                          {sch.room}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditSchedule(sch)}
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                            title="Edit Jadwal"
+                          >
+                            <Edit size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteSchedule(sch)}
+                            className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                            title="Hapus Jadwal"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredSchedules.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="py-8 text-center text-slate-400">
+                        Tidak ada jadwal pembelajaran pada filter ini.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1453,6 +1693,145 @@ export const CurriculumProgramsManager: React.FC = () => {
                   className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-md cursor-pointer"
                 >
                   Simpan Ekstrakurikuler
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* ============================================================== */}
+      {/* MODAL 5: TAMBAH / EDIT JADWAL PEMBELAJARAN (KBM)               */}
+      {/* ============================================================== */}
+      {isScheduleModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl animate-in zoom-in-95">
+            <div className="flex items-center justify-between border-b pb-3">
+              <div>
+                <h3 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
+                  <Clock size={18} className="text-emerald-700" />
+                  <span>{editingSchedule ? '✏️ Edit Jadwal KBM' : '➕ Tambah Jadwal Pembelajaran'}</span>
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Jadwal ini disinkronkan dengan simulasi jadwal publik di menu /akademik.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsScheduleModalOpen(false)}
+                className="p-2 text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-100 cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveSchedule} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Hari *</label>
+                  <select
+                    value={schFormData.day}
+                    onChange={(e) => setSchFormData({ ...schFormData, day: e.target.value as any })}
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-hidden font-medium text-slate-700"
+                  >
+                    {['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'].map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Waktu / Jam Sesi *</label>
+                  <input
+                    type="text"
+                    required
+                    value={schFormData.time}
+                    onChange={(e) => setSchFormData({ ...schFormData, time: e.target.value })}
+                    placeholder="Contoh: 07.45 - 08.45"
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-hidden font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Rombel / Kelas *</label>
+                  <input
+                    type="text"
+                    required
+                    value={schFormData.className}
+                    onChange={(e) => setSchFormData({ ...schFormData, className: e.target.value })}
+                    placeholder="Contoh: Kelas 4A"
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-hidden"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Ruangan / Tempat *</label>
+                  <input
+                    type="text"
+                    required
+                    value={schFormData.room}
+                    onChange={(e) => setSchFormData({ ...schFormData, room: e.target.value })}
+                    placeholder="Contoh: Ruang Kelas 4A / Lab Komputer"
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-hidden"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Mata Pelajaran / Aktivitas Belajar *</label>
+                <input
+                  type="text"
+                  required
+                  value={schFormData.subject}
+                  onChange={(e) => setSchFormData({ ...schFormData, subject: e.target.value })}
+                  placeholder="Contoh: Matematika Terpadu / Tahsin & Tahfiz Quran"
+                  className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-hidden font-medium"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Guru Pengampu *</label>
+                <input
+                  type="text"
+                  required
+                  value={schFormData.teacherName}
+                  onChange={(e) => setSchFormData({ ...schFormData, teacherName: e.target.value })}
+                  placeholder="Contoh: Ustadz Ahmad Fauzi, S.Pd.I"
+                  className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-hidden"
+                />
+                {teachers.length > 0 && (
+                  <div className="mt-1.5 flex flex-wrap gap-1 text-[10px]">
+                    <span className="text-slate-400">Pilih cepat:</span>
+                    {teachers.slice(0, 4).map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setSchFormData({ ...schFormData, teacherName: t.name })}
+                        className="px-1.5 py-0.5 bg-slate-100 hover:bg-emerald-100 hover:text-emerald-800 rounded text-slate-600 transition cursor-pointer"
+                      >
+                        {t.name.split(',')[0]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t">
+                <button
+                  type="button"
+                  onClick={() => setIsScheduleModalOpen(false)}
+                  className="px-4 py-2 border border-slate-300 text-slate-700 rounded-xl font-bold hover:bg-slate-50 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-md cursor-pointer"
+                >
+                  {editingSchedule ? 'Simpan Perubahan' : 'Tambahkan ke Jadwal'}
                 </button>
               </div>
             </form>
