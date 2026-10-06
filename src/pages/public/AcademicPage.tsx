@@ -1,18 +1,15 @@
 import React from 'react';
 import {
   BookOpen,
-  Layers,
   CheckCircle,
-  ChevronRight,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
-import { initialDimensions, initialAcademicSubjects } from '../../data/initialData';
+import { initialDimensions } from '../../data/initialData';
 
 export const AcademicPage: React.FC = () => {
-  const { dimensions: ctxDimensions, academicSubjects: ctxSubjects } = useSchool();
+  const { dimensions: ctxDimensions } = useSchool();
 
   const dimensions = ctxDimensions && ctxDimensions.length > 0 ? ctxDimensions : initialDimensions;
-  const subjects = ctxSubjects && ctxSubjects.length > 0 ? ctxSubjects : initialAcademicSubjects;
 
   return (
     <div className="bg-slate-50 min-h-screen py-10">
@@ -62,32 +59,6 @@ export const AcademicPage: React.FC = () => {
                   <CheckCircle size={12} />
                   <span>Kompetensi Inti</span>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mata Pelajaran Terpadu */}
-        <div className="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-xs space-y-6">
-          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Layers size={20} className="text-emerald-700" />
-            <span>Mata Pelajaran & Beban Belajar</span>
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {subjects.map((sub, idx) => (
-              <div key={sub.id || idx} className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-4">
-                <h3 className="font-bold text-sm text-emerald-800 pb-2 border-b border-slate-200">
-                  {sub.category}
-                </h3>
-                <ul className="space-y-2 text-xs text-slate-700">
-                  {sub.items.map((item, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <ChevronRight size={13} className="text-emerald-600 shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             ))}
           </div>

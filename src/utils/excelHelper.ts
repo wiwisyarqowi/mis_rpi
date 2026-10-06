@@ -48,6 +48,7 @@ export const downloadTeacherExcelTemplate = () => {
 
 /**
  * Downloads a ready-to-use Excel template for importing Siswa / Santri
+ * Memisahkan kolom 'Tempat Lahir' dan 'Tanggal Lahir' tersendiri (tidak digabung) sesuai standar EMIS / RDM
  */
 export const downloadStudentExcelTemplate = () => {
   const templateData = [
@@ -57,7 +58,8 @@ export const downloadStudentExcelTemplate = () => {
       'NISN *': '0092837190',
       'Jenis Kelamin (L/P) *': 'L',
       'Kelas *': 'Kelas 4A',
-      'Tempat, Tanggal Lahir': 'Jakarta, 15 Mei 2014',
+      'Tempat Lahir *': 'Jakarta',
+      'Tanggal Lahir (DD/MM/YYYY) *': '15/05/2014',
       'Nama Orang Tua / Wali *': 'Ibu Fatimah Zahra, S.E.',
       'No. WhatsApp Wali': '081234567890',
       'Alamat Tempat Tinggal': 'Jl. Rasuna Said, Kuningan Timur, Setiabudi, Jakarta Selatan',
@@ -68,28 +70,116 @@ export const downloadStudentExcelTemplate = () => {
       'NISN *': '0092837191',
       'Jenis Kelamin (L/P) *': 'P',
       'Kelas *': 'Kelas 4A',
-      'Tempat, Tanggal Lahir': 'Jakarta, 22 Agustus 2014',
+      'Tempat Lahir *': 'Jakarta',
+      'Tanggal Lahir (DD/MM/YYYY) *': '22/08/2014',
       'Nama Orang Tua / Wali *': 'Bapak Ir. Hendra Saputra',
       'No. WhatsApp Wali': '081298765432',
       'Alamat Tempat Tinggal': 'Jl. Menteng Atas Selatan, Setiabudi, Jakarta Selatan',
+    },
+    {
+      'Nama Lengkap Santri *': 'Bilal Habasyi',
+      'NIS *': '20260003',
+      'NISN *': '0092837192',
+      'Jenis Kelamin (L/P) *': 'L',
+      'Kelas *': 'Kelas 4A',
+      'Tempat Lahir *': 'Bandung',
+      'Tanggal Lahir (DD/MM/YYYY) *': '10/01/2015',
+      'Nama Orang Tua / Wali *': 'Ibu Maryam',
+      'No. WhatsApp Wali': '081234567891',
+      'Alamat Tempat Tinggal': 'Menteng Atas, Setiabudi, Jakarta Selatan',
+    },
+    {
+      'Nama Lengkap Santri *': 'Khadijah Putri Pratama',
+      'NIS *': '20260004',
+      'NISN *': '0092837193',
+      'Jenis Kelamin (L/P) *': 'P',
+      'Kelas *': 'Kelas 4A',
+      'Tempat Lahir *': 'Bogor',
+      'Tanggal Lahir (DD/MM/YYYY) *': '30/09/2014',
+      'Nama Orang Tua / Wali *': 'Bapak Rahmat Hidayat',
+      'No. WhatsApp Wali': '081512345678',
+      'Alamat Tempat Tinggal': 'Pasar Manggis, Setiabudi, Jakarta Selatan',
     },
   ];
 
   const worksheet = XLSX.utils.json_to_sheet(templateData);
   worksheet['!cols'] = [
-    { wch: 28 },
-    { wch: 14 },
-    { wch: 16 },
-    { wch: 20 },
-    { wch: 14 },
+    { wch: 28 }, // Nama Lengkap
+    { wch: 14 }, // NIS
+    { wch: 16 }, // NISN
+    { wch: 20 }, // Jenis Kelamin
+    { wch: 14 }, // Kelas
+    { wch: 20 }, // Tempat Lahir (Kolom Tersendiri)
+    { wch: 28 }, // Tanggal Lahir (Kolom Tersendiri)
+    { wch: 28 }, // Orang Tua / Wali
+    { wch: 18 }, // No. WA
+    { wch: 45 }, // Alamat
+  ];
+
+  // Sheet Petunjuk Pengisian
+  const instructionsData = [
+    {
+      'Kolom': 'Nama Lengkap Santri *',
+      'Kewajiban': 'Wajib',
+      'Format & Keterangan': 'Nama lengkap santri sesuai akta kelahiran atau ijazah TK/RA.',
+    },
+    {
+      'Kolom': 'NIS *',
+      'Kewajiban': 'Wajib',
+      'Format & Keterangan': 'Nomor Induk Santri lokal madrasah (misal: 20260001).',
+    },
+    {
+      'Kolom': 'NISN *',
+      'Kewajiban': 'Wajib',
+      'Format & Keterangan': 'Nomor Induk Siswa Nasional (10 digit angka unik kemdikbud/kemenag).',
+    },
+    {
+      'Kolom': 'Jenis Kelamin (L/P) *',
+      'Kewajiban': 'Wajib',
+      'Format & Keterangan': 'Isi "L" untuk Laki-laki atau "P" untuk Perempuan.',
+    },
+    {
+      'Kolom': 'Kelas *',
+      'Kewajiban': 'Wajib',
+      'Format & Keterangan': 'Nama rombongan belajar (misal: Kelas 1A, Kelas 1B, Kelas 4A, Kelas 6B).',
+    },
+    {
+      'Kolom': 'Tempat Lahir *',
+      'Kewajiban': 'Wajib (Kolom Tersendiri)',
+      'Format & Keterangan': 'KOTA/KABUPATEN tempat lahir santri saja (misal: Jakarta, Bandung, Surabaya). JANGAN DIGABUNG dengan tanggal lahir.',
+    },
+    {
+      'Kolom': 'Tanggal Lahir (DD/MM/YYYY) *',
+      'Kewajiban': 'Wajib (Kolom Tersendiri)',
+      'Format & Keterangan': 'TANGGAL LAHIR santri (misal: 15/05/2014 atau format tanggal Excel). Kolom tersendiri.',
+    },
+    {
+      'Kolom': 'Nama Orang Tua / Wali *',
+      'Kewajiban': 'Wajib',
+      'Format & Keterangan': 'Nama orang tua/wali santri (misal: Ibu Fatimah Zahra, S.E.).',
+    },
+    {
+      'Kolom': 'No. WhatsApp Wali',
+      'Kewajiban': 'Opsional',
+      'Format & Keterangan': 'Nomor WhatsApp aktif orang tua/wali untuk notifikasi akademik & keuangan.',
+    },
+    {
+      'Kolom': 'Alamat Tempat Tinggal',
+      'Kewajiban': 'Opsional',
+      'Format & Keterangan': 'Alamat domisili tempat tinggal santri saat ini.',
+    },
+  ];
+
+  const instructionSheet = XLSX.utils.json_to_sheet(instructionsData);
+  instructionSheet['!cols'] = [
+    { wch: 30 },
     { wch: 25 },
-    { wch: 28 },
-    { wch: 18 },
-    { wch: 45 },
+    { wch: 75 },
   ];
 
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Format Santri MI RPI');
+  XLSX.utils.book_append_sheet(workbook, instructionSheet, 'Petunjuk Pengisian');
   XLSX.writeFile(workbook, 'Template_Import_Santri_MI_RPI.xlsx');
 };
 
@@ -117,22 +207,49 @@ export const exportTeachersToExcel = (teachers: Teacher[]) => {
 
 /**
  * Exports existing student list to Excel (.xlsx)
+ * Memisahkan kolom Tempat Lahir dan Tanggal Lahir tersendiri (tidak digabung)
  */
 export const exportStudentsToExcel = (students: Student[]) => {
-  const exportData = students.map((s, idx) => ({
-    'No': idx + 1,
-    'Nama Santri': s.name,
-    'NIS': s.nis,
-    'NISN': s.nisn,
-    'L/P': s.gender,
-    'Kelas': s.className,
-    'TTL': s.birthPlaceDate,
-    'Orang Tua / Wali': s.parentName,
-    'No. WhatsApp': s.parentPhone,
-    'Alamat': s.address,
-  }));
+  const exportData = students.map((s, idx) => {
+    let place = s.birthPlace || '';
+    let date = s.birthDate || '';
+    if (!place && s.birthPlaceDate && s.birthPlaceDate.includes(',')) {
+      const parts = s.birthPlaceDate.split(',');
+      place = parts[0].trim();
+      date = parts.slice(1).join(',').trim();
+    } else if (!place) {
+      place = s.birthPlaceDate || '-';
+    }
+
+    return {
+      'No': idx + 1,
+      'Nama Santri': s.name,
+      'NIS': s.nis,
+      'NISN': s.nisn,
+      'L/P': s.gender,
+      'Kelas': s.className,
+      'Tempat Lahir': place,
+      'Tanggal Lahir': date,
+      'Orang Tua / Wali': s.parentName,
+      'No. WhatsApp': s.parentPhone,
+      'Alamat': s.address,
+    };
+  });
 
   const worksheet = XLSX.utils.json_to_sheet(exportData);
+  worksheet['!cols'] = [
+    { wch: 6 },
+    { wch: 26 },
+    { wch: 14 },
+    { wch: 16 },
+    { wch: 8 },
+    { wch: 12 },
+    { wch: 20 }, // Tempat Lahir
+    { wch: 20 }, // Tanggal Lahir
+    { wch: 26 },
+    { wch: 16 },
+    { wch: 35 },
+  ];
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Data Santri MI RPI');
   XLSX.writeFile(workbook, `Data_Santri_MI_RPI_${new Date().toISOString().split('T')[0]}.xlsx`);
@@ -185,11 +302,43 @@ export const parseTeacherExcel = async (file: File): Promise<Omit<Teacher, 'id'>
 };
 
 /**
+ * Formats Excel date values (Date object, serial number, or string) into DD/MM/YYYY
+ */
+const formatExcelDate = (val: any): string => {
+  if (val === null || val === undefined) return '';
+  if (val instanceof Date) {
+    if (isNaN(val.getTime())) return '';
+    const d = String(val.getDate()).padStart(2, '0');
+    const m = String(val.getMonth() + 1).padStart(2, '0');
+    const y = val.getFullYear();
+    return `${d}/${m}/${y}`;
+  }
+  if (typeof val === 'number') {
+    // Excel serial date number
+    if (val > 1000) {
+      const utcDays = Math.floor(val - 25569);
+      const utcValue = utcDays * 86400;
+      const dateInfo = new Date(utcValue * 1000);
+      if (!isNaN(dateInfo.getTime())) {
+        const d = String(dateInfo.getUTCDate()).padStart(2, '0');
+        const m = String(dateInfo.getUTCMonth() + 1).padStart(2, '0');
+        const y = dateInfo.getUTCFullYear();
+        return `${d}/${m}/${y}`;
+      }
+    }
+    return String(val);
+  }
+  const str = String(val).trim();
+  return str;
+};
+
+/**
  * Parses uploaded Excel / CSV file for Students
+ * Mendukung kolom Tempat Lahir dan Tanggal Lahir tersendiri (tidak digabung)
  */
 export const parseStudentExcel = async (file: File): Promise<Omit<Student, 'id'>[]> => {
   const buffer = await file.arrayBuffer();
-  const workbook = XLSX.read(buffer, { type: 'array' });
+  const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
   const sheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[sheetName];
   const rawRows: any[] = XLSX.utils.sheet_to_json(worksheet);
@@ -208,7 +357,49 @@ export const parseStudentExcel = async (file: File): Promise<Omit<Student, 'id'>
       const rawGender = String(row['Jenis Kelamin (L/P) *'] || row['Jenis Kelamin'] || row['L/P'] || 'L').trim().toUpperCase();
       const gender: 'L' | 'P' = rawGender.startsWith('P') ? 'P' : 'L';
       const className = row['Kelas *'] || row['Kelas'] || row['kelas'] || 'Kelas 1A';
-      const birthPlaceDate = row['Tempat, Tanggal Lahir'] || row['TTL'] || 'Jakarta, 1 Januari 2015';
+
+      // 1. Kolom Tempat Lahir Tersendiri
+      let birthPlace = String(
+        row['Tempat Lahir *'] ??
+        row['Tempat Lahir'] ??
+        row['tempat lahir'] ??
+        row['Kota Lahir'] ??
+        row['Tempat'] ??
+        ''
+      ).trim();
+
+      // 2. Kolom Tanggal Lahir Tersendiri
+      const rawBirthDate =
+        row['Tanggal Lahir (DD/MM/YYYY) *'] ??
+        row['Tanggal Lahir *'] ??
+        row['Tanggal Lahir'] ??
+        row['tanggal lahir'] ??
+        row['Tgl Lahir *'] ??
+        row['Tgl Lahir'] ??
+        row['Tgl'] ??
+        '';
+      let birthDate = formatExcelDate(rawBirthDate);
+
+      // Handle legacy fallback if old combined 'Tempat, Tanggal Lahir' / 'TTL' was used
+      let birthPlaceDate = '';
+      if (birthPlace && birthDate) {
+        birthPlaceDate = `${birthPlace}, ${birthDate}`;
+      } else if (row['Tempat, Tanggal Lahir'] || row['TTL']) {
+        const legacy = String(row['Tempat, Tanggal Lahir'] || row['TTL']).trim();
+        birthPlaceDate = legacy;
+        if (!birthPlace && legacy.includes(',')) {
+          const parts = legacy.split(',');
+          birthPlace = parts[0].trim();
+          birthDate = parts.slice(1).join(',').trim();
+        } else if (!birthPlace) {
+          birthPlace = legacy;
+        }
+      } else {
+        birthPlace = birthPlace || 'Jakarta';
+        birthDate = birthDate || '15/05/2014';
+        birthPlaceDate = `${birthPlace}, ${birthDate}`;
+      }
+
       const parentName = row['Nama Orang Tua / Wali *'] || row['Nama Orang Tua'] || row['Nama Wali'] || row['Orang Tua'] || 'Wali Santri';
       const parentPhone = String(row['No. WhatsApp Wali'] || row['No WhatsApp'] || row['No HP'] || row['WA'] || '0812').trim();
       const address = row['Alamat Tempat Tinggal'] || row['Alamat'] || 'Jakarta Selatan';
@@ -219,6 +410,8 @@ export const parseStudentExcel = async (file: File): Promise<Omit<Student, 'id'>
         nisn,
         gender,
         className: String(className).trim(),
+        birthPlace,
+        birthDate,
         birthPlaceDate: String(birthPlaceDate).trim(),
         parentName: String(parentName).trim(),
         parentPhone,

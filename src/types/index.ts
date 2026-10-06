@@ -89,6 +89,8 @@ export interface Student {
   name: string;
   gender: 'L' | 'P';
   className: string;
+  birthPlace?: string;
+  birthDate?: string;
   birthPlaceDate: string;
   parentName: string;
   parentPhone: string;

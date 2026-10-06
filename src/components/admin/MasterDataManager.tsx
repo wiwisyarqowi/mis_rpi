@@ -117,7 +117,8 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
   const [studentNisn, setStudentNisn] = useState('');
   const [studentGender, setStudentGender] = useState<'L' | 'P'>('L');
   const [studentClassName, setStudentClassName] = useState('Kelas 4A');
-  const [studentBirthPlaceDate, setStudentBirthPlaceDate] = useState('Jakarta, 15 Mei 2014');
+  const [studentBirthPlace, setStudentBirthPlace] = useState('Jakarta');
+  const [studentBirthDate, setStudentBirthDate] = useState('15/05/2014');
   const [studentParentName, setStudentParentName] = useState('');
   const [studentParentPhone, setStudentParentPhone] = useState('');
   const [studentAddress, setStudentAddress] = useState('Setiabudi, Jakarta Selatan');
@@ -236,7 +237,12 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
       setStudentNisn(s.nisn);
       setStudentGender(s.gender);
       setStudentClassName(s.className);
-      setStudentBirthPlaceDate(s.birthPlaceDate);
+      setStudentBirthPlace(
+        s.birthPlace || (s.birthPlaceDate?.includes(',') ? s.birthPlaceDate.split(',')[0].trim() : s.birthPlaceDate || 'Jakarta')
+      );
+      setStudentBirthDate(
+        s.birthDate || (s.birthPlaceDate?.includes(',') ? s.birthPlaceDate.split(',').slice(1).join(',').trim() : '15/05/2014')
+      );
       setStudentParentName(s.parentName);
       setStudentParentPhone(s.parentPhone);
       setStudentAddress(s.address);
@@ -248,7 +254,8 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
       setStudentNisn(`009${Math.floor(1000000 + Math.random() * 9000000)}`);
       setStudentGender('L');
       setStudentClassName(dynamicClassNames[0] || 'Kelas 1A');
-      setStudentBirthPlaceDate('Jakarta, 12 Januari 2019');
+      setStudentBirthPlace('Jakarta');
+      setStudentBirthDate('15/05/2014');
       setStudentParentName('');
       setStudentParentPhone('0812');
       setStudentAddress('Kuningan, Setiabudi, Jakarta Selatan');
@@ -279,6 +286,10 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
       return;
     }
 
+    const birthPlaceDateCombined = studentBirthPlace && studentBirthDate
+      ? `${studentBirthPlace}, ${studentBirthDate}`
+      : studentBirthPlace || studentBirthDate || 'Jakarta, 15/05/2014';
+
     if (editingStudentId) {
       updateStudent(editingStudentId, {
         name: studentName,
@@ -286,7 +297,9 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
         nisn: studentNisn,
         gender: studentGender,
         className: studentClassName,
-        birthPlaceDate: studentBirthPlaceDate,
+        birthPlace: studentBirthPlace,
+        birthDate: studentBirthDate,
+        birthPlaceDate: birthPlaceDateCombined,
         parentName: studentParentName,
         parentPhone: studentParentPhone,
         address: studentAddress,
@@ -300,7 +313,9 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
         nisn: studentNisn,
         gender: studentGender,
         className: studentClassName,
-        birthPlaceDate: studentBirthPlaceDate,
+        birthPlace: studentBirthPlace,
+        birthDate: studentBirthDate,
+        birthPlaceDate: birthPlaceDateCombined,
         parentName: studentParentName,
         parentPhone: studentParentPhone,
         address: studentAddress,
@@ -993,6 +1008,23 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
               </div>
             </div>
 
+            {/* Template format info notice */}
+            <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-2 text-emerald-900">
+                <CheckCircle2 size={16} className="text-emerald-700 shrink-0" />
+                <span>
+                  <strong>Format Template Excel Siswa:</strong> Kolom <strong>Tempat Lahir</strong> dan <strong>Tanggal Lahir</strong> telah dibuat tersendiri (satu kolom untuk Tempat Lahir, satu kolom untuk Tanggal Lahir, tidak digabung).
+                </span>
+              </div>
+              <button
+                onClick={downloadStudentExcelTemplate}
+                className="text-emerald-700 hover:text-emerald-900 font-bold underline inline-flex items-center gap-1 cursor-pointer shrink-0"
+              >
+                <Download size={13} />
+                <span>Unduh Template Format Baru (.xlsx)</span>
+              </button>
+            </div>
+
             {/* Students Table */}
             <div className="overflow-x-auto rounded-2xl border border-slate-200">
               <table className="w-full text-left border-collapse text-xs">
@@ -1011,7 +1043,8 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
                     <th className="py-3 px-4">NIS / NISN</th>
                     <th className="py-3 px-4">Kelas</th>
                     <th className="py-3 px-4">L/P</th>
-                    <th className="py-3 px-4">Tempat, Tgl Lahir</th>
+                    <th className="py-3 px-4">Tempat Lahir</th>
+                    <th className="py-3 px-4">Tanggal Lahir</th>
                     <th className="py-3 px-4">Orang Tua / Wali</th>
                     <th className="py-3 px-4">No. HP / WA</th>
                     <th className="py-3 px-4 text-center">Aksi</th>
@@ -1020,7 +1053,7 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
                 <tbody className="divide-y divide-slate-100">
                   {filteredStudents.length === 0 ? (
                     <tr>
-                      <td colSpan={9} className="py-8 text-center text-slate-400">
+                      <td colSpan={10} className="py-8 text-center text-slate-400">
                         Tidak ditemukan data santri yang cocok dengan pencarian / filter kelas.
                       </td>
                     </tr>
@@ -1086,9 +1119,14 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
                             </span>
                           </td>
 
-                          {/* Tempat, Tgl Lahir */}
-                          <td className="py-3 px-4 text-slate-600">
-                            {s.birthPlaceDate}
+                          {/* Tempat Lahir (Kolom Tersendiri) */}
+                          <td className="py-3 px-4 font-semibold text-slate-800">
+                            {s.birthPlace || (s.birthPlaceDate?.includes(',') ? s.birthPlaceDate.split(',')[0].trim() : s.birthPlaceDate || '-')}
+                          </td>
+
+                          {/* Tanggal Lahir (Kolom Tersendiri) */}
+                          <td className="py-3 px-4 text-slate-600 font-mono text-[11px]">
+                            {s.birthDate || (s.birthPlaceDate?.includes(',') ? s.birthPlaceDate.split(',').slice(1).join(',').trim() : '-')}
                           </td>
 
                           {/* Ortu */}
@@ -1319,17 +1357,29 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
                       <th className="p-2.5">Nama</th>
                       <th className="p-2.5">{excelPreviewData.type === 'guru' ? 'NIP' : 'NISN'}</th>
                       <th className="p-2.5">{excelPreviewData.type === 'guru' ? 'Mapel' : 'Kelas'}</th>
-                      <th className="p-2.5">{excelPreviewData.type === 'guru' ? 'Pendidikan' : 'Nama Ortu'}</th>
+                      <th className="p-2.5">{excelPreviewData.type === 'guru' ? 'Pendidikan' : 'Tempat Lahir'}</th>
+                      <th className="p-2.5">{excelPreviewData.type === 'guru' ? 'Status' : 'Tanggal Lahir'}</th>
+                      <th className="p-2.5">{excelPreviewData.type === 'guru' ? 'Jabatan' : 'Orang Tua / Wali'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {excelPreviewData.items.slice(0, 8).map((row, idx) => (
+                    {excelPreviewData.items.slice(0, 8).map((row: any, idx: number) => (
                       <tr key={idx} className="hover:bg-slate-50">
                         <td className="p-2.5 text-slate-400">{idx + 1}</td>
                         <td className="p-2.5 font-bold text-slate-900">{row.name}</td>
                         <td className="p-2.5 font-mono text-slate-600">{row.nip || row.nisn}</td>
                         <td className="p-2.5">{row.subject || row.className}</td>
-                        <td className="p-2.5 text-slate-600">{row.education || row.parentName}</td>
+                        <td className="p-2.5 font-medium text-slate-800">
+                          {excelPreviewData.type === 'guru'
+                            ? row.education
+                            : (row.birthPlace || (row.birthPlaceDate?.includes(',') ? row.birthPlaceDate.split(',')[0].trim() : '-'))}
+                        </td>
+                        <td className="p-2.5 text-slate-600 font-mono text-[11px]">
+                          {excelPreviewData.type === 'guru'
+                            ? row.status
+                            : (row.birthDate || (row.birthPlaceDate?.includes(',') ? row.birthPlaceDate.split(',').slice(1).join(',').trim() : '-'))}
+                        </td>
+                        <td className="p-2.5 text-slate-600">{row.title || row.parentName}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1904,16 +1954,36 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
                 </div>
               </div>
 
-              {/* Birth Place Date */}
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Tempat, Tanggal Lahir</label>
-                <input
-                  type="text"
-                  placeholder="Contoh: Jakarta, 15 Mei 2014"
-                  value={studentBirthPlaceDate}
-                  onChange={(e) => setStudentBirthPlaceDate(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none"
-                />
+              {/* Birth Place and Birth Date (Kolom Tersendiri) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1 text-xs">
+                    Tempat Lahir * <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Kolom Tersendiri</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: Jakarta"
+                    value={studentBirthPlace}
+                    onChange={(e) => setStudentBirthPlace(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-900"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Kota / Kabupaten tempat lahir santri</p>
+                </div>
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1 text-xs">
+                    Tanggal Lahir * <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Kolom Tersendiri</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: 15/05/2014 atau 15 Mei 2014"
+                    value={studentBirthDate}
+                    onChange={(e) => setStudentBirthDate(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-900"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">Format: DD/MM/YYYY atau tanggal baku</p>
+                </div>
               </div>
 
               {/* Parent Info */}
