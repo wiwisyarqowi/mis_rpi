@@ -1,32 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   BookOpen,
-  Calendar,
-  Clock,
-  Sparkles,
   Layers,
-  Award,
   CheckCircle,
-  FileText,
-  Laptop,
-  Heart,
   ChevronRight,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
 import { initialDimensions, initialAcademicSubjects } from '../../data/initialData';
 
 export const AcademicPage: React.FC = () => {
-  const { schedules, materials, dimensions: ctxDimensions, academicSubjects: ctxSubjects } = useSchool();
-  const [activeDay, setActiveDay] = useState<'Senin' | 'Selasa' | 'Rabu' | 'Kamis' | 'Jumat'>('Senin');
-  const [selectedClass, setSelectedClass] = useState<string>('Kelas 4A');
+  const { dimensions: ctxDimensions, academicSubjects: ctxSubjects } = useSchool();
 
   const dimensions = ctxDimensions && ctxDimensions.length > 0 ? ctxDimensions : initialDimensions;
   const subjects = ctxSubjects && ctxSubjects.length > 0 ? ctxSubjects : initialAcademicSubjects;
-
-  const availableClasses = Array.from(new Set(schedules.map((s) => s.className))).filter(Boolean);
-  const daySchedules = schedules.filter(
-    (s) => s.day === activeDay && (!selectedClass || s.className === selectedClass)
-  );
 
   return (
     <div className="bg-slate-50 min-h-screen py-10">
@@ -62,7 +48,7 @@ export const AcademicPage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pt-4">
             {dimensions.map((dim, idx) => (
               <div
-                key={idx}
+                key={dim.id || idx}
                 className="p-5 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 hover:border-emerald-300 transition flex flex-col justify-between"
               >
                 <div>
@@ -90,7 +76,7 @@ export const AcademicPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {subjects.map((sub, idx) => (
-              <div key={idx} className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-4">
+              <div key={sub.id || idx} className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-4">
                 <h3 className="font-bold text-sm text-emerald-800 pb-2 border-b border-slate-200">
                   {sub.category}
                 </h3>
@@ -107,86 +93,44 @@ export const AcademicPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Jadwal Pelajaran Interaktif */}
-        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <Clock size={20} className="text-emerald-700" />
-                <h2 className="text-xl font-bold text-slate-900">
-                  Simulasi Jadwal KBM Harian ({selectedClass})
-                </h2>
-              </div>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Jadwal pembelajaran aktif seimbang antara sains, agama, dan pembiasaan adab
+        {/* Pendekatan Belajar & Karakter Keislaman */}
+        <div className="bg-gradient-to-br from-emerald-900 to-slate-900 text-white p-8 sm:p-10 rounded-3xl shadow-lg space-y-6">
+          <div className="max-w-2xl">
+            <span className="bg-emerald-800 text-emerald-200 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+              Metodologi Pembelajaran
+            </span>
+            <h3 className="text-2xl font-black mt-2">
+              Pendekatan Terpadu: Agama, Nalar Kritis & Digital
+            </h3>
+            <p className="text-xs text-emerald-100/80 mt-1">
+              Setiap capaian kurikulum dikontekstualisasikan dengan adab Qurani dan pemanfaatan teknologi secara berimbang.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+            <div className="p-5 rounded-2xl bg-white/10 border border-white/10 space-y-2">
+              <span className="text-2xl block">📖</span>
+              <h4 className="font-bold text-sm text-white">Pembelajaran Berdiferensiasi</h4>
+              <p className="text-xs text-slate-200 leading-relaxed">
+                Menyesuaikan kecepatan dan gaya belajar setiap anak melalui bimbingan personal guru dan asesmen berkala.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              {availableClasses.length > 1 && (
-                <select
-                  value={selectedClass}
-                  onChange={(e) => setSelectedClass(e.target.value)}
-                  className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-hidden"
-                >
-                  {availableClasses.map((cls) => (
-                    <option key={cls} value={cls}>
-                      {cls}
-                    </option>
-                  ))}
-                </select>
-              )}
-
-              <div className="flex gap-1.5 overflow-x-auto">
-                {(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as const).map((day) => (
-                  <button
-                    key={day}
-                    onClick={() => setActiveDay(day)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
-                      activeDay === day
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
-                  >
-                    {day}
-                  </button>
-                ))}
-              </div>
+            <div className="p-5 rounded-2xl bg-white/10 border border-white/10 space-y-2">
+              <span className="text-2xl block">💡</span>
+              <h4 className="font-bold text-sm text-white">Proyek Kolaboratif (P5-PPRA)</h4>
+              <p className="text-xs text-slate-200 leading-relaxed">
+                Penguatan Profil Pelajar Pancasila dan Rahmatan Lil Alamin melalui karya nyata sosial, sains, dan kebaikan lingkungan.
+              </p>
             </div>
-          </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-200 text-slate-400 uppercase tracking-wider font-semibold">
-                  <th className="py-3 px-4">Waktu</th>
-                  <th className="py-3 px-4">Mata Pelajaran</th>
-                  <th className="py-3 px-4">Guru Pengampu</th>
-                  <th className="py-3 px-4">Ruang</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {daySchedules.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50 transition">
-                    <td className="py-3.5 px-4 font-mono font-bold text-emerald-800">{item.time}</td>
-                    <td className="py-3.5 px-4 font-bold text-slate-900">{item.subject}</td>
-                    <td className="py-3.5 px-4 text-slate-600">{item.teacherName}</td>
-                    <td className="py-3.5 px-4">
-                      <span className="bg-slate-100 text-slate-700 font-semibold px-2 py-0.5 rounded-md text-[11px]">
-                        {item.room}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-                {daySchedules.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="py-8 text-center text-slate-400">
-                      Belum ada simulasi jadwal untuk hari {activeDay} pada {selectedClass}.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            <div className="p-5 rounded-2xl bg-white/10 border border-white/10 space-y-2">
+              <span className="text-2xl block">🛡️</span>
+              <h4 className="font-bold text-sm text-white">Ekosistem Ramah Anak</h4>
+              <p className="text-xs text-slate-200 leading-relaxed">
+                Lingkungan kelas yang aman emosional, bebas perundungan, dan menumbuhkan rasa percaya diri santri.
+              </p>
+            </div>
           </div>
         </div>
       </div>
