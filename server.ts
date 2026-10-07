@@ -30,6 +30,10 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 const dbFilePath = path.join(dataDir, 'school_database.json');
+const backupsDir = path.join(dataDir, 'backups');
+if (!fs.existsSync(backupsDir)) {
+  fs.mkdirSync(backupsDir, { recursive: true });
+}
 
 // Helper to convert base64 dataUrl into static file on server
 function extractBase64AndSave(val: string, prefix = 'media'): string {
@@ -87,6 +91,13 @@ function saveDatabase(newData: Record<string, any>): Record<string, any> {
     const current = readDatabase();
     const merged = { ...current, ...newData, lastUpdated: new Date().toISOString() };
     fs.writeFileSync(dbFilePath, JSON.stringify(merged, null, 2), 'utf-8');
+
+    // Automatically create a backup snapshot when changes occur
+    try {
+      const snapPath = path.join(backupsDir, `snapshot-${new Date().toISOString().split('T')[0]}.json`);
+      fs.writeFileSync(snapPath, JSON.stringify(merged, null, 2), 'utf-8');
+    } catch (_) {}
+
     return merged;
   } catch (e) {
     console.error('Error writing school_database.json:', e);

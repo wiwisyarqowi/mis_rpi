@@ -281,14 +281,24 @@ export const MediaManager: React.FC = () => {
     showFeedback(`Foto kegiatan "${galTitle}" berhasil ditambahkan ke galeri!`);
   };
 
-  const handleSaveTeacherPhoto = () => {
-    if (!selectedTeacherId || !teacherPhotoInput) return;
+  const handleSaveTeacherPhoto = async () => {
+    const photoToSave = teacherPhotoInput || teacherPhotoPreview;
+    if (!selectedTeacherId || !photoToSave) {
+      alert('Pilih foto guru atau masukkan URL foto terlebih dahulu.');
+      return;
+    }
+    
+    let finalUrl = photoToSave;
+    if (photoToSave.startsWith('data:image/')) {
+      finalUrl = await uploadImageToServer(photoToSave, 'guru');
+    }
+
     updateTeacher(selectedTeacherId, {
-      photoUrl: teacherPhotoInput,
+      photoUrl: finalUrl,
     });
-    showFeedback(`Foto asatidz ${selectedTeacher?.name} berhasil diperbarui!`);
-    setTeacherPhotoInput('');
-    setTeacherPhotoPreview('');
+    setTeacherPhotoInput(finalUrl);
+    setTeacherPhotoPreview(finalUrl);
+    showFeedback(`✅ Foto asatidz ${selectedTeacher?.name} berhasil disimpan permanen!`);
   };
 
   return (
@@ -900,9 +910,11 @@ export const MediaManager: React.FC = () => {
                 <select
                   value={selectedTeacherId}
                   onChange={(e) => {
-                    setSelectedTeacherId(e.target.value);
-                    setTeacherPhotoInput('');
-                    setTeacherPhotoPreview('');
+                    const tId = e.target.value;
+                    setSelectedTeacherId(tId);
+                    const tch = teachers.find((t) => t.id === tId);
+                    setTeacherPhotoInput(tch?.photoUrl || '');
+                    setTeacherPhotoPreview(tch?.photoUrl || '');
                   }}
                   className="w-full bg-white border border-slate-200 px-3 py-2 rounded-xl text-xs outline-none focus:border-emerald-500"
                 >

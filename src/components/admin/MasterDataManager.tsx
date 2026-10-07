@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   GraduationCap,
   Users,
@@ -20,10 +20,11 @@ import {
   Layers,
   HelpCircle,
   FileText,
+  RotateCcw,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
 import { Teacher, Student, SchoolClass } from '../../types';
-import { processImageFile } from '../../utils/imageUpload';
+import { processImageFile, uploadImageToServer } from '../../utils/imageUpload';
 import {
   downloadTeacherExcelTemplate,
   downloadStudentExcelTemplate,
@@ -141,6 +142,39 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
   const [targetClass, setTargetClass] = useState('');
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
 
+  // Browser Backup Detection
+  const [localBackupFound, setLocalBackupFound] = useState<number>(0);
+
+  useEffect(() => {
+    try {
+      const backupRaw = localStorage.getItem('mi_rpi_students_backup') || localStorage.getItem('mi_rpi_students');
+      if (backupRaw) {
+        const parsed = JSON.parse(backupRaw);
+        if (Array.isArray(parsed) && parsed.length > students.length) {
+          setLocalBackupFound(parsed.length);
+        }
+      }
+    } catch (_) {}
+  }, [students.length]);
+
+  const handleRestoreFromBrowserBackup = () => {
+    try {
+      const backupRaw = localStorage.getItem('mi_rpi_students_backup') || localStorage.getItem('mi_rpi_students');
+      if (backupRaw) {
+        const parsed = JSON.parse(backupRaw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const count = importStudentsFromExcel(parsed);
+          showNotice(`Alhamdulillah! Berhasil memulihkan ${count || parsed.length} data santri dari cadangan peramban!`);
+          setLocalBackupFound(0);
+          return;
+        }
+      }
+      alert('Tidak ditemukan data cadangan di peramban ini.');
+    } catch (e) {
+      alert('Gagal memulihkan cadangan.');
+    }
+  };
+
   // List of unique class names from `classes`
   const dynamicClassNames = classes.map((c) => c.name);
 
@@ -179,9 +213,11 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
     if (!file) return;
     setIsUploadingTeacherPhoto(true);
     try {
+      showNotice('⏳ Sedang memproses dan mengunggah foto guru ke server...');
       const dataUrl = await processImageFile(file, 600, 600, 0.85);
-      setTeacherPhotoUrl(dataUrl);
-      showNotice('Foto guru berhasil diproses dan siap disimpan!');
+      const serverUrl = await uploadImageToServer(dataUrl, 'guru');
+      setTeacherPhotoUrl(serverUrl);
+      showNotice('✅ Foto guru berhasil diunggah! Klik "Simpan Perubahan" untuk menyimpan permanen.');
     } catch (err: any) {
       alert(err.message || 'Gagal mengunggah foto.');
     } finally {
@@ -269,9 +305,11 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
     if (!file) return;
     setIsUploadingStudentPhoto(true);
     try {
+      showNotice('⏳ Sedang memproses dan mengunggah foto santri ke server...');
       const dataUrl = await processImageFile(file, 600, 600, 0.85);
-      setStudentPhotoUrl(dataUrl);
-      showNotice('Foto santri berhasil diproses dan siap disimpan!');
+      const serverUrl = await uploadImageToServer(dataUrl, 'santri');
+      setStudentPhotoUrl(serverUrl);
+      showNotice('✅ Foto santri berhasil diunggah! Klik "Simpan" untuk menyimpan.');
     } catch (err: any) {
       alert(err.message || 'Gagal mengunggah foto.');
     } finally {
@@ -1008,12 +1046,39 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
               </div>
             </div>
 
-            {/* Template format info notice */}
+            {/* Local Browser Backup Recovery Banner if found */}
+            {localBackupFound > 0 && (
+              <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-md animate-in fade-in">
+                <div className="flex items-center gap-3 text-amber-900">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shrink-0 shadow-xs">
+                    💾
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-amber-900">
+                      Ditemukan {localBackupFound} Data Santri di Memori Peramban Anda!
+                    </h4>
+                    <p className="text-amber-800 text-[11px] mt-0.5">
+                      Sistem mendeteksi riwayat data santri yang pernah diimpor pada browser ini. Klik tombol untuk memulihkannya langsung tanpa perlu unggah ulang.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRestoreFromBrowserBackup}
+                  className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md transition shrink-0 cursor-pointer flex items-center gap-2"
+                >
+                  <RotateCcw size={16} />
+                  <span>Pulihkan {localBackupFound} Data Sekarang</span>
+                </button>
+              </div>
+            )}
+
+            {/* Template format info notice & Re-import helper */}
             <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
               <div className="flex items-center gap-2 text-emerald-900">
                 <CheckCircle2 size={16} className="text-emerald-700 shrink-0" />
                 <span>
-                  <strong>Format Template Excel Siswa:</strong> Kolom <strong>Tempat Lahir</strong> dan <strong>Tanggal Lahir</strong> telah dibuat tersendiri (satu kolom untuk Tempat Lahir, satu kolom untuk Tanggal Lahir, tidak digabung).
+                  <strong>Data Excel Tersimpan di Laptop:</strong> Jika data Anda sempat ter-reset, berkas Excel yang kemarin Anda isi <strong>masih tersimpan di folder Unduhan (Downloads) komputer Anda</strong>. Cukup klik <strong>"Import Excel"</strong> di atas (1 klik saja) untuk memasukkannya kembali seketika tanpa perlu mengetik ulang!
                 </span>
               </div>
               <button
@@ -1021,7 +1086,7 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
                 className="text-emerald-700 hover:text-emerald-900 font-bold underline inline-flex items-center gap-1 cursor-pointer shrink-0"
               >
                 <Download size={13} />
-                <span>Unduh Template Format Baru (.xlsx)</span>
+                <span>Unduh Format Template Baru (.xlsx)</span>
               </button>
             </div>
 
@@ -1697,26 +1762,46 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
 
             <form onSubmit={handleSaveTeacher} className="p-6 space-y-4 text-xs max-h-[80vh] overflow-y-auto">
               {/* Photo Upload Section */}
-              <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                 <img
                   src={teacherPhotoUrl || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=200&auto=format&fit=crop&q=80'}
                   alt="Foto Guru"
-                  className="w-20 h-20 rounded-2xl object-cover border-2 border-emerald-600 shrink-0"
+                  className="w-20 h-20 rounded-2xl object-cover border-2 border-emerald-600 shrink-0 shadow-xs"
                 />
-                <div className="space-y-1.5 flex-1">
-                  <label className="font-bold text-slate-800 block">Foto Profil Guru</label>
-                  <label className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl cursor-pointer transition text-xs">
-                    <Camera size={14} />
-                    <span>{isUploadingTeacherPhoto ? 'Memproses...' : 'Unggah / Ganti Foto'}</span>
+                <div className="space-y-2 flex-1 w-full">
+                  <div className="flex items-center justify-between">
+                    <label className="font-bold text-slate-800 block">Foto Profil Guru</label>
+                    {teacherPhotoUrl && (
+                      <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        Foto Terpasang
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl cursor-pointer transition text-xs shadow-xs">
+                      <Camera size={14} />
+                      <span>{isUploadingTeacherPhoto ? '⏳ Mengunggah ke Server...' : 'Unggah Foto dari Perangkat'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleTeacherPhotoUpload}
+                        disabled={isUploadingTeacherPhoto}
+                      />
+                    </label>
+                  </div>
+                  <div>
                     <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleTeacherPhotoUpload}
-                      disabled={isUploadingTeacherPhoto}
+                      type="text"
+                      placeholder="Atau tautan URL foto: https://..."
+                      value={teacherPhotoUrl}
+                      onChange={(e) => setTeacherPhotoUrl(e.target.value)}
+                      className="w-full bg-white border border-slate-200 px-3 py-1.5 rounded-xl text-xs outline-none focus:border-emerald-500 font-mono text-slate-700"
                     />
-                  </label>
-                  <p className="text-[10px] text-slate-500">Mendukung format JPG, PNG, WebP (Maks 10MB).</p>
+                  </div>
+                  <p className="text-[10px] text-slate-400">
+                    Foto tersimpan langsung di server database dan tampil pada Profil Guru serta Rapor Digital.
+                  </p>
                 </div>
               </div>
 

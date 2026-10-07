@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import {
   SchoolSettings,
   User,
@@ -306,14 +306,25 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return saved ? JSON.parse(saved) : initialExtracurriculars;
   });
 
+  // Guard to prevent initial render / unhydrated state from overwriting the server database
+  const isHydratedRef = useRef(false);
+
   // Helper to sync collections to server disk
   const syncToServer = async (key: string, data: any) => {
     try {
-      await fetch('/api/school-data', {
+      const res = await fetch('/api/school-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key, data }),
       });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data && json.data[key]) {
+          try {
+            localStorage.setItem(`mi_rpi_${key}`, JSON.stringify(json.data[key]));
+          } catch (_) {}
+        }
+      }
     } catch (e) {
       console.warn(`Sync to server failed for ${key}:`, e);
     }
@@ -342,16 +353,45 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               } catch (_) {}
             }
             if (Array.isArray(serverData.teachers) && serverData.teachers.length > 0) {
-              setTeachers(serverData.teachers);
-              try {
-                localStorage.setItem('mi_rpi_teachers', JSON.stringify(serverData.teachers));
-              } catch (_) {}
+              setTeachers((prevLocal) => {
+                const backup = localStorage.getItem('mi_rpi_teachers_backup');
+                let candidate = prevLocal;
+                if (backup) {
+                  try {
+                    const parsed = JSON.parse(backup);
+                    if (Array.isArray(parsed) && parsed.length > candidate.length) candidate = parsed;
+                  } catch (_) {}
+                }
+                if (candidate.length > serverData.teachers.length) {
+                  syncToServer('teachers', candidate);
+                  return candidate;
+                }
+                try {
+                  localStorage.setItem('mi_rpi_teachers', JSON.stringify(serverData.teachers));
+                } catch (_) {}
+                return serverData.teachers;
+              });
             }
             if (Array.isArray(serverData.students) && serverData.students.length > 0) {
-              setStudents(serverData.students);
-              try {
-                localStorage.setItem('mi_rpi_students', JSON.stringify(serverData.students));
-              } catch (_) {}
+              setStudents((prevLocal) => {
+                const backup = localStorage.getItem('mi_rpi_students_backup');
+                let candidate = prevLocal;
+                if (backup) {
+                  try {
+                    const parsed = JSON.parse(backup);
+                    if (Array.isArray(parsed) && parsed.length > candidate.length) candidate = parsed;
+                  } catch (_) {}
+                }
+                // Never overwrite local uploaded students with fewer server dummy students!
+                if (candidate.length > serverData.students.length) {
+                  syncToServer('students', candidate);
+                  return candidate;
+                }
+                try {
+                  localStorage.setItem('mi_rpi_students', JSON.stringify(serverData.students));
+                } catch (_) {}
+                return serverData.students;
+              });
             }
             if (Array.isArray(serverData.classes) && serverData.classes.length > 0) {
               setClasses(serverData.classes);
@@ -426,6 +466,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
       } catch (err) {
         console.warn('Initial server hydration warning:', err);
+      } finally {
+        if (isMounted) {
+          isHydratedRef.current = true;
+        }
       }
     };
     hydrateFromServer();
@@ -435,6 +479,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, []);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(userAccounts));
     } catch (_) {}
@@ -442,6 +487,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [userAccounts]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_teachers', JSON.stringify(teachers));
     } catch (_) {}
@@ -449,6 +495,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [teachers]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_students', JSON.stringify(students));
     } catch (_) {}
@@ -456,6 +503,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [students]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_classes', JSON.stringify(classes));
     } catch (_) {}
@@ -471,6 +519,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [grades]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_gallery', JSON.stringify(gallery));
     } catch (_) {}
@@ -478,6 +527,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [gallery]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_news', JSON.stringify(news));
     } catch (_) {}
@@ -485,6 +535,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [news]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_spmb', JSON.stringify(spmbApplications));
     } catch (_) {}
@@ -492,6 +543,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [spmbApplications]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_programs', JSON.stringify(programs));
     } catch (_) {}
@@ -499,6 +551,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [programs]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_dimensions', JSON.stringify(dimensions));
     } catch (_) {}
@@ -506,6 +559,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [dimensions]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_academic_subjects', JSON.stringify(academicSubjects));
     } catch (_) {}
@@ -513,6 +567,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [academicSubjects]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_habits', JSON.stringify(habits));
     } catch (_) {}
@@ -520,6 +575,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [habits]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_extracurriculars', JSON.stringify(extracurriculars));
     } catch (_) {}
@@ -527,6 +583,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [extracurriculars]);
 
   useEffect(() => {
+    if (!isHydratedRef.current) return;
     try {
       localStorage.setItem('mi_rpi_schedules', JSON.stringify(schedules));
     } catch (_) {}
@@ -1132,22 +1189,48 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       ...t,
       id: `tch-${Date.now()}`,
     };
-    setTeachers((prev) => [...prev, newTeacher]);
+    setTeachers((prev) => {
+      const next = [...prev, newTeacher];
+      try {
+        localStorage.setItem('mi_rpi_teachers', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('teachers', next);
+      return next;
+    });
   };
 
   const updateTeacher = (id: string, updated: Partial<Teacher>) => {
-    setTeachers((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, ...updated } : t))
-    );
+    setTeachers((prev) => {
+      const next = prev.map((t) => (t.id === id ? { ...t, ...updated } : t));
+      try {
+        localStorage.setItem('mi_rpi_teachers', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('teachers', next);
+      return next;
+    });
   };
 
   const deleteTeacher = (id: string) => {
-    setTeachers((prev) => prev.filter((t) => t.id !== id));
+    setTeachers((prev) => {
+      const next = prev.filter((t) => t.id !== id);
+      try {
+        localStorage.setItem('mi_rpi_teachers', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('teachers', next);
+      return next;
+    });
   };
 
   const deleteTeachers = (ids: string[]) => {
     const idSet = new Set(ids);
-    setTeachers((prev) => prev.filter((t) => !idSet.has(t.id)));
+    setTeachers((prev) => {
+      const next = prev.filter((t) => !idSet.has(t.id));
+      try {
+        localStorage.setItem('mi_rpi_teachers', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('teachers', next);
+      return next;
+    });
   };
 
   const addStudent = (s: Omit<Student, 'id'>) => {
@@ -1229,7 +1312,13 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
       });
 
-      return [...prev, ...toAdd];
+      const next = [...prev, ...toAdd];
+      try {
+        localStorage.setItem('mi_rpi_teachers', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_teachers_backup', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('teachers', next);
+      return next;
     });
     return count;
   };
@@ -1251,7 +1340,13 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
       });
 
-      return [...prev, ...toAdd];
+      const next = [...prev, ...toAdd];
+      try {
+        localStorage.setItem('mi_rpi_students', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_students_backup', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('students', next);
+      return next;
     });
     return count;
   };
