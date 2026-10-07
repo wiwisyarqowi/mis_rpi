@@ -21,6 +21,11 @@ import {
   HelpCircle,
   FileText,
   RotateCcw,
+  Database,
+  ShieldCheck,
+  FileJson,
+  History,
+  RefreshCw,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
 import { Teacher, Student, SchoolClass } from '../../types';
@@ -35,7 +40,7 @@ import {
 } from '../../utils/excelHelper';
 
 interface MasterDataManagerProps {
-  initialTab?: 'guru' | 'siswa' | 'kelas';
+  initialTab?: 'guru' | 'siswa' | 'kelas' | 'cadangan';
 }
 
 export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab = 'guru' }) => {
@@ -57,9 +62,13 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
     batchUpdateStudentClass,
     importTeachersFromExcel,
     importStudentsFromExcel,
+    restoreFullDatabase,
+    fetchBackupsList,
+    restoreBackupByFilename,
+    exportFullDatabase,
   } = useSchool();
 
-  const [activeSubTab, setActiveSubTab] = useState<'guru' | 'siswa' | 'kelas'>(initialTab);
+  const [activeSubTab, setActiveSubTab] = useState<'guru' | 'siswa' | 'kelas' | 'cadangan'>(initialTab);
 
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState('');
@@ -142,36 +151,128 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
   const [targetClass, setTargetClass] = useState('');
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
 
-  // Browser Backup Detection
+  // Browser Backup & Server Snapshot Detection
   const [localBackupFound, setLocalBackupFound] = useState<number>(0);
+  const [teacherBackupFound, setTeacherBackupFound] = useState<number>(0);
+  const [serverBackupsList, setServerBackupsList] = useState<any[]>([]);
+  const [isLoadingBackups, setIsLoadingBackups] = useState<boolean>(false);
+  const jsonFileInputRef = useRef<HTMLInputElement>(null);
+
+  const loadServerBackups = async () => {
+    setIsLoadingBackups(true);
+    try {
+      const list = await fetchBackupsList();
+      setServerBackupsList(list);
+    } catch (_) {
+    } finally {
+      setIsLoadingBackups(false);
+    }
+  };
 
   useEffect(() => {
     try {
-      const backupRaw = localStorage.getItem('mi_rpi_students_backup') || localStorage.getItem('mi_rpi_students');
-      if (backupRaw) {
-        const parsed = JSON.parse(backupRaw);
-        if (Array.isArray(parsed) && parsed.length > students.length) {
-          setLocalBackupFound(parsed.length);
+      // 1. Check students backup in browser
+      const b1 = localStorage.getItem('mi_rpi_students_backup') || localStorage.getItem('mi_rpi_students');
+      if (b1) {
+        const p1 = JSON.parse(b1);
+        if (Array.isArray(p1) && p1.length > 0 && p1.length >= students.length) {
+          setLocalBackupFound(p1.length);
         }
       }
-    } catch (_) {}
-  }, [students.length]);
 
-  const handleRestoreFromBrowserBackup = () => {
+      // 2. Check teachers backup in browser
+      const tb = localStorage.getItem('mi_rpi_teachers_backup');
+      if (tb) {
+        const pt = JSON.parse(tb);
+        if (Array.isArray(pt) && pt.length > 0) {
+          setTeacherBackupFound(pt.length);
+        }
+      }
+
+      // 3. Load server snapshots
+      loadServerBackups();
+    } catch (_) {}
+  }, [students.length, teachers.length]);
+
+  const handleRestoreFromBrowserBackup = async () => {
     try {
       const backupRaw = localStorage.getItem('mi_rpi_students_backup') || localStorage.getItem('mi_rpi_students');
       if (backupRaw) {
         const parsed = JSON.parse(backupRaw);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const count = importStudentsFromExcel(parsed);
-          showNotice(`Alhamdulillah! Berhasil memulihkan ${count || parsed.length} data santri dari cadangan peramban!`);
-          setLocalBackupFound(0);
+          showNotice(`⏳ Sedang memulihkan ${parsed.length} data santri...`);
+          const success = await restoreFullDatabase({ students: parsed });
+          if (success) {
+            showNotice(`Alhamdulillah! Berhasil memulihkan ${parsed.length} data santri dari cadangan peramban!`);
+          } else {
+            showNotice(`Data santri (${parsed.length}) berhasil dipulihkan secara lokal!`);
+          }
           return;
         }
       }
       alert('Tidak ditemukan data cadangan di peramban ini.');
     } catch (e) {
-      alert('Gagal memulihkan cadangan.');
+      alert('Gagal memulihkan cadangan santri.');
+    }
+  };
+
+  const handleRestoreTeachersFromBackup = async () => {
+    try {
+      const backupRaw = localStorage.getItem('mi_rpi_teachers_backup');
+      if (backupRaw) {
+        const parsed = JSON.parse(backupRaw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          showNotice(`⏳ Sedang memulihkan ${parsed.length} data guru...`);
+          const success = await restoreFullDatabase({ teachers: parsed });
+          if (success) {
+            showNotice(`Alhamdulillah! Berhasil memulihkan ${parsed.length} data guru & foto dari cadangan!`);
+          } else {
+            showNotice(`Data guru (${parsed.length}) berhasil dipulihkan secara lokal!`);
+          }
+          return;
+        }
+      }
+      alert('Tidak ditemukan data cadangan guru di peramban ini.');
+    } catch (e) {
+      alert('Gagal memulihkan cadangan guru.');
+    }
+  };
+
+  const handleRestoreServerSnapshot = async (filename: string) => {
+    if (!window.confirm(`Pulihkan database dari snapshot cadangan server "${filename}"? Seluruh data santri, guru, dan pengaturan akan diselaraskan dengan cadangan ini.`)) {
+      return;
+    }
+    showNotice(`⏳ Sedang memulihkan database dari snapshot ${filename}...`);
+    const success = await restoreBackupByFilename(filename);
+    if (success) {
+      showNotice(`Alhamdulillah! Database berhasil dipulihkan dari snapshot ${filename}!`);
+      loadServerBackups();
+    } else {
+      alert('Gagal memulihkan snapshot dari server.');
+    }
+  };
+
+  const handleImportJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      showNotice('⏳ Membaca dan memverifikasi file cadangan database JSON...');
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      if (typeof parsed !== 'object' || parsed === null) {
+        throw new Error('Format file JSON tidak valid');
+      }
+      const success = await restoreFullDatabase(parsed);
+      if (success) {
+        showNotice('Alhamdulillah! Seluruh database berhasil dipulihkan dan disimpan permanen!');
+        loadServerBackups();
+      } else {
+        alert('Gagal memulihkan database dari file.');
+      }
+    } catch (err: any) {
+      alert(err.message || 'Gagal membaca file JSON.');
+    } finally {
+      if (jsonFileInputRef.current) jsonFileInputRef.current.value = '';
     }
   };
 
@@ -217,7 +318,16 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
       const dataUrl = await processImageFile(file, 600, 600, 0.85);
       const serverUrl = await uploadImageToServer(dataUrl, 'guru');
       setTeacherPhotoUrl(serverUrl);
-      showNotice('✅ Foto guru berhasil diunggah! Klik "Simpan Perubahan" untuk menyimpan permanen.');
+      
+      // Auto-save immediately if editing an existing teacher
+      if (editingTeacherId) {
+        updateTeacher(editingTeacherId, {
+          photoUrl: serverUrl,
+        });
+        showNotice('✅ Foto guru berhasil disimpan permanen ke server dan memori!');
+      } else {
+        showNotice('✅ Foto guru siap disimpan! Klik "Simpan Data Guru" di bawah.');
+      }
     } catch (err: any) {
       alert(err.message || 'Gagal mengunggah foto.');
     } finally {
@@ -756,6 +866,25 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
             >
               <School size={15} />
               <span>🏫 Kelola Kelas / Rombel ({classes.length})</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveSubTab('cadangan');
+                setSearchQuery('');
+                loadServerBackups();
+              }}
+              className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer ${
+                activeSubTab === 'cadangan'
+                  ? 'bg-white text-emerald-800 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Database size={15} className="text-emerald-700" />
+              <span>🛡️ Cadangan & Pemulihan</span>
+              {(localBackupFound > 0 || teacherBackupFound > 0) && (
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+              )}
             </button>
           </div>
         </div>
@@ -1385,7 +1514,232 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
             </div>
           </div>
         )}
+
+        {/* ============================================================== */}
+        {/* SUBTAB 4: PUSAT CADANGAN & PEMULIHAN DATABASE */}
+        {/* ============================================================== */}
+        {activeSubTab === 'cadangan' && (
+          <div className="space-y-6 animate-in fade-in">
+            {/* Status & Overview Banner */}
+            <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white p-6 rounded-3xl shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider">
+                  <ShieldCheck size={14} className="text-emerald-400" />
+                  <span>Sistem Ketahanan Database Permanen</span>
+                </div>
+                <h3 className="text-xl font-black">Pusat Cadangan & Pemulihan Data MI RPI Jakarta</h3>
+                <p className="text-xs text-slate-300 max-w-2xl">
+                  Seluruh perubahan data guru, santri, foto, dan profil disimpan ganda secara otomatis di <strong>Penyimpanan Disk Server (/data/school_database.json)</strong> dan <strong>Memori Lokal Browser</strong>. Ketika halaman direfresh, Anda akan tetap login dan data tidak akan hilang.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 bg-white/10 p-3.5 rounded-2xl border border-white/15 text-center shrink-0">
+                <div>
+                  <p className="text-xl font-black text-amber-300">{students.length}</p>
+                  <p className="text-[10px] text-slate-300 uppercase font-bold">Santri</p>
+                </div>
+                <div>
+                  <p className="text-xl font-black text-emerald-300">{teachers.length}</p>
+                  <p className="text-[10px] text-slate-300 uppercase font-bold">Guru</p>
+                </div>
+                <div>
+                  <p className="text-xl font-black text-teal-300">{classes.length}</p>
+                  <p className="text-[10px] text-slate-300 uppercase font-bold">Kelas</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Recovery from Browser History (if detected) */}
+            {(localBackupFound > 0 || teacherBackupFound > 0) && (
+              <div className="bg-amber-50 border-2 border-amber-300 rounded-3xl p-6 space-y-4 shadow-md">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold text-2xl shadow-sm shrink-0">
+                    💾
+                  </div>
+                  <div>
+                    <h4 className="font-black text-sm text-amber-950">
+                      Ditemukan Riwayat Cadangan Data di Peramban Anda!
+                    </h4>
+                    <p className="text-xs text-amber-900 mt-0.5">
+                      Sistem mendeteksi riwayat data yang pernah Anda unggah atau input di browser ini. Anda dapat memulihkannya langsung dalam 1 klik tanpa perlu mengunggah ulang file.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 pt-2">
+                  {localBackupFound > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleRestoreFromBrowserBackup}
+                      className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer"
+                    >
+                      <RotateCcw size={16} />
+                      <span>Pulihkan {localBackupFound} Data Santri Kemarin</span>
+                    </button>
+                  )}
+
+                  {teacherBackupFound > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleRestoreTeachersFromBackup}
+                      className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer"
+                    >
+                      <RotateCcw size={16} />
+                      <span>Pulihkan {teacherBackupFound} Data Guru & Foto</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Export & Import Tools Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Box 1: Export Complete Database */}
+              <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 flex flex-col justify-between space-y-4 shadow-xs hover:border-emerald-300 transition">
+                <div className="space-y-2">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                    <Download size={20} />
+                  </div>
+                  <h4 className="font-extrabold text-sm text-slate-900">
+                    Unduh Cadangan Database Lengkap (.JSON)
+                  </h4>
+                  <p className="text-xs text-slate-600">
+                    Ekspor seluruh data madrasah (santri, dewan guru, riwayat akun, profil, rombel, keuangan, berita & galeri) dalam 1 file JSON terstruktur untuk disimpan aman di laptop/komputer Anda.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={exportFullDatabase}
+                  className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <FileJson size={16} />
+                  <span>Unduh File Cadangan Database Sekarang (.JSON)</span>
+                </button>
+              </div>
+
+              {/* Box 2: Import & Restore from JSON File */}
+              <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 flex flex-col justify-between space-y-4 shadow-xs hover:border-teal-300 transition">
+                <div className="space-y-2">
+                  <div className="w-10 h-10 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold">
+                    <Upload size={20} />
+                  </div>
+                  <h4 className="font-extrabold text-sm text-slate-900">
+                    Pulihkan Database dari File (.JSON)
+                  </h4>
+                  <p className="text-xs text-slate-600">
+                    Pilih file cadangan JSON yang pernah Anda unduh sebelumnya untuk mengembalikan seluruh data madrasah seketika secara utuh ke server disk dan sistem.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => jsonFileInputRef.current?.click()}
+                  className="w-full py-3 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Upload size={16} />
+                  <span>Pilih File JSON & Pulihkan Database</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Server Snapshots History */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                <div>
+                  <h4 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+                    <History size={16} className="text-emerald-700" />
+                    <span>Riwayat Snapshot Otomatis di Server Disk</span>
+                  </h4>
+                  <p className="text-[11px] text-slate-500">
+                    Setiap kali Anda menambah atau mengedit data santri, guru, atau foto, server secara otomatis menyimpan salinan snapshot cadangan bertanggal di folder <code>/data/backups/</code>.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={loadServerBackups}
+                  disabled={isLoadingBackups}
+                  className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                >
+                  <RefreshCw size={14} className={isLoadingBackups ? 'animate-spin' : ''} />
+                  <span>Segarkan Riwayat</span>
+                </button>
+              </div>
+
+              {serverBackupsList.length === 0 ? (
+                <div className="p-8 text-center text-slate-400 text-xs">
+                  {isLoadingBackups ? '⏳ Memeriksa riwayat cadangan di server...' : 'Belum ada file snapshot cadangan tersimpan di server disk.'}
+                </div>
+              ) : (
+                <div className="overflow-x-auto rounded-2xl border border-slate-200">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                        <th className="p-3">File Snapshot</th>
+                        <th className="p-3">Waktu Cadangan</th>
+                        <th className="p-3">Data Santri</th>
+                        <th className="p-3">Data Guru</th>
+                        <th className="p-3">Ukuran File</th>
+                        <th className="p-3 text-right">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {serverBackupsList.map((b, idx) => (
+                        <tr key={idx} className="hover:bg-slate-50 transition">
+                          <td className="p-3 font-semibold text-slate-800 flex items-center gap-2">
+                            <span className="text-emerald-600">📄</span>
+                            <span className="font-mono text-[11px]">{b.filename}</span>
+                            {b.isLatest && (
+                              <span className="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                                Terkini
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-3 text-slate-600">
+                            {new Date(b.createdAt).toLocaleString('id-ID', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </td>
+                          <td className="p-3 font-bold text-slate-900">{b.studentCount} santri</td>
+                          <td className="p-3 font-bold text-slate-900">{b.teacherCount} guru</td>
+                          <td className="p-3 text-slate-500 font-mono text-[11px]">
+                            {Math.round(b.sizeBytes / 1024)} KB
+                          </td>
+                          <td className="p-3 text-right">
+                            <button
+                              type="button"
+                              onClick={() => handleRestoreServerSnapshot(b.filename)}
+                              className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 ml-auto cursor-pointer"
+                              title="Pulihkan seluruh data madrasah dari snapshot ini"
+                            >
+                              <RotateCcw size={13} />
+                              <span>Pulihkan Snapshot Ini</span>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Hidden File Input for JSON Backup Import */}
+      <input
+        type="file"
+        ref={jsonFileInputRef}
+        accept=".json,application/json"
+        onChange={handleImportJsonFile}
+        className="hidden"
+      />
 
       {/* ============================================================== */}
       {/* MODAL 1: PREVIEW IMPORT EXCEL */}

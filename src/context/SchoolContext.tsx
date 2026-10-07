@@ -164,6 +164,10 @@ interface SchoolContextType {
   batchUpdateStudentClass: (studentIds: string[], targetClassName: string) => void;
   importTeachersFromExcel: (newTeachers: Omit<Teacher, 'id'>[]) => number;
   importStudentsFromExcel: (newStudents: Omit<Student, 'id'>[]) => number;
+  restoreFullDatabase: (data: Record<string, any>) => Promise<boolean>;
+  fetchBackupsList: () => Promise<any[]>;
+  restoreBackupByFilename: (filename: string) => Promise<boolean>;
+  exportFullDatabase: () => void;
 }
 
 const SchoolContext = createContext<SchoolContextType | undefined>(undefined);
@@ -190,13 +194,41 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return initialSchoolSettings;
   });
 
-  // Navigation State
-  const [currentView, setCurrentView] = useState<string>('home');
-  const [viewParams, setViewParams] = useState<Record<string, any>>({});
+  // Navigation State - Persistent on refresh
+  const [currentView, setCurrentView] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('mi_rpi_current_view');
+      return saved || 'home';
+    } catch {
+      return 'home';
+    }
+  });
+  const [viewParams, setViewParams] = useState<Record<string, any>>(() => {
+    try {
+      const saved = localStorage.getItem('mi_rpi_view_params');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
 
-  // Auth User
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentRole, setCurrentRole] = useState<UserRole>('SISWA');
+  // Auth User - Persistent session across browser refresh
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    try {
+      const saved = localStorage.getItem('mi_rpi_auth_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [currentRole, setCurrentRole] = useState<UserRole>(() => {
+    try {
+      const saved = localStorage.getItem('mi_rpi_auth_role');
+      return (saved as UserRole) || 'SISWA';
+    } catch {
+      return 'SISWA';
+    }
+  });
 
   // Dynamic state arrays
   const [students, setStudents] = useState<Student[]>(() => {
@@ -354,43 +386,80 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             }
             if (Array.isArray(serverData.teachers) && serverData.teachers.length > 0) {
               setTeachers((prevLocal) => {
-                const backup = localStorage.getItem('mi_rpi_teachers_backup');
+                const backupRaw = localStorage.getItem('mi_rpi_teachers_backup');
                 let candidate = prevLocal;
-                if (backup) {
+                if (backupRaw) {
                   try {
-                    const parsed = JSON.parse(backup);
-                    if (Array.isArray(parsed) && parsed.length > candidate.length) candidate = parsed;
+                    const parsed = JSON.parse(backupRaw);
+                    if (Array.isArray(parsed) && parsed.length > 0) candidate = parsed;
                   } catch (_) {}
                 }
-                if (candidate.length > serverData.teachers.length) {
-                  syncToServer('teachers', candidate);
-                  return candidate;
-                }
+
+                // Intelligently merge: Preserve any teacher's custom photo or updated data from local candidate!
+                const merged = serverData.teachers.map((st: Teacher) => {
+                  const localMatch = candidate.find((lt) => lt.id === st.id || (lt.nip && lt.nip === st.nip));
+                  if (localMatch) {
+                    const isCustomLocalPhoto = localMatch.photoUrl && (
+                      localMatch.photoUrl.startsWith('/uploads') ||
+                      localMatch.photoUrl.startsWith('data:') ||
+                      localMatch.photoUrl !== st.photoUrl
+                    );
+                    return {
+                      ...st,
+                      ...localMatch,
+                      photoUrl: isCustomLocalPhoto ? localMatch.photoUrl : (st.photoUrl || localMatch.photoUrl),
+                    };
+                  }
+                  return st;
+                });
+
+                // Also keep any local teachers not in server
+                candidate.forEach((lt) => {
+                  if (!merged.some((m: Teacher) => m.id === lt.id || (m.nip && m.nip === lt.nip))) {
+                    merged.push(lt);
+                  }
+                });
+
                 try {
-                  localStorage.setItem('mi_rpi_teachers', JSON.stringify(serverData.teachers));
+                  localStorage.setItem('mi_rpi_teachers', JSON.stringify(merged));
+                  localStorage.setItem('mi_rpi_teachers_backup', JSON.stringify(merged));
                 } catch (_) {}
-                return serverData.teachers;
+                syncToServer('teachers', merged);
+                return merged;
               });
             }
             if (Array.isArray(serverData.students) && serverData.students.length > 0) {
               setStudents((prevLocal) => {
-                const backup = localStorage.getItem('mi_rpi_students_backup');
+                const backupRaw = localStorage.getItem('mi_rpi_students_backup');
                 let candidate = prevLocal;
-                if (backup) {
+                if (backupRaw) {
                   try {
-                    const parsed = JSON.parse(backup);
+                    const parsed = JSON.parse(backupRaw);
                     if (Array.isArray(parsed) && parsed.length > candidate.length) candidate = parsed;
                   } catch (_) {}
                 }
                 // Never overwrite local uploaded students with fewer server dummy students!
                 if (candidate.length > serverData.students.length) {
                   syncToServer('students', candidate);
+                  try {
+                    localStorage.setItem('mi_rpi_students', JSON.stringify(candidate));
+                    localStorage.setItem('mi_rpi_students_backup', JSON.stringify(candidate));
+                  } catch (_) {}
                   return candidate;
                 }
+                // If server has more or equal, preserve any local students that have unique NISN
+                const existingNisns = new Set(serverData.students.map((s: Student) => s.nisn?.trim()));
+                const extraLocal = candidate.filter((c) => c.nisn && !existingNisns.has(c.nisn.trim()));
+                const finalStudents = extraLocal.length > 0 ? [...serverData.students, ...extraLocal] : serverData.students;
+
                 try {
-                  localStorage.setItem('mi_rpi_students', JSON.stringify(serverData.students));
+                  localStorage.setItem('mi_rpi_students', JSON.stringify(finalStudents));
+                  localStorage.setItem('mi_rpi_students_backup', JSON.stringify(finalStudents));
                 } catch (_) {}
-                return serverData.students;
+                if (extraLocal.length > 0) {
+                  syncToServer('students', finalStudents);
+                }
+                return finalStudents;
               });
             }
             if (Array.isArray(serverData.classes) && serverData.classes.length > 0) {
@@ -649,12 +718,28 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     localStorage.setItem('mi_rpi_complaints', JSON.stringify(complaints));
   }, [complaints]);
 
-  // Navigation Helper
+  // Navigation Helper with LocalStorage persistence so page refresh stays on current page
   const navigate = (view: string, params: Record<string, any> = {}) => {
     setCurrentView(view);
     setViewParams(params);
+    try {
+      localStorage.setItem('mi_rpi_current_view', view);
+      localStorage.setItem('mi_rpi_view_params', JSON.stringify(params));
+    } catch (_) {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Sync auth state to LocalStorage
+  useEffect(() => {
+    try {
+      if (currentUser) {
+        localStorage.setItem('mi_rpi_auth_user', JSON.stringify(currentUser));
+        localStorage.setItem('mi_rpi_auth_role', currentRole);
+      } else {
+        localStorage.removeItem('mi_rpi_auth_user');
+      }
+    } catch (_) {}
+  }, [currentUser, currentRole]);
 
   // Role Login Helper
   const loginAsRole = (role: UserRole) => {
@@ -741,6 +826,13 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const logout = () => {
     setCurrentUser(null);
+    setCurrentRole('SISWA');
+    try {
+      localStorage.removeItem('mi_rpi_auth_user');
+      localStorage.removeItem('mi_rpi_auth_role');
+      localStorage.setItem('mi_rpi_current_view', 'home');
+      localStorage.setItem('mi_rpi_view_params', '{}');
+    } catch (_) {}
     navigate('home');
   };
 
@@ -1193,6 +1285,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const next = [...prev, newTeacher];
       try {
         localStorage.setItem('mi_rpi_teachers', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_teachers_backup', JSON.stringify(next));
       } catch (_) {}
       syncToServer('teachers', next);
       return next;
@@ -1204,6 +1297,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const next = prev.map((t) => (t.id === id ? { ...t, ...updated } : t));
       try {
         localStorage.setItem('mi_rpi_teachers', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_teachers_backup', JSON.stringify(next));
       } catch (_) {}
       syncToServer('teachers', next);
       return next;
@@ -1215,6 +1309,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const next = prev.filter((t) => t.id !== id);
       try {
         localStorage.setItem('mi_rpi_teachers', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_teachers_backup', JSON.stringify(next));
       } catch (_) {}
       syncToServer('teachers', next);
       return next;
@@ -1227,6 +1322,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const next = prev.filter((t) => !idSet.has(t.id));
       try {
         localStorage.setItem('mi_rpi_teachers', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_teachers_backup', JSON.stringify(next));
       } catch (_) {}
       syncToServer('teachers', next);
       return next;
@@ -1238,22 +1334,52 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       ...s,
       id: `std-${Date.now()}`,
     };
-    setStudents((prev) => [...prev, newStudent]);
+    setStudents((prev) => {
+      const next = [...prev, newStudent];
+      try {
+        localStorage.setItem('mi_rpi_students', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_students_backup', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('students', next);
+      return next;
+    });
   };
 
   const updateStudent = (id: string, updated: Partial<Student>) => {
-    setStudents((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, ...updated } : s))
-    );
+    setStudents((prev) => {
+      const next = prev.map((s) => (s.id === id ? { ...s, ...updated } : s));
+      try {
+        localStorage.setItem('mi_rpi_students', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_students_backup', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('students', next);
+      return next;
+    });
   };
 
   const deleteStudent = (id: string) => {
-    setStudents((prev) => prev.filter((s) => s.id !== id));
+    setStudents((prev) => {
+      const next = prev.filter((s) => s.id !== id);
+      try {
+        localStorage.setItem('mi_rpi_students', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_students_backup', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('students', next);
+      return next;
+    });
   };
 
   const deleteStudents = (ids: string[]) => {
     const idSet = new Set(ids);
-    setStudents((prev) => prev.filter((s) => !idSet.has(s.id)));
+    setStudents((prev) => {
+      const next = prev.filter((s) => !idSet.has(s.id));
+      try {
+        localStorage.setItem('mi_rpi_students', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_students_backup', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('students', next);
+      return next;
+    });
   };
 
   const addClass = (cls: Omit<SchoolClass, 'id'>) => {
@@ -1575,6 +1701,147 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setSchedules(initialSchedules);
   };
 
+  // Full Database Restore (Local + Server)
+  const restoreFullDatabase = async (data: Record<string, any>): Promise<boolean> => {
+    try {
+      if (data.settings) {
+        setSettings(data.settings);
+        try { localStorage.setItem('mi_rpi_settings', JSON.stringify(data.settings)); } catch (_) {}
+      }
+      if (Array.isArray(data.students)) {
+        setStudents(data.students);
+        try {
+          localStorage.setItem('mi_rpi_students', JSON.stringify(data.students));
+          localStorage.setItem('mi_rpi_students_backup', JSON.stringify(data.students));
+        } catch (_) {}
+      }
+      if (Array.isArray(data.teachers)) {
+        setTeachers(data.teachers);
+        try {
+          localStorage.setItem('mi_rpi_teachers', JSON.stringify(data.teachers));
+          localStorage.setItem('mi_rpi_teachers_backup', JSON.stringify(data.teachers));
+        } catch (_) {}
+      }
+      if (Array.isArray(data.classes)) {
+        setClasses(data.classes);
+        try { localStorage.setItem('mi_rpi_classes', JSON.stringify(data.classes)); } catch (_) {}
+      }
+      if (Array.isArray(data.userAccounts)) {
+        setUserAccounts(data.userAccounts);
+        try { localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(data.userAccounts)); } catch (_) {}
+      }
+      if (Array.isArray(data.gallery)) {
+        setGallery(data.gallery);
+        try { localStorage.setItem('mi_rpi_gallery', JSON.stringify(data.gallery)); } catch (_) {}
+      }
+      if (Array.isArray(data.news)) {
+        setNews(data.news);
+        try { localStorage.setItem('mi_rpi_news', JSON.stringify(data.news)); } catch (_) {}
+      }
+      if (Array.isArray(data.spmbApplications)) {
+        setSpmbApplications(data.spmbApplications);
+        try { localStorage.setItem('mi_rpi_spmb', JSON.stringify(data.spmbApplications)); } catch (_) {}
+      }
+      if (Array.isArray(data.programs)) {
+        setPrograms(data.programs);
+        try { localStorage.setItem('mi_rpi_programs', JSON.stringify(data.programs)); } catch (_) {}
+      }
+      if (Array.isArray(data.dimensions)) {
+        setDimensions(data.dimensions);
+        try { localStorage.setItem('mi_rpi_dimensions', JSON.stringify(data.dimensions)); } catch (_) {}
+      }
+      if (Array.isArray(data.academicSubjects)) {
+        setAcademicSubjects(data.academicSubjects);
+        try { localStorage.setItem('mi_rpi_academic_subjects', JSON.stringify(data.academicSubjects)); } catch (_) {}
+      }
+      if (Array.isArray(data.habits)) {
+        setHabits(data.habits);
+        try { localStorage.setItem('mi_rpi_habits', JSON.stringify(data.habits)); } catch (_) {}
+      }
+      if (Array.isArray(data.extracurriculars)) {
+        setExtracurriculars(data.extracurriculars);
+        try { localStorage.setItem('mi_rpi_extracurriculars', JSON.stringify(data.extracurriculars)); } catch (_) {}
+      }
+      if (Array.isArray(data.schedules)) {
+        setSchedules(data.schedules);
+        try { localStorage.setItem('mi_rpi_schedules', JSON.stringify(data.schedules)); } catch (_) {}
+      }
+
+      // Also persist to server
+      const res = await fetch('/api/database/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ database: data }),
+      });
+      return res.ok;
+    } catch (e) {
+      console.error('Failed to restore full database:', e);
+      return false;
+    }
+  };
+
+  // Fetch list of server backups
+  const fetchBackupsList = async (): Promise<any[]> => {
+    try {
+      const res = await fetch('/api/backups');
+      if (res.ok) {
+        const json = await res.json();
+        return json.backups || [];
+      }
+    } catch (_) {}
+    return [];
+  };
+
+  // Restore snapshot by filename
+  const restoreBackupByFilename = async (filename: string): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/backups/restore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data) {
+          await restoreFullDatabase(json.data);
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      console.error('Failed to restore backup by filename:', e);
+      return false;
+    }
+  };
+
+  // Export database as downloadable JSON file
+  const exportFullDatabase = () => {
+    const fullDb = {
+      settings,
+      students,
+      teachers,
+      classes,
+      userAccounts,
+      gallery,
+      news,
+      spmbApplications,
+      programs,
+      dimensions,
+      academicSubjects,
+      habits,
+      extracurriculars,
+      schedules,
+      exportedAt: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(fullDb, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `backup-database-mi-rpi-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <SchoolContext.Provider
       value={{
@@ -1668,6 +1935,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         batchUpdateStudentClass,
         importTeachersFromExcel,
         importStudentsFromExcel,
+        restoreFullDatabase,
+        fetchBackupsList,
+        restoreBackupByFilename,
+        exportFullDatabase,
       }}
     >
       {children}

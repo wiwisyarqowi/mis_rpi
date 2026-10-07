@@ -86,22 +86,49 @@ function readDatabase(): Record<string, any> {
   return {};
 }
 
+// Single in-memory cache to guarantee atomic concurrent updates without race conditions
+let databaseCache: Record<string, any> = readDatabase();
+
 function saveDatabase(newData: Record<string, any>): Record<string, any> {
   try {
-    const current = readDatabase();
-    const merged = { ...current, ...newData, lastUpdated: new Date().toISOString() };
-    fs.writeFileSync(dbFilePath, JSON.stringify(merged, null, 2), 'utf-8');
+    databaseCache = {
+      ...databaseCache,
+      ...newData,
+      lastUpdated: new Date().toISOString(),
+    };
 
-    // Automatically create a backup snapshot when changes occur
+    // Write to primary database file
+    fs.writeFileSync(dbFilePath, JSON.stringify(databaseCache, null, 2), 'utf-8');
+
+    // Create automatic daily/hourly backup snapshot
     try {
-      const snapPath = path.join(backupsDir, `snapshot-${new Date().toISOString().split('T')[0]}.json`);
-      fs.writeFileSync(snapPath, JSON.stringify(merged, null, 2), 'utf-8');
+      const dateStr = new Date().toISOString().replace(/[:.]/g, '-');
+      const snapPath = path.join(backupsDir, `snapshot-${dateStr}.json`);
+      fs.writeFileSync(snapPath, JSON.stringify(databaseCache, null, 2), 'utf-8');
+
+      // Keep latest snapshot
+      const latestPath = path.join(backupsDir, 'latest-backup.json');
+      fs.writeFileSync(latestPath, JSON.stringify(databaseCache, null, 2), 'utf-8');
+
+      // Prune old snapshots if more than 30
+      const existingBackups = fs.readdirSync(backupsDir).filter((f) => f.startsWith('snapshot-'));
+      if (existingBackups.length > 30) {
+        existingBackups.sort();
+        while (existingBackups.length > 30) {
+          const toDelete = existingBackups.shift();
+          if (toDelete) {
+            try {
+              fs.unlinkSync(path.join(backupsDir, toDelete));
+            } catch (_) {}
+          }
+        }
+      }
     } catch (_) {}
 
-    return merged;
+    return databaseCache;
   } catch (e) {
     console.error('Error writing school_database.json:', e);
-    return newData;
+    return databaseCache;
   }
 }
 
@@ -319,10 +346,12 @@ app.post('/api/settings', (req: Request, res: Response) => {
 
 // Unified School Data GET & POST endpoints for full-app persistence
 app.get('/api/school-data', (req: Request, res: Response) => {
-  const db = readDatabase();
+  if (!databaseCache || Object.keys(databaseCache).length === 0) {
+    databaseCache = readDatabase();
+  }
   return res.json({
     success: true,
-    data: db,
+    data: databaseCache,
   });
 });
 
@@ -351,6 +380,133 @@ app.post('/api/school-data', (req: Request, res: Response) => {
   } catch (err: any) {
     console.error('Error persisting school data to server:', err);
     return res.status(500).json({ error: 'Gagal menyimpan data ke server' });
+  }
+});
+
+// List all server-side backups with details
+app.get('/api/backups', (req: Request, res: Response) => {
+  try {
+    if (!fs.existsSync(backupsDir)) {
+      return res.json({ success: true, backups: [] });
+    }
+    const files = fs.readdirSync(backupsDir).filter((f) => f.endsWith('.json'));
+    const backups = files.map((file) => {
+      const filePath = path.join(backupsDir, file);
+      const stat = fs.statSync(filePath);
+      let studentCount = 0;
+      let teacherCount = 0;
+      try {
+        const content = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        if (Array.isArray(content.students)) studentCount = content.students.length;
+        if (Array.isArray(content.teachers)) teacherCount = content.teachers.length;
+      } catch (_) {}
+
+      return {
+        filename: file,
+        sizeBytes: stat.size,
+        createdAt: stat.mtime.toISOString(),
+        studentCount,
+        teacherCount,
+        isLatest: file === 'latest-backup.json',
+      };
+    });
+
+    backups.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return res.json({ success: true, backups });
+  } catch (err: any) {
+    console.error('Error listing backups:', err);
+    return res.status(500).json({ error: 'Gagal membaca daftar cadangan' });
+  }
+});
+
+// Restore database from a backup snapshot or uploaded full database JSON
+app.post('/api/backups/restore', (req: Request, res: Response) => {
+  try {
+    const { filename, snapshotData } = req.body;
+    let dataToRestore: Record<string, any> | null = null;
+
+    if (filename) {
+      const targetPath = path.join(backupsDir, path.basename(filename));
+      if (!fs.existsSync(targetPath)) {
+        return res.status(404).json({ error: 'File cadangan tidak ditemukan di server' });
+      }
+      dataToRestore = JSON.parse(fs.readFileSync(targetPath, 'utf-8'));
+    } else if (snapshotData && typeof snapshotData === 'object') {
+      dataToRestore = sanitizeObjectImages(snapshotData);
+    }
+
+    if (!dataToRestore || typeof dataToRestore !== 'object') {
+      return res.status(400).json({ error: 'Data cadangan tidak valid' });
+    }
+
+    // Save current as pre-restore backup first
+    try {
+      const preRestorePath = path.join(backupsDir, `pre-restore-${Date.now()}.json`);
+      fs.writeFileSync(preRestorePath, JSON.stringify(databaseCache, null, 2), 'utf-8');
+    } catch (_) {}
+
+    // Overwrite databaseCache and school_database.json
+    databaseCache = {
+      ...dataToRestore,
+      lastUpdated: new Date().toISOString(),
+    };
+    fs.writeFileSync(dbFilePath, JSON.stringify(databaseCache, null, 2), 'utf-8');
+
+    console.log(`[Backup Restored] Database successfully restored! Students: ${databaseCache.students?.length || 0}, Teachers: ${databaseCache.teachers?.length || 0}`);
+    return res.json({
+      success: true,
+      message: 'Database berhasil dipulihkan secara penuh!',
+      data: databaseCache,
+    });
+  } catch (err: any) {
+    console.error('Error restoring backup:', err);
+    return res.status(500).json({ error: 'Gagal memulihkan database dari cadangan' });
+  }
+});
+
+// Full database export
+app.get('/api/database/export', (req: Request, res: Response) => {
+  try {
+    if (!databaseCache || Object.keys(databaseCache).length === 0) {
+      databaseCache = readDatabase();
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="database-mi-rpi-${new Date().toISOString().split('T')[0]}.json"`);
+    return res.send(JSON.stringify(databaseCache, null, 2));
+  } catch (err: any) {
+    return res.status(500).json({ error: 'Gagal mengekspor database' });
+  }
+});
+
+// Full database import
+app.post('/api/database/import', (req: Request, res: Response) => {
+  try {
+    const { database } = req.body;
+    if (!database || typeof database !== 'object') {
+      return res.status(400).json({ error: 'File data database tidak valid' });
+    }
+
+    const sanitized = sanitizeObjectImages(database);
+    databaseCache = {
+      ...databaseCache,
+      ...sanitized,
+      lastUpdated: new Date().toISOString(),
+    };
+    fs.writeFileSync(dbFilePath, JSON.stringify(databaseCache, null, 2), 'utf-8');
+
+    // Create immediate snapshot
+    try {
+      const snapPath = path.join(backupsDir, `snapshot-imported-${Date.now()}.json`);
+      fs.writeFileSync(snapPath, JSON.stringify(databaseCache, null, 2), 'utf-8');
+    } catch (_) {}
+
+    return res.json({
+      success: true,
+      message: 'Database berhasil diimpor dan disimpan permanen!',
+      data: databaseCache,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ error: 'Gagal mengimpor database' });
   }
 });
 

@@ -57,7 +57,7 @@ export const AdminPortal: React.FC = () => {
     viewParams,
   } = useSchool();
 
-  const [activeTab, setActiveTab] = useState<'masterdata' | 'users' | 'finance' | 'media' | 'curriculum' | 'settings' | 'spmb' | 'suarawarga' | 'berita' | 'panduan'>(
+  const [activeTab, setActiveTab] = useState<'masterdata' | 'users' | 'finance' | 'media' | 'curriculum' | 'settings' | 'spmb' | 'suarawarga' | 'berita' | 'panduan' | 'backup'>(
     (viewParams?.tab as any) || 'panduan'
   );
 
@@ -205,6 +205,7 @@ export const AdminPortal: React.FC = () => {
           <div className="bg-white p-1 rounded-2xl border border-slate-200 shadow-xs inline-flex gap-1 overflow-x-auto max-w-full">
             {[
               { id: 'panduan', label: '📖 Panduan Edit Semua Konten', icon: BookOpen },
+              { id: 'backup', label: '🛡️ Cadangan & Pemulihan Data', icon: ShieldCheck },
               { id: 'curriculum', label: '🌟 Akademik & Program', icon: Sparkles },
               { id: 'settings', label: '⚙️ Pengaturan & Profil (/admin/settings)', icon: Settings },
               { id: 'media', label: '📸 Kelola Gambar & Media', icon: ImageIcon },
@@ -236,6 +237,9 @@ export const AdminPortal: React.FC = () => {
 
         {/* TAB CURRICULUM: AKADEMIK, 15 PROGRAM UNGGULAN & KESISWAAN */}
         {activeTab === 'curriculum' && <CurriculumProgramsManager />}
+
+        {/* TAB BACKUP: PUSAT CADANGAN & PEMULIHAN DATABASE */}
+        {activeTab === 'backup' && <MasterDataManager initialTab="cadangan" />}
 
         {/* TAB MASTERDATA: DATA GURU & SANTRI */}
         {activeTab === 'masterdata' && (
