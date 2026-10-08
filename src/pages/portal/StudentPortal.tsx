@@ -20,6 +20,7 @@ import { PortalAccessGuard } from '../../components/common/PortalAccessGuard';
 
 export const StudentPortal: React.FC = () => {
   const {
+    currentUser,
     students,
     assignments,
     materials,
@@ -32,7 +33,26 @@ export const StudentPortal: React.FC = () => {
     borrowBook,
   } = useSchool();
 
-  const student = students[0]; // Muhammad Al Fatih
+  const student =
+    students.find(
+      (s) =>
+        (currentUser?.studentId && s.nisn === currentUser.studentId) ||
+        s.id === currentUser?.id ||
+        (currentUser?.name && s.name.toLowerCase() === currentUser.name.toLowerCase())
+    ) ||
+    students[0] || {
+      id: 'std-default',
+      nis: '202601',
+      nisn: '0092837190',
+      name: currentUser?.name || 'Siswa Madrasah',
+      className: currentUser?.classAssigned || 'Kelas 4A',
+      gender: 'L' as const,
+      birthPlaceDate: 'Jakarta, 12 Mei 2015',
+      parentName: 'Orang Tua Santri',
+      parentPhone: '081234567890',
+      address: 'Jakarta Selatan',
+      photoUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&h=200&fit=crop&crop=faces',
+    };
   const [activeTab, setActiveTab] = useState<'lms' | 'cbt' | 'ibadah' | 'karakter' | 'perpus'>('lms');
 
   // Quiz Player State
@@ -218,6 +238,35 @@ export const StudentPortal: React.FC = () => {
                     </button>
                   </form>
                 )}
+              </div>
+            )}
+
+            {/* Quick CBT Alert Banner */}
+            {exams.length > 0 && (
+              <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 rounded-3xl p-5 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+                    <HelpCircle size={24} className="text-white" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-950/40 text-emerald-200 px-2.5 py-0.5 rounded-full">
+                      Ujian CBT Online Tersedia
+                    </span>
+                    <h4 className="font-extrabold text-sm sm:text-base mt-0.5">
+                      {exams.length} Paket Ujian CBT Sedang Aktif
+                    </h4>
+                    <p className="text-xs text-emerald-100">
+                      Ujian: {exams.map((e) => e.subject).slice(0, 2).join(', ')}... Kerjakan sebelum batas waktu berakhir.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveTab('cbt')}
+                  className="px-5 py-2.5 bg-white text-emerald-800 hover:bg-emerald-50 font-bold text-xs rounded-xl shadow-xs transition shrink-0 cursor-pointer flex items-center gap-2"
+                >
+                  <span>Buka Ujian CBT Sekarang</span>
+                  <span>→</span>
+                </button>
               </div>
             )}
 

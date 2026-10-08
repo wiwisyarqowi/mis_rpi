@@ -126,7 +126,8 @@ interface SchoolContextType {
   resetUserPassword: (id: string, newPassword?: string) => string;
   generateBatchTeacherAccounts: () => number;
   generateBatchParentAccounts: () => number;
-  loginWithCredentials: (identifier: string, pass: string) => { success: boolean; message?: string; role?: UserRole };
+  generateBatchStudentAccounts: () => number;
+  loginWithCredentials: (identifier: string, pass: string, targetRole?: UserRole) => { success: boolean; message?: string; role?: UserRole };
   submitSPMB: (data: Partial<SPMBApplication>) => SPMBApplication;
   updateSPMBStatus: (id: string, status: SPMBApplication['status'], notes?: string) => void;
   submitComplaint: (data: { senderName: string; senderContact: string; category: ComplaintTicket['category']; message: string }) => ComplaintTicket;
@@ -1643,7 +1644,11 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     let createdCount = 0;
     students.forEach((s) => {
       const exists = userAccounts.some(
-        (a) => a.username === s.nisn || a.nisn === s.nisn || (a.studentName && a.studentName.toLowerCase() === s.name.toLowerCase())
+        (a) =>
+          a.role === 'ORANG_TUA' &&
+          ((s.nisn && a.username === s.nisn) ||
+            (s.nisn && a.nisn === s.nisn) ||
+            (a.studentName && a.studentName.toLowerCase() === s.name.toLowerCase()))
       );
       if (!exists && s.nisn) {
         addUserAccount({
@@ -1663,9 +1668,40 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return createdCount;
   };
 
+  const generateBatchStudentAccounts = (): number => {
+    let createdCount = 0;
+    students.forEach((s) => {
+      const exists = userAccounts.some(
+        (a) =>
+          a.role === 'SISWA' &&
+          ((s.nisn && a.username.toLowerCase() === s.nisn.toLowerCase()) ||
+            (s.nis && a.username.toLowerCase() === s.nis.toLowerCase()) ||
+            (s.nisn && a.nisn === s.nisn) ||
+            (a.name && a.name.toLowerCase() === s.name.toLowerCase()))
+      );
+      if (!exists) {
+        const username = s.nisn || s.nis || `siswa_${s.id}`;
+        const passDigits = s.nisn ? (s.nisn.slice(-4) || '2026') : '2026';
+        addUserAccount({
+          name: s.name,
+          username: username,
+          password: `Santri#${passDigits}`,
+          role: 'SISWA',
+          nisn: s.nisn,
+          studentName: s.name,
+          className: s.className,
+          status: 'Aktif',
+        });
+        createdCount++;
+      }
+    });
+    return createdCount;
+  };
+
   const loginWithCredentials = (
     identifier: string,
-    pass: string
+    pass: string,
+    targetRole?: UserRole
   ): { success: boolean; message?: string; role?: UserRole } => {
     const cleanId = identifier.trim().toLowerCase();
     const cleanPass = pass.trim();
@@ -1674,17 +1710,28 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       return { success: false, message: 'Harap isi username/NIP/NISN dan kata sandi.' };
     }
 
-    const account = userAccounts.find(
-      (a) =>
-        (a.username.toLowerCase() === cleanId ||
-          (a.email && a.email.toLowerCase() === cleanId) ||
-          (a.nip && a.nip === cleanId) ||
-          (a.nisn && a.nisn === cleanId)) &&
-        (a.password === cleanPass ||
-          (cleanPass === 'bendahara123' && a.role === 'BENDAHARA') ||
-          (cleanPass === 'admin123' && a.role === 'ADMIN') ||
-          (cleanPass === 'kamad123' && a.role === 'KEPALA_MADRASAH'))
-    );
+    const matchesIdAndPass = (a: UserAccount) =>
+      (a.username.toLowerCase() === cleanId ||
+        (a.email && a.email.toLowerCase() === cleanId) ||
+        (a.nip && a.nip === cleanId) ||
+        (a.nisn && a.nisn === cleanId) ||
+        (a.name && a.name.toLowerCase() === cleanId)) &&
+      (a.password === cleanPass ||
+        (cleanPass === 'bendahara123' && a.role === 'BENDAHARA') ||
+        (cleanPass === 'admin123' && a.role === 'ADMIN') ||
+        (cleanPass === 'kamad123' && a.role === 'KEPALA_MADRASAH') ||
+        (cleanPass === 'siswa123' && a.role === 'SISWA') ||
+        (cleanPass === 'guru123' && a.role === 'GURU'));
+
+    // Prioritize targetRole if specified
+    let account = targetRole
+      ? userAccounts.find((a) => a.role === targetRole && matchesIdAndPass(a))
+      : undefined;
+
+    // Fallback if not found with specified role or no role specified
+    if (!account) {
+      account = userAccounts.find(matchesIdAndPass);
+    }
 
     if (!account) {
       return {
@@ -2054,6 +2101,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         resetUserPassword,
         generateBatchTeacherAccounts,
         generateBatchParentAccounts,
+        generateBatchStudentAccounts,
         loginWithCredentials,
         submitSPMB,
         updateSPMBStatus,

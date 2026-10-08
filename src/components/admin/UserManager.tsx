@@ -37,6 +37,7 @@ export const UserManager: React.FC = () => {
     resetUserPassword,
     generateBatchTeacherAccounts,
     generateBatchParentAccounts,
+    generateBatchStudentAccounts,
     teachers,
     students,
     settings,
@@ -401,6 +402,22 @@ export const UserManager: React.FC = () => {
             >
               <Sparkles size={14} className="text-teal-600" />
               <span>Auto-Generate Akun Orang Tua</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const count = generateBatchStudentAccounts();
+                setBatchNotice(
+                  count > 0
+                    ? `Berhasil membuat ${count} akun Santri baru dari data Siswa! Password default: Santri# + 4 digit NISN (contoh: Santri#7190). Akun dapat langsung digunakan login portal & ujian CBT.`
+                    : 'Seluruh santri terdaftar sudah memiliki akun.'
+                );
+              }}
+              className="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs rounded-xl border border-emerald-200 transition flex items-center gap-1.5 cursor-pointer"
+              title="Generate akun otomatis untuk semua siswa/santri agar dapat akses Portal Siswa & Ujian CBT"
+            >
+              <Sparkles size={14} className="text-emerald-600" />
+              <span>Auto-Generate Akun Siswa (CBT)</span>
             </button>
           </div>
         </div>

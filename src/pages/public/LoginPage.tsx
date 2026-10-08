@@ -49,7 +49,8 @@ export const LoginPage: React.FC = () => {
       setErrorMsg('Harap masukkan username/NIP/NISN dan kata sandi.');
       return;
     }
-    const result = loginWithCredentials(identifier, password);
+    const targetRole = activeTab === 'ADMIN' ? undefined : (activeTab as UserRole);
+    const result = loginWithCredentials(identifier, password, targetRole);
     if (!result.success) {
       setErrorMsg(result.message || 'Login gagal.');
     }
@@ -475,15 +476,15 @@ export const LoginPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        setIdentifier('siswa.alfatih');
-                        setPassword('siswa123');
+                        setIdentifier('0092837190');
+                        setPassword('SantriRPI#2026');
                         setErrorMsg(null);
                       }}
                       className="w-full p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-left transition flex items-center justify-between cursor-pointer"
                     >
                       <div>
-                        <p className="font-bold text-xs text-emerald-900">Muhammad Al Fatih</p>
-                        <p className="text-[10px] text-emerald-700">user: siswa.alfatih • pass: siswa123 (NISN: 0092837190)</p>
+                        <p className="font-bold text-xs text-emerald-900">Muhammad Al Fatih (Siswa)</p>
+                        <p className="text-[10px] text-emerald-700">NISN: 0092837190 • pass: SantriRPI#2026 (atau siswa123)</p>
                       </div>
                       <span className="text-[10px] font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded">Isi</span>
                     </button>

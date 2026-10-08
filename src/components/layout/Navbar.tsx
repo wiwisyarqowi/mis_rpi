@@ -248,7 +248,7 @@ export const Navbar: React.FC = () => {
                         <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">👨‍🎓</span>
                         <span>Portal Siswa</span>
                       </span>
-                      <span className="text-[10px] text-slate-400">LMS & Tugas</span>
+                      <span className="text-[10px] text-slate-400">LMS & Ujian CBT</span>
                     </button>
 
                     <button
