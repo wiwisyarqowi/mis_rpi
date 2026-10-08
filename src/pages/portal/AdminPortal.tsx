@@ -31,6 +31,7 @@ import {
   UserCheck,
   Check,
   AlertCircle,
+  Download,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
 import { SchoolSettings, SPMBApplication, ComplaintTicket } from '../../types';
@@ -1382,6 +1383,78 @@ export const AdminPortal: React.FC = () => {
                 <p className="text-[11px] text-white/90">
                   Semua editan disimpan aman di server disk madrasah.
                 </p>
+              </div>
+            </div>
+
+            {/* PANDUAN KHUSUS: CARA MENGHUBUNGKAN KE DOMAIN misrpijakarta.com (cPanel Hosting) */}
+            <div className="bg-gradient-to-br from-blue-900 via-indigo-950 to-slate-900 text-white rounded-3xl border-2 border-blue-400/50 p-6 sm:p-8 space-y-6 shadow-xl">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-white/15 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-500 text-white flex items-center justify-center font-bold text-2xl shadow-md shrink-0">
+                    🌐
+                  </div>
+                  <div>
+                    <span className="bg-blue-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                      Khusus Domain: misrpijakarta.com (Rumahweb cPanel)
+                    </span>
+                    <h3 className="font-black text-lg sm:text-xl text-white mt-1">
+                      Cara Memasang Website ini ke misrpijakarta.com di cPanel
+                    </h3>
+                  </div>
+                </div>
+
+                <a
+                  href="/website-misrpijakarta-siap-cpanel.zip"
+                  download="website-misrpijakarta-siap-cpanel.zip"
+                  className="px-5 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs rounded-xl shadow-lg transition flex items-center gap-2 shrink-0 cursor-pointer"
+                >
+                  <Download size={16} />
+                  <span>Unduh Paket Website Siap Upload (.ZIP)</span>
+                </a>
+              </div>
+
+              <div className="space-y-3 text-xs leading-relaxed text-blue-100">
+                <p className="font-semibold text-white">
+                  Mengapa saat membuka <code className="bg-blue-950 px-2 py-0.5 rounded text-amber-300 font-mono">misrpijakarta.com</code> muncul tulisan <em>"Silahkan hapus file index.php..."</em> warna biru?
+                </p>
+                <p className="text-slate-200">
+                  Itu adalah halaman bawaan (placeholder) dari hosting Rumahweb karena domain Anda sudah aktif namun file website MI RPI belum di-upload ke folder hosting cPanel.
+                </p>
+              </div>
+
+              {/* 4 Langkah Mudah Pasang ke cPanel */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+                <div className="bg-white/10 rounded-2xl p-4 border border-white/15 space-y-2">
+                  <span className="w-6 h-6 rounded-full bg-blue-500 text-white font-black flex items-center justify-center text-xs">1</span>
+                  <h4 className="font-bold text-white text-sm">Unduh File ZIP</h4>
+                  <p className="text-blue-100 text-[11px]">
+                    Klik tombol hijau di atas untuk mengunduh <code className="text-amber-300">website-misrpijakarta-siap-cpanel.zip</code> ke laptop Anda.
+                  </p>
+                </div>
+
+                <div className="bg-white/10 rounded-2xl p-4 border border-white/15 space-y-2">
+                  <span className="w-6 h-6 rounded-full bg-blue-500 text-white font-black flex items-center justify-center text-xs">2</span>
+                  <h4 className="font-bold text-white text-sm">Buka cPanel File Manager</h4>
+                  <p className="text-blue-100 text-[11px]">
+                    Buka tab <strong>cPanel File Manager</strong> yang sudah Anda buka, lalu masuk ke folder <strong>public_html</strong>.
+                  </p>
+                </div>
+
+                <div className="bg-white/10 rounded-2xl p-4 border border-white/15 space-y-2">
+                  <span className="w-6 h-6 rounded-full bg-blue-500 text-white font-black flex items-center justify-center text-xs">3</span>
+                  <h4 className="font-bold text-white text-sm">Hapus index.php Bawaan</h4>
+                  <p className="text-blue-100 text-[11px]">
+                    Hapus file <code className="text-rose-300">index.php</code> bawaan Rumahweb di dalam folder <code className="text-amber-300">public_html</code>.
+                  </p>
+                </div>
+
+                <div className="bg-white/10 rounded-2xl p-4 border border-white/15 space-y-2">
+                  <span className="w-6 h-6 rounded-full bg-blue-500 text-white font-black flex items-center justify-center text-xs">4</span>
+                  <h4 className="font-bold text-white text-sm">Upload & Extract</h4>
+                  <p className="text-blue-100 text-[11px]">
+                    Upload file zip yang diunduh ke <strong>public_html</strong>, klik kanan file zip lalu pilih <strong>Extract</strong>. Selesai!
+                  </p>
+                </div>
               </div>
             </div>
 
