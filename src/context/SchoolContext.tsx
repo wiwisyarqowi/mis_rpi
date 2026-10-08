@@ -552,7 +552,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(userAccounts));
     } catch (_) {}
-    syncToServer('userAccounts', userAccounts);
   }, [userAccounts]);
 
   useEffect(() => {
@@ -560,7 +559,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_teachers', JSON.stringify(teachers));
     } catch (_) {}
-    syncToServer('teachers', teachers);
   }, [teachers]);
 
   useEffect(() => {
@@ -568,7 +566,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_students', JSON.stringify(students));
     } catch (_) {}
-    syncToServer('students', students);
   }, [students]);
 
   useEffect(() => {
@@ -576,7 +573,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_classes', JSON.stringify(classes));
     } catch (_) {}
-    syncToServer('classes', classes);
   }, [classes]);
 
   useEffect(() => {
@@ -592,7 +588,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_gallery', JSON.stringify(gallery));
     } catch (_) {}
-    syncToServer('gallery', gallery);
   }, [gallery]);
 
   useEffect(() => {
@@ -600,7 +595,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_news', JSON.stringify(news));
     } catch (_) {}
-    syncToServer('news', news);
   }, [news]);
 
   useEffect(() => {
@@ -608,7 +602,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_spmb', JSON.stringify(spmbApplications));
     } catch (_) {}
-    syncToServer('spmbApplications', spmbApplications);
   }, [spmbApplications]);
 
   useEffect(() => {
@@ -616,7 +609,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_programs', JSON.stringify(programs));
     } catch (_) {}
-    syncToServer('programs', programs);
   }, [programs]);
 
   useEffect(() => {
@@ -624,7 +616,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_dimensions', JSON.stringify(dimensions));
     } catch (_) {}
-    syncToServer('dimensions', dimensions);
   }, [dimensions]);
 
   useEffect(() => {
@@ -632,7 +623,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_academic_subjects', JSON.stringify(academicSubjects));
     } catch (_) {}
-    syncToServer('academicSubjects', academicSubjects);
   }, [academicSubjects]);
 
   useEffect(() => {
@@ -640,7 +630,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_habits', JSON.stringify(habits));
     } catch (_) {}
-    syncToServer('habits', habits);
   }, [habits]);
 
   useEffect(() => {
@@ -648,7 +637,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_extracurriculars', JSON.stringify(extracurriculars));
     } catch (_) {}
-    syncToServer('extracurriculars', extracurriculars);
   }, [extracurriculars]);
 
   useEffect(() => {
@@ -656,7 +644,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       localStorage.setItem('mi_rpi_schedules', JSON.stringify(schedules));
     } catch (_) {}
-    syncToServer('schedules', schedules);
   }, [schedules]);
 
   // Sync settings to LocalStorage and Server Disk
@@ -756,8 +743,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           classAssigned: 'Kelas 4A',
           avatarUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=240&auto=format&fit=crop&q=80',
         };
-        setCurrentUser(mockUser);
-        navigate('portal-siswa');
         break;
       case 'ORANG_TUA':
         mockUser = {
@@ -768,8 +753,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           studentId: 'std-001',
           avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80',
         };
-        setCurrentUser(mockUser);
-        navigate('portal-ortu');
         break;
       case 'GURU':
       case 'WALI_KELAS':
@@ -782,8 +765,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           classAssigned: 'Kelas 4A',
           avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=240&auto=format&fit=crop&q=80',
         };
-        setCurrentUser(mockUser);
-        navigate('portal-guru');
         break;
       case 'KEPALA_MADRASAH':
         mockUser = {
@@ -793,8 +774,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           role: 'KEPALA_MADRASAH',
           avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=240&auto=format&fit=crop&q=80',
         };
-        setCurrentUser(mockUser);
-        navigate('portal-kamad');
         break;
       case 'BENDAHARA':
         mockUser = {
@@ -804,8 +783,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           role: 'BENDAHARA',
           avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=240&auto=format&fit=crop&q=80',
         };
-        setCurrentUser(mockUser);
-        navigate('portal-bendahara');
         break;
       case 'ADMIN':
       case 'SUPER_ADMIN':
@@ -818,7 +795,33 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           role: 'ADMIN',
           avatarUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=240&auto=format&fit=crop&q=80',
         };
-        setCurrentUser(mockUser);
+        break;
+    }
+
+    setCurrentUser(mockUser);
+    try {
+      localStorage.setItem('mi_rpi_auth_user', JSON.stringify(mockUser));
+      localStorage.setItem('mi_rpi_auth_role', role);
+    } catch (_) {}
+
+    switch (role) {
+      case 'SISWA':
+        navigate('portal-siswa');
+        break;
+      case 'ORANG_TUA':
+        navigate('portal-ortu');
+        break;
+      case 'GURU':
+      case 'WALI_KELAS':
+        navigate('portal-guru');
+        break;
+      case 'KEPALA_MADRASAH':
+        navigate('portal-kamad');
+        break;
+      case 'BENDAHARA':
+        navigate('portal-bendahara');
+        break;
+      default:
         navigate('portal-admin');
         break;
     }
@@ -1251,17 +1254,36 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       id: `nws-${Date.now()}`,
       slug,
     };
-    setNews((prev) => [newArticle, ...prev]);
+    setNews((prev) => {
+      const next = [newArticle, ...prev];
+      try {
+        localStorage.setItem('mi_rpi_news', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('news', next);
+      return next;
+    });
   };
 
   const updateNewsArticle = (id: string, updates: Partial<NewsItem>) => {
-    setNews((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
-    );
+    setNews((prev) => {
+      const next = prev.map((item) => (item.id === id ? { ...item, ...updates } : item));
+      try {
+        localStorage.setItem('mi_rpi_news', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('news', next);
+      return next;
+    });
   };
 
   const deleteNewsArticle = (id: string) => {
-    setNews((prev) => prev.filter((item) => item.id !== id));
+    setNews((prev) => {
+      const next = prev.filter((item) => item.id !== id);
+      try {
+        localStorage.setItem('mi_rpi_news', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('news', next);
+      return next;
+    });
   };
 
   const addGalleryItem = (item: Omit<GalleryItem, 'id'>) => {
@@ -1269,11 +1291,25 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       ...item,
       id: `gal-${Date.now()}`,
     };
-    setGallery((prev) => [newItem, ...prev]);
+    setGallery((prev) => {
+      const next = [newItem, ...prev];
+      try {
+        localStorage.setItem('mi_rpi_gallery', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('gallery', next);
+      return next;
+    });
   };
 
   const deleteGalleryItem = (id: string) => {
-    setGallery((prev) => prev.filter((g) => g.id !== id));
+    setGallery((prev) => {
+      const next = prev.filter((g) => g.id !== id);
+      try {
+        localStorage.setItem('mi_rpi_gallery', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('gallery', next);
+      return next;
+    });
   };
 
   const addTeacher = (t: Omit<Teacher, 'id'>) => {
@@ -1387,38 +1423,73 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       ...cls,
       id: `cls-${Date.now()}`,
     };
-    setClasses((prev) => [...prev, newClass]);
+    setClasses((prev) => {
+      const next = [...prev, newClass];
+      try {
+        localStorage.setItem('mi_rpi_classes', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('classes', next);
+      return next;
+    });
   };
 
   const updateClass = (id: string, updated: Partial<SchoolClass>) => {
-    setClasses((prev) =>
-      prev.map((c) => {
+    setClasses((prev) => {
+      const next = prev.map((c) => {
         if (c.id === id) {
           const updatedClass = { ...c, ...updated };
           // If class name changed, update students and teachers referencing this class name
           if (updated.name && updated.name !== c.name) {
-            setStudents((prevStudents) =>
-              prevStudents.map((s) => (s.className === c.name ? { ...s, className: updated.name! } : s))
-            );
-            setTeachers((prevTeachers) =>
-              prevTeachers.map((t) => (t.homeroomClass === c.name ? { ...t, homeroomClass: updated.name! } : t))
-            );
+            setStudents((prevStudents) => {
+              const nextStudents = prevStudents.map((s) => (s.className === c.name ? { ...s, className: updated.name! } : s));
+              try {
+                localStorage.setItem('mi_rpi_students', JSON.stringify(nextStudents));
+              } catch (_) {}
+              syncToServer('students', nextStudents);
+              return nextStudents;
+            });
+            setTeachers((prevTeachers) => {
+              const nextTeachers = prevTeachers.map((t) => (t.homeroomClass === c.name ? { ...t, homeroomClass: updated.name! } : t));
+              try {
+                localStorage.setItem('mi_rpi_teachers', JSON.stringify(nextTeachers));
+              } catch (_) {}
+              syncToServer('teachers', nextTeachers);
+              return nextTeachers;
+            });
           }
           return updatedClass;
         }
         return c;
-      })
-    );
+      });
+      try {
+        localStorage.setItem('mi_rpi_classes', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('classes', next);
+      return next;
+    });
   };
 
   const deleteClass = (id: string) => {
-    setClasses((prev) => prev.filter((c) => c.id !== id));
+    setClasses((prev) => {
+      const next = prev.filter((c) => c.id !== id);
+      try {
+        localStorage.setItem('mi_rpi_classes', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('classes', next);
+      return next;
+    });
   };
 
   const batchUpdateStudentClass = (studentIds: string[], targetClassName: string) => {
-    setStudents((prev) =>
-      prev.map((s) => (studentIds.includes(s.id) ? { ...s, className: targetClassName } : s))
-    );
+    setStudents((prev) => {
+      const next = prev.map((s) => (studentIds.includes(s.id) ? { ...s, className: targetClassName } : s));
+      try {
+        localStorage.setItem('mi_rpi_students', JSON.stringify(next));
+        localStorage.setItem('mi_rpi_students_backup', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('students', next);
+      return next;
+    });
   };
 
   const importTeachersFromExcel = (newTeachers: Omit<Teacher, 'id'>[]): number => {
@@ -1486,13 +1557,20 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       createdAt: new Date().toISOString().split('T')[0],
       status: acc.status || 'Aktif',
     };
-    setUserAccounts((prev) => [newAcc, ...prev]);
+    setUserAccounts((prev) => {
+      const next = [newAcc, ...prev];
+      try {
+        localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('userAccounts', next);
+      return next;
+    });
     return newAcc;
   };
 
   const updateUserAccount = (id: string, updates: Partial<UserAccount>) => {
-    setUserAccounts((prev) =>
-      prev.map((acc) => {
+    setUserAccounts((prev) => {
+      const next = prev.map((acc) => {
         if (acc.id === id) {
           const targetRole = updates.role || acc.role;
           const isNoClassRole = targetRole === 'BENDAHARA' || targetRole === 'ADMIN' || targetRole === 'KEPALA_MADRASAH';
@@ -1503,19 +1581,36 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           return updated;
         }
         return acc;
-      })
-    );
+      });
+      try {
+        localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('userAccounts', next);
+      return next;
+    });
   };
 
   const deleteUserAccount = (id: string) => {
-    setUserAccounts((prev) => prev.filter((acc) => acc.id !== id));
+    setUserAccounts((prev) => {
+      const next = prev.filter((acc) => acc.id !== id);
+      try {
+        localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('userAccounts', next);
+      return next;
+    });
   };
 
   const resetUserPassword = (id: string, newPassword?: string): string => {
     const generated = newPassword || `RPI-${Math.floor(100000 + Math.random() * 900000)}`;
-    setUserAccounts((prev) =>
-      prev.map((acc) => (acc.id === id ? { ...acc, password: generated } : acc))
-    );
+    setUserAccounts((prev) => {
+      const next = prev.map((acc) => (acc.id === id ? { ...acc, password: generated } : acc));
+      try {
+        localStorage.setItem('mi_rpi_user_accounts', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('userAccounts', next);
+      return next;
+    });
     return generated;
   };
 
@@ -1627,6 +1722,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       classAssigned: account.className,
     };
     setCurrentUser(mockUser);
+    try {
+      localStorage.setItem('mi_rpi_auth_user', JSON.stringify(mockUser));
+      localStorage.setItem('mi_rpi_auth_role', account.role);
+    } catch (_) {}
 
     if (account.role === 'GURU' || account.role === 'WALI_KELAS') {
       navigate('portal-guru');
@@ -1650,33 +1749,68 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       ...prog,
       id: Date.now(),
     };
-    setPrograms((prev) => [newProg, ...prev]);
+    setPrograms((prev) => {
+      const next = [newProg, ...prev];
+      try {
+        localStorage.setItem('mi_rpi_programs', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('programs', next);
+      return next;
+    });
   };
 
   const updateProgram = (id: number | string, updates: Partial<FlagshipProgram>) => {
-    setPrograms((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
-    );
+    setPrograms((prev) => {
+      const next = prev.map((p) => (p.id === id ? { ...p, ...updates } : p));
+      try {
+        localStorage.setItem('mi_rpi_programs', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('programs', next);
+      return next;
+    });
   };
 
   const deleteProgram = (id: number | string) => {
-    setPrograms((prev) => prev.filter((p) => p.id !== id));
+    setPrograms((prev) => {
+      const next = prev.filter((p) => p.id !== id);
+      try {
+        localStorage.setItem('mi_rpi_programs', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('programs', next);
+      return next;
+    });
   };
 
   const updateDimensions = (newDims: GraduateDimension[]) => {
     setDimensions(newDims);
+    try {
+      localStorage.setItem('mi_rpi_dimensions', JSON.stringify(newDims));
+    } catch (_) {}
+    syncToServer('dimensions', newDims);
   };
 
   const updateAcademicSubjects = (newSubjects: AcademicSubjectGroup[]) => {
     setAcademicSubjects(newSubjects);
+    try {
+      localStorage.setItem('mi_rpi_academic_subjects', JSON.stringify(newSubjects));
+    } catch (_) {}
+    syncToServer('academicSubjects', newSubjects);
   };
 
   const updateHabits = (newHabits: StudentHabit[]) => {
     setHabits(newHabits);
+    try {
+      localStorage.setItem('mi_rpi_habits', JSON.stringify(newHabits));
+    } catch (_) {}
+    syncToServer('habits', newHabits);
   };
 
   const updateExtracurriculars = (newExcurs: Extracurricular[]) => {
     setExtracurriculars(newExcurs);
+    try {
+      localStorage.setItem('mi_rpi_extracurriculars', JSON.stringify(newExcurs));
+    } catch (_) {}
+    syncToServer('extracurriculars', newExcurs);
   };
 
   const addScheduleItem = (item: Omit<ScheduleItem, 'id'>) => {
@@ -1684,21 +1818,44 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       ...item,
       id: `sch-${Date.now()}`,
     };
-    setSchedules((prev) => [...prev, newItem]);
+    setSchedules((prev) => {
+      const next = [...prev, newItem];
+      try {
+        localStorage.setItem('mi_rpi_schedules', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('schedules', next);
+      return next;
+    });
   };
 
   const updateScheduleItem = (id: string, updates: Partial<ScheduleItem>) => {
-    setSchedules((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
-    );
+    setSchedules((prev) => {
+      const next = prev.map((s) => (s.id === id ? { ...s, ...updates } : s));
+      try {
+        localStorage.setItem('mi_rpi_schedules', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('schedules', next);
+      return next;
+    });
   };
 
   const deleteScheduleItem = (id: string) => {
-    setSchedules((prev) => prev.filter((s) => s.id !== id));
+    setSchedules((prev) => {
+      const next = prev.filter((s) => s.id !== id);
+      try {
+        localStorage.setItem('mi_rpi_schedules', JSON.stringify(next));
+      } catch (_) {}
+      syncToServer('schedules', next);
+      return next;
+    });
   };
 
   const resetSchedulesToDefault = () => {
     setSchedules(initialSchedules);
+    try {
+      localStorage.setItem('mi_rpi_schedules', JSON.stringify(initialSchedules));
+    } catch (_) {}
+    syncToServer('schedules', initialSchedules);
   };
 
   // Full Database Restore (Local + Server)

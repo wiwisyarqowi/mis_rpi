@@ -74,16 +74,26 @@ function sanitizeObjectImages(obj: any): any {
   return result;
 }
 
+const defaultDbFilePath = path.join(dataDir, 'default_database.json');
+
 function readDatabase(): Record<string, any> {
+  let defaultDb: Record<string, any> = {};
+  try {
+    if (fs.existsSync(defaultDbFilePath)) {
+      defaultDb = JSON.parse(fs.readFileSync(defaultDbFilePath, 'utf-8'));
+    }
+  } catch (_) {}
+
   try {
     if (fs.existsSync(dbFilePath)) {
       const content = fs.readFileSync(dbFilePath, 'utf-8');
-      return JSON.parse(content);
+      const userDb = JSON.parse(content);
+      return { ...defaultDb, ...userDb };
     }
   } catch (e) {
     console.error('Error reading school_database.json:', e);
   }
-  return {};
+  return defaultDb;
 }
 
 // Single in-memory cache to guarantee atomic concurrent updates without race conditions

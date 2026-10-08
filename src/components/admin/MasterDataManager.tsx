@@ -175,13 +175,13 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
       const b1 = localStorage.getItem('mi_rpi_students_backup') || localStorage.getItem('mi_rpi_students');
       if (b1) {
         const p1 = JSON.parse(b1);
-        if (Array.isArray(p1) && p1.length > 0 && p1.length >= students.length) {
+        if (Array.isArray(p1) && p1.length > 0) {
           setLocalBackupFound(p1.length);
         }
       }
 
       // 2. Check teachers backup in browser
-      const tb = localStorage.getItem('mi_rpi_teachers_backup');
+      const tb = localStorage.getItem('mi_rpi_teachers_backup') || localStorage.getItem('mi_rpi_teachers');
       if (tb) {
         const pt = JSON.parse(tb);
         if (Array.isArray(pt) && pt.length > 0) {
