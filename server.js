@@ -4,7 +4,6 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 dotenv.config();
 var __filename = fileURLToPath(import.meta.url);
 var __dirname = path.dirname(__filename);
@@ -127,14 +126,26 @@ function saveDatabase(newData) {
     return databaseCache;
   }
 }
-var ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  httpOptions: {
-    headers: {
-      "User-Agent": "aistudio-build"
-    }
+var aiClient = null;
+async function getAIClient() {
+  if (aiClient) return aiClient;
+  if (!process.env.GEMINI_API_KEY) return null;
+  try {
+    const { GoogleGenAI } = await import("@google/genai");
+    aiClient = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY,
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build"
+        }
+      }
+    });
+    return aiClient;
+  } catch (e) {
+    console.warn("Could not load @google/genai SDK:", e);
+    return null;
   }
-});
+}
 var RPI_SYSTEM_INSTRUCTION = `
 Anda adalah "RPI Smart Assistant", asisten kecerdasan buatan resmi untuk Madrasah Ibtidaiyah RPI Jakarta (MI RPI Jakarta / MIS RPI Jakarta).
 Motto madrasah: "Madrasah Unggul, Berakhlak Mulia, Cakap di Era Digital".
@@ -194,7 +205,12 @@ Saat ini pendaftaran SPMB Tahun Ajaran 2027/2028 telah dibuka dengan kuota terba
         modelUsed: "local-knowledge-base"
       });
     }
-    const response = await ai.models.generateContent({
+    const client = await getAIClient();
+    if (!client) {
+      const fallbackAnswer = getLocalSmartFallback(message);
+      return res.json({ reply: fallbackAnswer, modelUsed: "local-knowledge-base" });
+    }
+    const response = await client.models.generateContent({
       model: "gemini-3.1-pro-preview",
       contents: [
         ...Array.isArray(history) ? history.map((h) => ({
@@ -206,7 +222,7 @@ Saat ini pendaftaran SPMB Tahun Ajaran 2027/2028 telah dibuka dengan kuota terba
       config: {
         systemInstruction: RPI_SYSTEM_INSTRUCTION,
         thinkingConfig: {
-          thinkingLevel: ThinkingLevel.HIGH
+          thinkingLevel: "HIGH"
         }
       }
     });
@@ -449,21 +465,34 @@ app.post("/api/database/import", (req, res) => {
   }
 });
 async function startServer() {
-  if (!isProduction) {
-    const { createServer: createViteServer } = await import("vite");
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa"
-    });
-    app.use(vite.middlewares);
-  } else {
-    app.use(express.static(path.resolve(__dirname, "dist")));
+  const distDir = path.resolve(__dirname, "dist");
+  const hasDist = fs.existsSync(distDir) && fs.existsSync(path.join(distDir, "index.html"));
+  if (isProduction || hasDist) {
+    app.use(express.static(distDir));
     app.get("*", (req, res) => {
-      res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+      res.sendFile(path.resolve(distDir, "index.html"));
     });
+  } else {
+    try {
+      const viteModule = "vite";
+      const { createServer: createViteServer } = await import(
+        /* @vite-ignore */
+        viteModule
+      );
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa"
+      });
+      app.use(vite.middlewares);
+    } catch (err) {
+      console.warn("Vite dev server failed to load, falling back to static:", err);
+    }
   }
-  app.listen(PORT, () => {
-    console.log(`[MI RPI Platform] Server running on http://localhost:${PORT}`);
+  const server = app.listen(PORT, () => {
+    console.log(`[MI RPI Platform] Server running on port ${PORT}`);
+  });
+  server.on("error", (err) => {
+    console.error("[MI RPI Platform] Server error:", err);
   });
 }
 startServer();

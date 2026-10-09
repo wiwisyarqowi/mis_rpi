@@ -1,0 +1,1126 @@
+{
+  "settings": {
+    "schoolName": "Madrasah Ibtidaiyah RPI Jakarta",
+    "shortName": "MI RPI Jakarta / MIS RPI Jakarta",
+    "tagline": "Madrasah Unggul, Berakhlak Mulia, Cakap di Era Digital",
+    "subheadline": "Madrasah Ibtidaiyah RPI Jakarta hadir memadukan nilai-nilai Islam, pendidikan karakter, sains, teknologi, dan pembelajaran bermakna untuk membentuk generasi yang berakhlak mulia, cerdas, kreatif, dan siap menghadapi masa depan.",
+    "npsn": "60706249",
+    "madrasahCode": "111231740119",
+    "status": "Swasta",
+    "foundation": "Yayasan Rumah Pendidikan Islam",
+    "accreditation": "A",
+    "address": "Jl. HR. Rasuna Said Kav. X2-2",
+    "rtRw": "008/04",
+    "subDistrict": "Kuningan Timur",
+    "district": "Setiabudi",
+    "city": "Jakarta Selatan",
+    "province": "DKI Jakarta",
+    "postalCode": "12950",
+    "latitude": -6.2337,
+    "longitude": 106.8296,
+    "phone": "[DATA BELUM DIISI ADMIN]",
+    "whatsapp": "6281234567890",
+    "email": "[DATA BELUM DIISI ADMIN]",
+    "instagram": "@mis_rpi",
+    "youtube": "[DATA BELUM DIISI ADMIN]",
+    "facebook": "[DATA BELUM DIISI ADMIN]",
+    "vision": "Menjadi madrasah ibtidaiyah yang unggul dalam mengimplementasikan nilai-nilai Islam dan sains teknologi, menghasilkan generasi penerus bangsa yang berakhlak mulia, cerdas, dan cakap dalam menghadapi era digital.",
+    "missions": [
+      "Menanamkan aqidah yang kokoh dan akhlak mulia melalui pembiasaan ibadah dan keteladanan sehari-hari.",
+      "Menyelenggarakan proses pembelajaran bermakna yang mengintegrasikan kurikulum nasional, kurikulum keagamaan Kemenag, dan literasi teknologi.",
+      "Menerapkan lingkungan madrasah ramah anak yang aman, inklusif, dan mendukung perkembangan sosial-emosional (Social Emotional Learning).",
+      "Mengembangkan potensi sains, teknologi, seni, dan olahraga melalui program kokurikuler dan ekstrakurikuler terpadu.",
+      "Membangun sinergi harmonis antara madrasah, orang tua, yayasan, dan masyarakat dalam mencetak generasi qurani yang berdaya saing global."
+    ],
+    "goals": [
+      "Lulusan menguasai tahfidz minimal Juz 30 dan Juz 29 serta memiliki kecakapan adab islami yang tinggi.",
+      "Siswa memiliki nalar kritis dan literasi sains-digital yang kuat untuk melanjutkan ke jenjang MTs/SMP unggulan.",
+      "Terwujudnya lingkungan belajar madrasah ramah anak yang nyaman, menyenangkan, dan bebas perundungan."
+    ],
+    "academicYear": "2027/2028",
+    "activeSemester": "Ganjil",
+    "principalName": "H. Ahmad Fauzi, S.Pd.I., M.Pd.",
+    "principalNip": "197805122005011003",
+    "principalPhotoUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=240&auto=format&fit=crop&q=80",
+    "logoUrl": "/images/logo-yayasan-rpi.svg",
+    "heroImageUrl": "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1200&auto=format&fit=crop&q=80",
+    "monthlyTuitionFee": 650000,
+    "bankName": "Bank Syariah Indonesia (BSI)",
+    "bankAccountNumber": "7123456789",
+    "bankAccountHolder": "MI RPI JAKARTA"
+  },
+  "teachers": [
+    {
+      "id": "tch-001",
+      "nip": "198803152014031002",
+      "name": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "title": "Guru PAI & Wali Kelas 4A",
+      "subject": "Pendidikan Agama Islam & Al-Qur'an Hadits",
+      "isHomeroom": true,
+      "homeroomClass": "Kelas 4A",
+      "education": "S1 Pendidikan Agama Islam UIN Syarif Hidayatullah",
+      "photoUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=240&auto=format&fit=crop&q=80",
+      "status": "Tetap Yayasan"
+    },
+    {
+      "id": "tch-002",
+      "nip": "199207212018022003",
+      "name": "Ustadzah Siti Rahmah, M.Pd",
+      "title": "Guru Kelas & Pembina Literasi",
+      "subject": "Bahasa Indonesia & IPAS",
+      "isHomeroom": true,
+      "homeroomClass": "Kelas 5B",
+      "education": "S2 Pendidikan Dasar Universitas Negeri Jakarta",
+      "photoUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=240&auto=format&fit=crop&q=80",
+      "status": "Tetap Yayasan"
+    },
+    {
+      "id": "tch-003",
+      "nip": "199511102020011005",
+      "name": "Ustadz Ridwan Hakim, S.Kom",
+      "title": "Koordinator Lab Komputer & Robotik",
+      "subject": "Informatika & Koding Cilik",
+      "isHomeroom": false,
+      "education": "S1 Ilmu Komputer Universitas Indonesia",
+      "photoUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=240&auto=format&fit=crop&q=80",
+      "status": "Tetap Yayasan"
+    },
+    {
+      "id": "tch-004",
+      "nip": "199004122016042004",
+      "name": "Ustadzah Nurul Hidayati, Lc",
+      "title": "Koordinator Tahfiz & Bahasa Arab",
+      "subject": "Tahfiz Al-Qur'an & Bahasa Arab",
+      "isHomeroom": false,
+      "education": "S1 Syariah Universitas Al-Azhar Kairo",
+      "photoUrl": "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=240&auto=format&fit=crop&q=80",
+      "status": "Tetap Yayasan"
+    }
+  ],
+  "students": [
+    {
+      "id": "std-001",
+      "nis": "23240401",
+      "nisn": "0148923481",
+      "name": "Muhammad Al Fatih",
+      "gender": "L",
+      "className": "Kelas 4A",
+      "birthPlace": "Jakarta",
+      "birthDate": "14 Mei 2015",
+      "birthPlaceDate": "Jakarta, 14 Mei 2015",
+      "parentName": "Ibu Fatimah Zahra, S.E.",
+      "parentPhone": "081298765432",
+      "address": "Kuningan Timur, Setiabudi, Jakarta Selatan",
+      "photoUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=240&auto=format&fit=crop&q=80"
+    },
+    {
+      "id": "std-002",
+      "nis": "23240402",
+      "nisn": "0148923482",
+      "name": "Aisyah Humaira",
+      "gender": "P",
+      "className": "Kelas 4A",
+      "birthPlace": "Jakarta",
+      "birthDate": "22 Agustus 2015",
+      "birthPlaceDate": "Jakarta, 22 Agustus 2015",
+      "parentName": "Bapak Hendra Wijaya",
+      "parentPhone": "081387654321",
+      "address": "Karet Semanggi, Setiabudi, Jakarta Selatan",
+      "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&auto=format&fit=crop&q=80"
+    },
+    {
+      "id": "std-003",
+      "nis": "23240403",
+      "nisn": "0148923483",
+      "name": "Bilal Habasyi",
+      "gender": "L",
+      "className": "Kelas 4A",
+      "birthPlace": "Bandung",
+      "birthDate": "10 Januari 2015",
+      "birthPlaceDate": "Bandung, 10 Januari 2015",
+      "parentName": "Ibu Maryam",
+      "parentPhone": "081234567891",
+      "address": "Menteng Atas, Setiabudi, Jakarta Selatan",
+      "photoUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&auto=format&fit=crop&q=80"
+    },
+    {
+      "id": "std-004",
+      "nis": "23240404",
+      "nisn": "0148923484",
+      "name": "Khadijah Putri Pratama",
+      "gender": "P",
+      "className": "Kelas 4A",
+      "birthPlace": "Bogor",
+      "birthDate": "30 September 2015",
+      "birthPlaceDate": "Bogor, 30 September 2015",
+      "parentName": "Bapak Rahmat Hidayat",
+      "parentPhone": "081512345678",
+      "address": "Pasar Manggis, Setiabudi, Jakarta Selatan",
+      "photoUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=240&auto=format&fit=crop&q=80"
+    }
+  ],
+  "classes": [
+    {
+      "id": "cls-1a",
+      "name": "Kelas 1A",
+      "grade": 1,
+      "homeroomTeacherName": "Ustadzah Siti Aminah, S.Pd",
+      "room": "Gedung A, Lt. 1 - R.101",
+      "academicYear": "2025/2026",
+      "capacity": 28
+    },
+    {
+      "id": "cls-1b",
+      "name": "Kelas 1B",
+      "grade": 1,
+      "homeroomTeacherName": "Ustadz Muhammad Yusuf, S.Pd.I",
+      "room": "Gedung A, Lt. 1 - R.102",
+      "academicYear": "2025/2026",
+      "capacity": 28
+    },
+    {
+      "id": "cls-2a",
+      "name": "Kelas 2A",
+      "grade": 2,
+      "homeroomTeacherName": "Ustadzah Nurul Hidayah, S.Pd",
+      "room": "Gedung A, Lt. 1 - R.103",
+      "academicYear": "2025/2026",
+      "capacity": 28
+    },
+    {
+      "id": "cls-2b",
+      "name": "Kelas 2B",
+      "grade": 2,
+      "homeroomTeacherName": "Ustadz Ridwan Hakim, M.Pd",
+      "room": "Gedung A, Lt. 1 - R.104",
+      "academicYear": "2025/2026",
+      "capacity": 28
+    },
+    {
+      "id": "cls-3a",
+      "name": "Kelas 3A",
+      "grade": 3,
+      "homeroomTeacherName": "Ustadzah Halimah, S.Pd.I",
+      "room": "Gedung B, Lt. 2 - R.201",
+      "academicYear": "2025/2026",
+      "capacity": 30
+    },
+    {
+      "id": "cls-3b",
+      "name": "Kelas 3B",
+      "grade": 3,
+      "homeroomTeacherName": "Ustadz Farhan Ramadhan, S.Pd",
+      "room": "Gedung B, Lt. 2 - R.202",
+      "academicYear": "2025/2026",
+      "capacity": 30
+    },
+    {
+      "id": "cls-4a",
+      "name": "Kelas 4A",
+      "grade": 4,
+      "homeroomTeacherName": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "room": "Gedung B, Lt. 2 - R.203",
+      "academicYear": "2025/2026",
+      "capacity": 30
+    },
+    {
+      "id": "cls-4b",
+      "name": "Kelas 4B",
+      "grade": 4,
+      "homeroomTeacherName": "Ustadzah Fatimah, S.Si",
+      "room": "Gedung B, Lt. 2 - R.204",
+      "academicYear": "2025/2026",
+      "capacity": 30
+    },
+    {
+      "id": "cls-5a",
+      "name": "Kelas 5A",
+      "grade": 5,
+      "homeroomTeacherName": "Ustadz Hasan Basri, M.Ag",
+      "room": "Gedung C, Lt. 3 - R.301",
+      "academicYear": "2025/2026",
+      "capacity": 32
+    },
+    {
+      "id": "cls-5b",
+      "name": "Kelas 5B",
+      "grade": 5,
+      "homeroomTeacherName": "Ustadzah Aisyah Rahma, S.Pd",
+      "room": "Gedung C, Lt. 3 - R.302",
+      "academicYear": "2025/2026",
+      "capacity": 32
+    },
+    {
+      "id": "cls-6a",
+      "name": "Kelas 6A",
+      "grade": 6,
+      "homeroomTeacherName": "Ustadz Zulkifli, S.Pd.I",
+      "room": "Gedung C, Lt. 3 - R.303",
+      "academicYear": "2025/2026",
+      "capacity": 32
+    },
+    {
+      "id": "cls-6b",
+      "name": "Kelas 6B",
+      "grade": 6,
+      "homeroomTeacherName": "Ustadzah Maryam Dewi, S.Pd",
+      "room": "Gedung C, Lt. 3 - R.304",
+      "academicYear": "2025/2026",
+      "capacity": 32
+    }
+  ],
+  "userAccounts": [
+    {
+      "id": "acc-guru-001",
+      "name": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "username": "198804152014031002",
+      "password": "GuruRPI#2026",
+      "role": "GURU",
+      "nip": "198804152014031002",
+      "email": "ahmad.fauzi@guru.mirpi.sch.id",
+      "phone": "081234567890",
+      "subject": "Pendidikan Agama Islam & Fikih",
+      "className": "Kelas 4A",
+      "createdAt": "2026-07-01",
+      "status": "Aktif",
+      "lastLogin": "22 Sep 2026, 07:15"
+    },
+    {
+      "id": "acc-guru-002",
+      "name": "Ustadzah Siti Rahma, S.Pd.",
+      "username": "199208202018022004",
+      "password": "GuruRPI#2026",
+      "role": "GURU",
+      "nip": "199208202018022004",
+      "email": "siti.rahma@guru.mirpi.sch.id",
+      "phone": "081298765432",
+      "subject": "IPAS & Digital Coding",
+      "className": "Kelas 5B",
+      "createdAt": "2026-07-01",
+      "status": "Aktif",
+      "lastLogin": "21 Sep 2026, 13:40"
+    },
+    {
+      "id": "acc-guru-003",
+      "name": "Ustadz M. Ridwan, M.Pd.",
+      "username": "198501102010011001",
+      "password": "GuruRPI#2026",
+      "role": "GURU",
+      "nip": "198501102010011001",
+      "email": "m.ridwan@guru.mirpi.sch.id",
+      "phone": "081311223344",
+      "subject": "Matematika & Sains",
+      "className": "Kelas 6A",
+      "createdAt": "2026-07-01",
+      "status": "Aktif",
+      "lastLogin": "20 Sep 2026, 09:20"
+    },
+    {
+      "id": "acc-ortu-001",
+      "name": "Ibu Fatimah Zahra, S.E.",
+      "username": "0092837190",
+      "password": "WaliRPI#4A",
+      "role": "ORANG_TUA",
+      "nisn": "0092837190",
+      "studentName": "Muhammad Al Fatih",
+      "className": "Kelas 4A",
+      "email": "fatimah.zahra@gmail.com",
+      "phone": "081234567891",
+      "createdAt": "2026-07-10",
+      "status": "Aktif",
+      "lastLogin": "22 Sep 2026, 06:50"
+    },
+    {
+      "id": "acc-ortu-002",
+      "name": "Bapak Hendra Pratama",
+      "username": "0092837191",
+      "password": "WaliRPI#2B",
+      "role": "ORANG_TUA",
+      "nisn": "0092837191",
+      "studentName": "Aisyah Humaira",
+      "className": "Kelas 2B",
+      "email": "hendra.pratama@gmail.com",
+      "phone": "081399887766",
+      "createdAt": "2026-07-10",
+      "status": "Aktif",
+      "lastLogin": "21 Sep 2026, 19:15"
+    },
+    {
+      "id": "acc-ortu-003",
+      "name": "H. Bambang Irawan",
+      "username": "0092837192",
+      "password": "WaliRPI#1A",
+      "role": "ORANG_TUA",
+      "nisn": "0092837192",
+      "studentName": "Ahmad Rayhan Al-Ghazali",
+      "className": "Kelas 1A",
+      "email": "bambang.irawan@gmail.com",
+      "phone": "081211223344",
+      "createdAt": "2026-07-10",
+      "status": "Aktif",
+      "lastLogin": "18 Sep 2026, 14:05"
+    },
+    {
+      "id": "acc-siswa-001",
+      "name": "Muhammad Al Fatih",
+      "username": "0092837190",
+      "password": "SantriRPI#2026",
+      "role": "SISWA",
+      "nisn": "0092837190",
+      "studentName": "Muhammad Al Fatih",
+      "className": "Kelas 4A",
+      "createdAt": "2026-07-10",
+      "status": "Aktif",
+      "lastLogin": "22 Sep 2026, 08:00"
+    },
+    {
+      "id": "acc-admin-001",
+      "name": "Administrator MI RPI Jakarta",
+      "username": "admin",
+      "password": "AdminRPI#2026",
+      "role": "ADMIN",
+      "email": "admin@mirpi.sch.id",
+      "phone": "081288889999",
+      "createdAt": "2026-06-01",
+      "status": "Aktif",
+      "lastLogin": "9 Okt 2026, 07.14"
+    },
+    {
+      "id": "acc-bendahara-001",
+      "name": "Hj. Siti Mutmainnah, S.E. (Bendahara Madrasah)",
+      "username": "bendahara",
+      "password": "BendaharaRPI#2026",
+      "role": "BENDAHARA",
+      "email": "bendahara@mirpi.sch.id",
+      "phone": "081288886666",
+      "createdAt": "2026-06-01",
+      "status": "Aktif",
+      "lastLogin": "25 Sep 2026, 08:30"
+    },
+    {
+      "id": "acc-kamad-001",
+      "name": "Kepala Madrasah MI RPI",
+      "username": "kamad",
+      "password": "KamadRPI#2026",
+      "role": "KEPALA_MADRASAH",
+      "email": "kamad@mirpi.sch.id",
+      "phone": "081288887777",
+      "createdAt": "2026-06-01",
+      "status": "Aktif",
+      "lastLogin": "22 Sep 2026, 09:30"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "gal-1",
+      "title": "Pembelajaran Sains Eksperimental di Laboratorium Alam",
+      "category": "Sains",
+      "year": 2026,
+      "imageUrl": "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80",
+      "caption": "Murid kelas 4 melakukan observasi siklus air dan filterisasi tanah."
+    },
+    {
+      "id": "gal-2",
+      "title": "Shalat Dhuha Berjamaah & Tadarus Pagi",
+      "category": "Keagamaan",
+      "year": 2026,
+      "imageUrl": "https://images.unsplash.com/photo-1585036156171-384164a8c675?w=600&auto=format&fit=crop&q=80",
+      "caption": "Pembiasaan ibadah harian di musholla madrasah dengan tertib dan khusyuk."
+    },
+    {
+      "id": "gal-3",
+      "title": "Latihan Panahan Olahraga Sunnah",
+      "category": "Olahraga",
+      "year": 2026,
+      "imageUrl": "https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=600&auto=format&fit=crop&q=80",
+      "caption": "Melatih konsentrasi, ketenangan emosi, dan fokus bidikan sasaran."
+    },
+    {
+      "id": "gal-4",
+      "title": "Kelas Literasi Digital & Koding Anak",
+      "category": "Belajar",
+      "year": 2026,
+      "imageUrl": "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&auto=format&fit=crop&q=80",
+      "caption": "Eksplorasi computational thinking dengan game edukasi visual Scratch."
+    },
+    {
+      "id": "gal-5",
+      "title": "Pentas Seni Islami & Hadrah Shalawat",
+      "category": "Seni",
+      "year": 2025,
+      "imageUrl": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80",
+      "caption": "Kreativitas seni marawis dan hadrah dalam peringatan Maulid Nabi."
+    },
+    {
+      "id": "gal-6",
+      "title": "Kegiatan Jumat Bersih & Sedekah Berkah",
+      "category": "Sosial",
+      "year": 2026,
+      "imageUrl": "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=600&auto=format&fit=crop&q=80",
+      "caption": "Menumbuhkan empati dan gotong royong merawat kebersihan lingkungan."
+    }
+  ],
+  "news": [
+    {
+      "id": "nws-1",
+      "slug": "pembukaan-spmb-mi-rpi-2027-2028",
+      "title": "MI RPI Jakarta Resmi Membuka SPMB Tahun Ajaran 2027/2028 dengan Kuota Terbatas",
+      "category": "Berita Madrasah",
+      "summary": "Pendaftaran Murid Baru MI RPI Jakarta dibuka dengan kurikulum berorientasi masa depan yang menggabungkan adab Islami dan teknologi modern.",
+      "content": "Madrasah Ibtidaiyah RPI Jakarta yang berlokasi di kawasan strategis Jl. HR. Rasuna Said Kav. X2-2, Kuningan Timur, Setiabudi, resmi mengumumkan pembukaan SPMB Tahun Pelajaran 2027/2028. Mengusung konsep Madrasah Ramah Anak dan Digital School, MI RPI membatasi kuota peserta didik demi menjamin rasio interaksi guru-murid yang optimal serta perhatian personal terhadap kecerdasan emosional setiap anak.",
+      "author": "Humas MI RPI",
+      "date": "2027-02-18",
+      "imageUrl": "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&auto=format&fit=crop&q=80",
+      "tags": [
+        "SPMB",
+        "PPDB 2027",
+        "Madrasah Unggul",
+        "Jakarta Selatan"
+      ]
+    },
+    {
+      "id": "nws-2",
+      "slug": "expo-projek-p5-ppra-semester-ganjil",
+      "title": "Semarak Gelar Karya P5-PPRA: Siswa MI RPI Ciptakan Inovasi Ramah Lingkungan",
+      "category": "Kegiatan Siswa",
+      "summary": "Siswa-siswi kelas 1-6 memamerkan proyek daur ulang, komposting mini, serta purwarupa robot pemilah sampah otomatis.",
+      "content": "Kegiatan Gelar Karya Kokurikuler Berbasis Proyek (P5-PPRA) berlangsung semarak di aula serbaguna MI RPI Jakarta. Para siswa dengan antusias mempresentasikan hasil karya berbasis isu lingkungan hidup di Jakarta Selatan. Acara ini dihadiri oleh pengurus yayasan, dewan guru, dan orang tua murid yang memberikan apresiasi luar biasa atas daya kritis serta kepedulian sosial anak-anak.",
+      "author": "Tim Kurikulum MI RPI",
+      "date": "2026-09-15",
+      "imageUrl": "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80",
+      "tags": [
+        "P5-PPRA",
+        "Kurikulum Merdeka",
+        "Karya Siswa",
+        "Eko-Madrasah"
+      ]
+    },
+    {
+      "id": "nws-3",
+      "slug": "wisuda-tahfiz-quran-juz-30-29",
+      "title": "Tasmi' Akbar & Wisuda Tahfiz Al-Qur'an MI RPI: Lahirkan Generasi Qurani Berkarakter",
+      "category": "Kegiatan Keislaman",
+      "summary": "Sebanyak 45 santri MI RPI berhasil menyelesaikan hafalan Juz 30 dan Juz 29 dengan predikat mutqin.",
+      "content": "Suasana haru dan khidmat mewarnai kegiatan Tasmi' Akbar dan Wisuda Tahfiz MI RPI Jakarta. Program Tahsin dan Tahfiz intensif yang menjadi salah satu dari 15 program unggulan madrasah kembali mencetak lulusan hafiz cilik yang tidak hanya hafal secara lafadz namun juga memahami adab Al-Qur'an.",
+      "author": "Koordinator Tahfiz",
+      "date": "2026-09-10",
+      "imageUrl": "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=600&auto=format&fit=crop&q=80",
+      "tags": [
+        "Tahfiz",
+        "Al-Qur'an",
+        "Generasi Qurani",
+        "Wisuda"
+      ]
+    }
+  ],
+  "programs": [
+    {
+      "id": 1,
+      "name": "Madrasah Ramah Anak (MRA)",
+      "category": "Lingkungan & Perlindungan",
+      "icon": "ShieldCheck",
+      "description": "Penciptaan ekosistem sekolah tanpa kekerasan fisik maupun verbal, anti-bullying, inklusif, dan menyenangkan bagi anak-anak usia MI.",
+      "objective": "Menjamin hak anak untuk belajar dengan aman, nyaman, dan bahagia.",
+      "documentation": "Kantin sehat, ruang konseling ramah anak, dan duta anti perundungan.",
+      "kpi": "Zero perundungan, indeks kebahagiaan siswa di atas 95%, fasilitas ramah disabilitas."
+    },
+    {
+      "id": 2,
+      "name": "Social Emotional Learning (SEL)",
+      "category": "Pendidikan Karakter",
+      "icon": "Sparkles",
+      "description": "Kurikulum emosi terstruktur untuk membantu murid mengenali emosi, mengelola stres belajar, dan menumbuhkan empati sosial.",
+      "objective": "Membentuk kecerdasan intrapersonal dan interpersonal sejak usia dini.",
+      "documentation": "Morning check-in emotion cards, lingkaran kebaikan, dan refleksi mingguan.",
+      "kpi": "Tingkat resolusi konflik mandiri pada siswa meningkat dan hubungan pertemanan positif."
+    },
+    {
+      "id": 3,
+      "name": "Pramuka Wajib (Gugus Depan MI RPI)",
+      "category": "Kepanduan & Karakter",
+      "icon": "Compass",
+      "description": "Pendidikan kepanduan Siaga dan Penggalang yang melatih kedisiplinan, cinta alam, gotong royong, dan keterampilan tali temali.",
+      "objective": "Menanamkan jiwa korsa, ketangguhan fisik, dan cinta tanah air.",
+      "documentation": "Perkemahan Sabtu Minggu (Persami), pelantikan tanda kecakapan umum/khusus.",
+      "kpi": "100% siswa aktif dalam kepanduan dan memiliki ketahanan survival dasar."
+    },
+    {
+      "id": 4,
+      "name": "Tahsin & Tahfiz Al-Qur'an",
+      "category": "Keagamaan Unggulan",
+      "icon": "BookOpenCheck",
+      "description": "Bimbingan intensif membaca Al-Qur'an dengan metode Ummi / Qiraati serta target hafalan Juz 30 dan Juz 29 bersanad.",
+      "objective": "Mencetak generasi pecinta dan penghafal Al-Qur'an dengan makharijul huruf yang fasih.",
+      "documentation": "Halaqah pagi 30 menit, mutaba'ah yaumiyyah, tasmi' akbar, dan wisuda tahfiz.",
+      "kpi": "90% lulusan hafal minimal Juz 30 mutqin dan tersertifikasi tilawah."
+    },
+    {
+      "id": 5,
+      "name": "Gerakan Literasi Madrasah (GELIS)",
+      "category": "Akademik & Literasi",
+      "icon": "Library",
+      "description": "Program membaca 15 menit sebelum KBM, pojok baca kreatif tiap kelas, festival resensi buku, dan majalah dinding digital.",
+      "objective": "Meningkatkan minat baca dan kecakapan memahami bacaan kompleks.",
+      "documentation": "Koleksi e-Library, paspor literasi, dan penganugerahan Duta Baca Cilik bulanan.",
+      "kpi": "Rata-rata 2 buku selesai dibaca setiap bulan per siswa."
+    },
+    {
+      "id": 6,
+      "name": "Sains dan Teknologi Cilik (STEM)",
+      "category": "Sains & Riset",
+      "icon": "Atom",
+      "description": "Eksperimen sains sederhana, laboratorium mini, pembuatan roket air, eco-enzyme, dan observasi alam sekitar.",
+      "objective": "Mengasah nalar kritis dan metode berpikir ilmiah berdasarkan ciptaan Allah SWT.",
+      "documentation": "Science Fair tahunan, jurnal percobaan ilmiah anak, dan expo proyek sains.",
+      "kpi": "Peserta aktif dalam Kompetisi Sains Madrasah (KSM) tingkat Jakarta Selatan."
+    },
+    {
+      "id": 7,
+      "name": "Pembelajaran Digital & Coding Dasar",
+      "category": "Teknologi Informasi",
+      "icon": "Code2",
+      "description": "Pengenalan computational thinking menggunakan Scratch for Kids, robotika dasar lego, dan literasi keamanan internet.",
+      "objective": "Menyiapkan peserta didik menjadi pencipta teknologi masa depan berlandaskan etika.",
+      "documentation": "Lab Komputer modern, pembuatan game edukasi Islami oleh siswa kelas 4-6.",
+      "kpi": "Siswa kelas 5-6 mampu membuat karya animasi logika komputasi mandiri."
+    },
+    {
+      "id": 8,
+      "name": "Kegiatan Seni Islami & Kaligrafi",
+      "category": "Seni & Budaya",
+      "icon": "Palette",
+      "description": "Pelatihan menulis khat kaligrafi Arab (Naskhi & Riq'ah), seni lukis Islami, dan kerajinan tangan bermotif geometri.",
+      "objective": "Menyalurkan estetika keindahan Islam dan kehalusan rasa budi pekerti.",
+      "documentation": "Pameran galeri seni madrasah saat penerimaan rapor semester.",
+      "kpi": "Karya siswa menghiasi koridor madrasah dan menyabet medali lomba seni kaligrafi."
+    },
+    {
+      "id": 9,
+      "name": "Panahan (Archery Sunnah Sport)",
+      "category": "Olahraga Sunnah",
+      "icon": "Target",
+      "description": "Olahraga sunnah yang melatih konsentrasi, ketenangan emosi, koordinasi mata-tangan, dan ketepatan fokus.",
+      "objective": "Meningkatkan fokus mental dan kebugaran fisik peserta didik.",
+      "documentation": "Area panahan aman madrasah, perlengkapan recurve bow standar anak usia MI.",
+      "kpi": "Peningkatan konsentrasi belajar di kelas dan capaian kejuaraan panahan daerah."
+    },
+    {
+      "id": 10,
+      "name": "Pencak Silat (Bela Diri Tradisi)",
+      "category": "Bela Diri & Karakter",
+      "icon": "Swords",
+      "description": "Seni bela diri warisan leluhur bangsa yang mengutamakan sikap ksatria, olah raga, olah rasa, dan bela diri Islami.",
+      "objective": "Membina ketangkasan, perlindungan diri, dan sportivitas tinggi.",
+      "documentation": "Ujian kenaikan tingkat sabuk, atraksi jurus tunggal pada upacara madrasah.",
+      "kpi": "Siswa memiliki disiplin gerak dan kebugaran jasmani prima."
+    },
+    {
+      "id": 11,
+      "name": "Tari Saman & Tari Kreasi Nusantara",
+      "category": "Seni Tradisi",
+      "icon": "Flame",
+      "description": "Latihan kekompakan gerak ritmis, syair zikir Islami Aceh, dan penanaman harmoni dalam kerja sama tim.",
+      "objective": "Melestarikan warisan budaya Islam nusantara dan melatih sinkronisasi tim.",
+      "documentation": "Tampil pada peringatan Hari Santri, wisuda madrasah, dan festival seni.",
+      "kpi": "Pementasan berkala dengan keharmonisan gerak kelompok yang kompak."
+    },
+    {
+      "id": 12,
+      "name": "Hadrah & Marawis Shalawat",
+      "category": "Musik Religi",
+      "icon": "Music2",
+      "description": "Pelatihan tabuhan alat musik hadrah, marawis, dan pembawaan syair qasidah shalawat Nabi dengan nada merdu.",
+      "objective": "Menumbuhkan mahabbah (cinta) kepada Rasulullah SAW dan kebersamaan.",
+      "documentation": "Mengiringi peringatan Maulid Nabi, Muharram, dan Isra Mi'raj di madrasah.",
+      "kpi": "Grup Hadrah mandiri yang mampu tampil di acara internal dan eksternal."
+    },
+    {
+      "id": 13,
+      "name": "Pembiasaan Ibadah Harian",
+      "category": "Spiritualitas",
+      "icon": "SunMedium",
+      "description": "Shalat Dhuha berjamaah pagi, Shalat Dzuhur berjamaah, doa harian, Asmaul Husna, dan shalat sunnah rawatib.",
+      "objective": "Ibadah menjadi kebutuhan hidup yang mendarah daging, bukan keterpaksaan.",
+      "documentation": "Musholla madrasah, mutaba'ah buku jurnal ibadah digital yang dimonitor orang tua.",
+      "kpi": "100% siswa terbiasa melafalkan dzikir dan shalat tertib dengan kesadaran sendiri."
+    },
+    {
+      "id": 14,
+      "name": "Kegiatan Sosial & Peduli Lingkungan",
+      "category": "Sosial & Ekologi",
+      "icon": "Users",
+      "description": "Amal Jumat Berkah, Gerakan Jumat Bersih, pemilahan sampah organik/anorganik, dan santunan yatim piatu.",
+      "objective": "Mengikis sifat egois dan menumbuhkan kepedulian lingkungan rahmatan lil 'alamin.",
+      "documentation": "Bank sampah madrasah, pembagian sembako dhuafa sekitar Setiabudi & Kuningan.",
+      "kpi": "Terkumpulnya dana sosial mandiri murid dan madrasah bebas sampah plastik."
+    },
+    {
+      "id": 15,
+      "name": "Kokurikuler Berbasis Proyek (P5-PPRA)",
+      "category": "Kurikulum Merdeka",
+      "icon": "Lightbulb",
+      "description": "Projek Penguatan Profil Pelajar Pancasila dan Profil Pelajar Rahmatan Lil 'Alamin dengan tema gaya hidup berkelanjutan dan kearifan lokal.",
+      "objective": "Mewujudkan pembelajaran kontekstual yang memecahkan masalah nyata.",
+      "documentation": "Gelar Karya Akhir Semester, prototipe biopori, dan presentasi mandiri siswa.",
+      "kpi": "Setiap jenjang kelas menghasilkan minimal 2 produk projek kolaboratif per tahun."
+    }
+  ],
+  "dimensions": [
+    {
+      "id": 1,
+      "title": "Beriman & Bertaqwa kepada Allah SWT",
+      "desc": "Memiliki akidah salimah, gemar beribadah fardhu & sunnah, serta mencintai Rasulullah SAW."
+    },
+    {
+      "id": 2,
+      "title": "Berakhlak Mulia & Beradab",
+      "desc": "Menerapkan 5S (Senyum, Salam, Sapa, Sopan, Santun) dan berbakti kepada orang tua serta guru."
+    },
+    {
+      "id": 3,
+      "title": "Bernalar Kritis & Literat",
+      "desc": "Mampu menganalisis masalah, gemar membaca buku, dan memiliki daya logika yang terstruktur."
+    },
+    {
+      "id": 4,
+      "title": "Kreatif & Inovatif",
+      "desc": "Menghasilkan ide orisinal dalam proyek sains sederhana, seni Islami, dan koding anak."
+    },
+    {
+      "id": 5,
+      "title": "Bergotong Royong & Peduli",
+      "desc": "Memiliki kepekaan sosial, empati kepada sesama teman, dan aktif dalam aksi sedekah berkah."
+    },
+    {
+      "id": 6,
+      "title": "Mandiri & Tangguh",
+      "desc": "Mampu mengurus perlengkapan pribadi, disiplin waktu belajar, dan pantang menyerah."
+    },
+    {
+      "id": 7,
+      "title": "Berkebinekaan Global & Toleran",
+      "desc": "Menghormati keragaman budaya bangsa dalam bingkai Islam Rahmatan Lil 'Alamin."
+    },
+    {
+      "id": 8,
+      "title": "Cakap Digital & Beretika",
+      "desc": "Menggunakan teknologi informasi secara produktif, bijak, dan aman dari pengaruh negatif."
+    }
+  ],
+  "academicSubjects": [
+    {
+      "id": "sub-1",
+      "category": "Pendidikan Agama Islam (Kemenag)",
+      "items": [
+        "Al-Qur'an Hadits",
+        "Akidah Akhlak",
+        "Fikih Ibadah",
+        "Sejarah Kebudayaan Islam (SKI)",
+        "Bahasa Arab",
+        "Tahsin & Tahfiz Juz 30-29"
+      ]
+    },
+    {
+      "id": "sub-2",
+      "category": "Mata Pelajaran Umum (Kemendikbudristek)",
+      "items": [
+        "Pendidikan Pancasila",
+        "Bahasa Indonesia",
+        "Matematika Terpadu",
+        "IPAS (Ilmu Pengetahuan Alam & Sosial)",
+        "Seni Rupa & Budaya",
+        "Pendidikan Jasmani & Olahraga"
+      ]
+    },
+    {
+      "id": "sub-3",
+      "category": "Muatan Lokal & Digital Unggulan RPI",
+      "items": [
+        "Informatika & Logika Koding Cilik (Scratch)",
+        "Pramuka Siaga/Penggalang",
+        "Bahasa Inggris Dasar",
+        "Khat Kaligrafi Arab"
+      ]
+    }
+  ],
+  "habits": [
+    {
+      "id": "hbt-1",
+      "title": "Sambut Senyum Santri Pagi",
+      "desc": "Guru menyambut murid di gerbang madrasah dengan senyum, sapa, dan doa keberkahan.",
+      "time": "06.30 - 07.00 WIB"
+    },
+    {
+      "id": "hbt-2",
+      "title": "Shalat Dhuha Berjamaah & Zikir",
+      "desc": "Membiasakan shalat sunnah Dhuha 4 rakaat dilanjutkan doa pembuka pintu rezeki ilmu.",
+      "time": "07.00 - 07.30 WIB"
+    },
+    {
+      "id": "hbt-3",
+      "title": "Halaqah Tahsin & Tahfiz Quran",
+      "desc": "Bimbingan intensif makharijul huruf dan setoran hafalan mutqin Juz 30/29.",
+      "time": "07.30 - 08.00 WIB"
+    },
+    {
+      "id": "hbt-4",
+      "title": "Shalat Dzuhur Berjamaah",
+      "desc": "Membina adab shaf shalat berjamaah, muadzin cilik, dan kultum santri.",
+      "time": "12.00 - 12.45 WIB"
+    },
+    {
+      "id": "hbt-5",
+      "title": "Makan Siang Beradab & Gotong Royong",
+      "desc": "Makan bersama dengan adab Rasulullah (tangan kanan, duduk, tidak bersisa) dan membersihkan meja.",
+      "time": "12.45 - 13.15 WIB"
+    }
+  ],
+  "extracurriculars": [
+    {
+      "id": "ex-1",
+      "name": "Klub Robotik & Coding Scratch",
+      "category": "Teknologi",
+      "icon": "🤖",
+      "desc": "Membangun logika komputasi anak dengan membuat game Islami dan robot sederhana."
+    },
+    {
+      "id": "ex-2",
+      "name": "Panahan Sunnah (Archery)",
+      "category": "Olahraga",
+      "icon": "🏹",
+      "desc": "Melatih konsentrasi, ketenangan emosi, dan ketepatan fokus bidikan."
+    },
+    {
+      "id": "ex-3",
+      "name": "Pencak Silat Tradisi",
+      "category": "Bela Diri",
+      "icon": "🥋",
+      "desc": "Membina ketangkasan gerak, perlindungan diri, dan sportivitas ksatria."
+    },
+    {
+      "id": "ex-4",
+      "name": "Seni Hadrah & Marawis",
+      "category": "Seni Religi",
+      "icon": "🥁",
+      "desc": "Menghidupkan mahabbah shalawat Nabi dengan alunan tabuhan rebana harmonis."
+    },
+    {
+      "id": "ex-5",
+      "name": "Tari Saman Nusantara",
+      "category": "Seni Tradisi",
+      "icon": "🪕",
+      "desc": "Melatih kedisiplinan gerak sinkron cepat dan syair zikir puji-pujian."
+    },
+    {
+      "id": "ex-6",
+      "name": "Pramuka Siaga & Penggalang",
+      "category": "Kepanduan",
+      "icon": "⚜️",
+      "desc": "Keterampilan survival, simpul tali, kemandirian, dan bakti peduli sesama."
+    },
+    {
+      "id": "ex-7",
+      "name": "Klub Sains Cilik (STEM)",
+      "category": "Sains",
+      "icon": "🔬",
+      "desc": "Eksperimen alam, roket air, eko-enzim, dan observasi botani madrasah."
+    },
+    {
+      "id": "ex-8",
+      "name": "Kaligrafi Arab & Desain",
+      "category": "Seni Rupa",
+      "icon": "✒️",
+      "desc": "Menulis indah khat Naskhi dan Riq'ah serta ornamen geometri Islami."
+    }
+  ],
+  "schedules": [
+    {
+      "id": "sch-1",
+      "day": "Senin",
+      "time": "07.00 - 07.45",
+      "className": "Kelas 4A",
+      "subject": "Upacara Bendera & Doa Pagi",
+      "teacherName": "Tim Guru & Wali Kelas",
+      "room": "Lapangan Utama"
+    },
+    {
+      "id": "sch-2",
+      "day": "Senin",
+      "time": "07.45 - 08.45",
+      "className": "Kelas 4A",
+      "subject": "Tahsin & Tahfiz Al-Qur'an",
+      "teacherName": "Ustadzah Nurul Hidayati, Lc",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-3",
+      "day": "Senin",
+      "time": "09.00 - 10.30",
+      "className": "Kelas 4A",
+      "subject": "Matematika Terpadu",
+      "teacherName": "Ustadzah Siti Rahmah, M.Pd",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-4",
+      "day": "Senin",
+      "time": "10.30 - 11.45",
+      "className": "Kelas 4A",
+      "subject": "Informatika & Koding Scratch",
+      "teacherName": "Ustadz Ridwan Hakim, S.Kom",
+      "room": "Lab Komputer"
+    },
+    {
+      "id": "sch-5",
+      "day": "Senin",
+      "time": "12.00 - 13.00",
+      "className": "Kelas 4A",
+      "subject": "Shalat Dzuhur Berjamaah & Makan Siang Beradab",
+      "teacherName": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "room": "Musholla & Kelas"
+    },
+    {
+      "id": "sch-6",
+      "day": "Senin",
+      "time": "13.00 - 14.15",
+      "className": "Kelas 4A",
+      "subject": "Bahasa Indonesia & Literasi GELIS",
+      "teacherName": "Ustadzah Siti Rahmah, M.Pd",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-7",
+      "day": "Selasa",
+      "time": "07.00 - 08.00",
+      "className": "Kelas 4A",
+      "subject": "Shalat Dhuha & Muraja'ah Juz 30",
+      "teacherName": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "room": "Musholla"
+    },
+    {
+      "id": "sch-8",
+      "day": "Selasa",
+      "time": "08.00 - 09.30",
+      "className": "Kelas 4A",
+      "subject": "IPAS (Eksperimen Sains & Lingkungan)",
+      "teacherName": "Ustadzah Siti Rahmah, M.Pd",
+      "room": "Laboratorium Sains"
+    },
+    {
+      "id": "sch-9",
+      "day": "Selasa",
+      "time": "10.00 - 11.30",
+      "className": "Kelas 4A",
+      "subject": "Fikih Ibadah & Praktik Wudhu",
+      "teacherName": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-10",
+      "day": "Selasa",
+      "time": "12.00 - 13.00",
+      "className": "Kelas 4A",
+      "subject": "Shalat Dzuhur Berjamaah & Istirahat",
+      "teacherName": "Tim Guru Piket",
+      "room": "Musholla"
+    },
+    {
+      "id": "sch-11",
+      "day": "Selasa",
+      "time": "13.00 - 14.15",
+      "className": "Kelas 4A",
+      "subject": "Pendidikan Pancasila & Karakter SEL",
+      "teacherName": "Ustadzah Maryam Dewi, S.Pd",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-12",
+      "day": "Rabu",
+      "time": "07.00 - 08.00",
+      "className": "Kelas 4A",
+      "subject": "Halaqah Tahfiz & Zikir Al-Ma'tsurat",
+      "teacherName": "Ustadzah Nurul Hidayati, Lc",
+      "room": "Musholla"
+    },
+    {
+      "id": "sch-13",
+      "day": "Rabu",
+      "time": "08.00 - 09.30",
+      "className": "Kelas 4A",
+      "subject": "Bahasa Arab Dasar & Muhadatsah",
+      "teacherName": "Ustadz Zulkifli, S.Pd.I",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-14",
+      "day": "Rabu",
+      "time": "10.00 - 11.30",
+      "className": "Kelas 4A",
+      "subject": "Akidah Akhlak & Adab Islami",
+      "teacherName": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-15",
+      "day": "Rabu",
+      "time": "12.00 - 13.00",
+      "className": "Kelas 4A",
+      "subject": "Shalat Dzuhur Berjamaah & Makan Sehat",
+      "teacherName": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "room": "Musholla"
+    },
+    {
+      "id": "sch-16",
+      "day": "Rabu",
+      "time": "13.00 - 14.15",
+      "className": "Kelas 4A",
+      "subject": "Seni Budaya & Khat Kaligrafi Arab",
+      "teacherName": "Ustadz Ridwan Hakim, S.Kom",
+      "room": "Ruang Seni"
+    },
+    {
+      "id": "sch-17",
+      "day": "Kamis",
+      "time": "07.00 - 08.00",
+      "className": "Kelas 4A",
+      "subject": "Senam Pagi Ceria & Shalat Dhuha",
+      "teacherName": "Ustadz Zulkifli, S.Pd.I",
+      "room": "Lapangan & Musholla"
+    },
+    {
+      "id": "sch-18",
+      "day": "Kamis",
+      "time": "08.00 - 09.30",
+      "className": "Kelas 4A",
+      "subject": "Matematika Terpadu & Logika Nalar",
+      "teacherName": "Ustadzah Siti Rahmah, M.Pd",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-19",
+      "day": "Kamis",
+      "time": "10.00 - 11.30",
+      "className": "Kelas 4A",
+      "subject": "Sejarah Kebudayaan Islam (SKI)",
+      "teacherName": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-20",
+      "day": "Kamis",
+      "time": "12.00 - 13.00",
+      "className": "Kelas 4A",
+      "subject": "Shalat Dzuhur Berjamaah & Kultum Santri",
+      "teacherName": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "room": "Musholla"
+    },
+    {
+      "id": "sch-21",
+      "day": "Kamis",
+      "time": "13.00 - 14.30",
+      "className": "Kelas 4A",
+      "subject": "Pramuka Wajib Siaga/Penggalang",
+      "teacherName": "Tim Pembina Pramuka",
+      "room": "Halaman Madrasah"
+    },
+    {
+      "id": "sch-22",
+      "day": "Jumat",
+      "time": "06.45 - 07.30",
+      "className": "Kelas 4A",
+      "subject": "Jumat Berkah, Infaq & Surah Al-Kahfi",
+      "teacherName": "Seluruh Wali Kelas",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-23",
+      "day": "Jumat",
+      "time": "07.30 - 08.45",
+      "className": "Kelas 4A",
+      "subject": "Penjasorkes / Panahan Sunnah",
+      "teacherName": "Ustadz Zulkifli, S.Pd.I",
+      "room": "Lapangan Olahraga"
+    },
+    {
+      "id": "sch-24",
+      "day": "Jumat",
+      "time": "09.00 - 10.30",
+      "className": "Kelas 4A",
+      "subject": "Bahasa Inggris Dasar (Fun English)",
+      "teacherName": "Ustadzah Aisyah Rahma, S.Pd",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-25",
+      "day": "Jumat",
+      "time": "10.30 - 11.15",
+      "className": "Kelas 4A",
+      "subject": "Pembersihan Kelas & Adab Shalat Jumat",
+      "teacherName": "Ustadz Ahmad Fauzi, S.Pd.I",
+      "room": "Ruang Kelas 4A"
+    },
+    {
+      "id": "sch-26",
+      "day": "Jumat",
+      "time": "11.30 - 12.45",
+      "className": "Kelas 4A",
+      "subject": "Shalat Jumat Berjamaah & Kepulangan Santri",
+      "teacherName": "Dewan Guru MI RPI",
+      "room": "Masjid RPI"
+    }
+  ],
+  "spmbApplications": [
+    {
+      "id": "spmb-001",
+      "registrationNumber": "SPMB-2027-0012",
+      "studentName": "Ahmad Rayhan Al-Ghazali",
+      "birthPlace": "Jakarta",
+      "birthDate": "2021-04-12",
+      "gender": "L",
+      "nik": "3174021204200003",
+      "parentName": "H. Bambang Irawan",
+      "parentPhone": "081211223344",
+      "address": "Kuningan Barat, Mampang Prapatan, Jakarta Selatan",
+      "previousSchool": "RA Al-Ikhlas Setiabudi",
+      "programChosen": "Kelas Tahfiz & Digital Science",
+      "registrationDate": "2027-02-15",
+      "status": "Diterima",
+      "notes": "Lolos berkas dan observasi akademik dengan nilai sangat baik."
+    },
+    {
+      "id": "spmb-002",
+      "registrationNumber": "SPMB-2027-0013",
+      "studentName": "Salma Nafisah Azzahra",
+      "birthPlace": "Jakarta",
+      "birthDate": "2021-06-25",
+      "gender": "P",
+      "nik": "3174022506200004",
+      "parentName": "Ibu Annisa Pratiwi, M.Si",
+      "parentPhone": "081399887766",
+      "address": "Menteng Dalam, Tebet, Jakarta Selatan",
+      "previousSchool": "TK Islam As-Syafiiyah",
+      "programChosen": "Kelas Reguler Unggulan",
+      "registrationDate": "2027-02-18",
+      "status": "Jadwal Observasi",
+      "notes": "Undangan observasi hari Sabtu pukul 08.30 WIB."
+    },
+    {
+      "id": "spmb-003",
+      "registrationNumber": "SPMB-2027-0014",
+      "studentName": "Kenzi Arkananta Putra",
+      "birthPlace": "Jakarta",
+      "birthDate": "2021-02-18",
+      "gender": "L",
+      "nik": "3174021802200005",
+      "parentName": "Bapak Dedi Kusnadi",
+      "parentPhone": "081544332211",
+      "address": "Karet Pedurenan, Setiabudi, Jakarta Selatan",
+      "previousSchool": "TK Kartika X-1",
+      "programChosen": "Kelas Tahfiz & Digital Science",
+      "registrationDate": "2027-02-21",
+      "status": "Menunggu Verifikasi",
+      "notes": "Dokumen lengkap, dalam antrean verifikasi panitia SPMB."
+    }
+  ],
+  "lastUpdated": "2026-10-09T01:45:21.343Z"
+}
