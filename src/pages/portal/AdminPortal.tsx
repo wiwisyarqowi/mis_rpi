@@ -40,7 +40,7 @@ import { UserManager } from '../../components/admin/UserManager';
 import { MasterDataManager } from '../../components/admin/MasterDataManager';
 import { PaymentFinanceManager } from '../../components/admin/PaymentFinanceManager';
 import { CurriculumProgramsManager } from '../../components/admin/CurriculumProgramsManager';
-import { processImageFile } from '../../utils/imageUpload';
+import { processImageFile, uploadImageToServer } from '../../utils/imageUpload';
 import { PortalAccessGuard } from '../../components/common/PortalAccessGuard';
 
 export const AdminPortal: React.FC = () => {
@@ -1254,6 +1254,8 @@ export const AdminPortal: React.FC = () => {
                         if (file) {
                           const dataUrl = await processImageFile(file, 1000, 700, 0.85);
                           setNewsImage(dataUrl);
+                          const serverUrl = await uploadImageToServer(dataUrl, 'berita');
+                          setNewsImage(serverUrl);
                         }
                       }}
                       className="hidden"

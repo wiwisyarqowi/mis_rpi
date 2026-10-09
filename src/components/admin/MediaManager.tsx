@@ -11,6 +11,9 @@ import {
   UserCheck,
   ExternalLink,
   Plus,
+  Globe,
+  HelpCircle,
+  FolderOpen,
 } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
 import { processImageFile, uploadImageToServer } from '../../utils/imageUpload';
@@ -30,6 +33,9 @@ export const MediaManager: React.FC = () => {
   const [activeMediaSection, setActiveMediaSection] = useState<
     'logo' | 'hero' | 'principal' | 'gallery' | 'teachers'
   >('logo');
+
+  // Toggle cPanel Hosting Guide
+  const [showCpanelGuide, setShowCpanelGuide] = useState(false);
 
   // Feedback notifications
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -327,10 +333,22 @@ export const MediaManager: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setShowCpanelGuide(!showCpanelGuide)}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+              showCpanelGuide
+                ? 'bg-blue-500 text-white shadow-md'
+                : 'bg-white/10 text-white hover:bg-white/20'
+            }`}
+            title="Klik untuk melihat panduan upload gambar ke cPanel hosting domain"
+          >
+            <Globe size={14} />
+            <span>Panduan cPanel Domain</span>
+          </button>
           <button
             onClick={() => setActiveMediaSection('logo')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
               activeMediaSection === 'logo'
                 ? 'bg-amber-400 text-slate-950 shadow-md'
                 : 'bg-white/10 text-white hover:bg-white/20'
@@ -341,7 +359,7 @@ export const MediaManager: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveMediaSection('gallery')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
               activeMediaSection === 'gallery'
                 ? 'bg-amber-400 text-slate-950 shadow-md'
                 : 'bg-white/10 text-white hover:bg-white/20'
@@ -352,6 +370,88 @@ export const MediaManager: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Expandable cPanel Domain Upload Guide */}
+      {showCpanelGuide && (
+        <div className="bg-gradient-to-br from-slate-900 to-blue-950 text-white p-6 sm:p-7 rounded-3xl border-2 border-blue-400/40 shadow-xl space-y-5 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="flex items-start justify-between gap-4 border-b border-blue-800/60 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-300">
+                <Globe size={22} />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>Panduan Upload Foto ke cPanel Hosting Domain</span>
+                  <span className="text-[10px] font-bold bg-blue-500 text-white px-2 py-0.5 rounded-full uppercase">
+                    100% Online & Permanen
+                  </span>
+                </h3>
+                <p className="text-xs text-blue-200 mt-0.5">
+                  Ikuti langkah mudah ini jika Anda ingin gambar disimpan langsung di hosting domain sekolah Anda.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowCpanelGuide(false)}
+              className="text-xs text-blue-300 hover:text-white px-3 py-1.5 rounded-lg bg-white/10 transition cursor-pointer"
+            >
+              Tutup ✕
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
+              <span className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center font-black text-xs">
+                1
+              </span>
+              <h4 className="font-bold text-white text-sm">Buka cPanel & File Manager</h4>
+              <p className="text-slate-300 leading-relaxed text-[11px]">
+                Login ke <strong>https://namadomain.sch.id/cpanel</strong> lalu klik menu <strong>File Manager</strong>.
+              </p>
+            </div>
+
+            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
+              <span className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center font-black text-xs">
+                2
+              </span>
+              <h4 className="font-bold text-white text-sm">Masuk Folder public_html/images</h4>
+              <p className="text-slate-300 leading-relaxed text-[11px]">
+                Masuk ke folder <strong>public_html</strong>, buat folder baru bernama <strong>images</strong> (atau upload langsung).
+              </p>
+            </div>
+
+            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
+              <span className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center font-black text-xs">
+                3
+              </span>
+              <h4 className="font-bold text-white text-sm">Upload Foto & Salin URL</h4>
+              <p className="text-slate-300 leading-relaxed text-[11px]">
+                Klik tombol <strong>Upload</strong>. Alamat foto Anda otomatis menjadi:<br />
+                <code className="text-amber-300 font-mono text-[10px] break-all">
+                  https://namadomain.sch.id/images/foto.jpg
+                </code>
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 bg-blue-900/40 border border-blue-400/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="space-y-0.5">
+              <p className="font-bold text-blue-200">
+                Cara Pakai di Halaman Media Manager Ini:
+              </p>
+              <p className="text-[11px] text-slate-300">
+                Pilih menu (Logo / Banner / Galeri / Guru) $\rightarrow$ Pada <strong>Opsi B (Tautan URL)</strong>, tempel tautan dari cPanel Anda $\rightarrow$ Klik <strong>Simpan</strong>. Foto langsung aktif di seluruh dunia!
+              </p>
+            </div>
+            <button
+              onClick={() => setShowCpanelGuide(false)}
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs rounded-xl transition shrink-0 cursor-pointer"
+            >
+              Saya Paham
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Storage & Persistence Status Banner */}
       <div className="bg-emerald-50 border border-emerald-300/80 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">

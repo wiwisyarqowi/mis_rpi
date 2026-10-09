@@ -1728,6 +1728,49 @@ export const MasterDataManager: React.FC<MasterDataManagerProps> = ({ initialTab
                 </div>
               )}
             </div>
+
+            {/* Deploy cPanel Package Section */}
+            <div className="bg-gradient-to-r from-emerald-900 to-teal-900 text-white rounded-3xl p-6 shadow-sm space-y-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-full text-emerald-300 text-xs font-semibold mb-2">
+                    <Download size={14} />
+                    <span>Paket Deployment Siap Pakai</span>
+                  </div>
+                  <h4 className="font-extrabold text-lg text-white">
+                    Unduh File Aplikasi untuk cPanel (Node.js)
+                  </h4>
+                  <p className="text-xs text-emerald-100 max-w-xl mt-1">
+                    Paket zip ini berisi lengkap: <code>server.js</code>, <code>package.json</code>, folder <code>dist/</code>, folder <code>public/uploads/</code>, dan database <code>data/</code> siap diekstrak langsung ke folder <code>app/</code> di cPanel Anda.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      const res = await fetch('/cpanel-app.zip');
+                      if (!res.ok) throw new Error('Gagal mengambil file');
+                      const blob = await res.blob();
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'cpanel-app.zip';
+                      document.body.appendChild(a);
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                      document.body.removeChild(a);
+                    } catch (e) {
+                      window.location.href = '/cpanel-app.zip';
+                    }
+                  }}
+                  className="px-5 py-3 bg-white text-emerald-900 hover:bg-emerald-50 font-bold text-sm rounded-2xl shadow-md transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+                >
+                  <Download size={18} className="text-emerald-700" />
+                  <span>Unduh cpanel-app.zip</span>
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -24,6 +24,17 @@ if (!fs.existsSync(uploadsDir)) {
 }
 app.use('/uploads', express.static(uploadsDir));
 
+// Route to directly download the cPanel deployment package
+app.get('/cpanel-app.zip', (req: Request, res: Response) => {
+  const zipPath = path.resolve(__dirname, 'public', 'cpanel-app.zip');
+  if (fs.existsSync(zipPath)) {
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename="cpanel-app.zip"');
+    return res.sendFile(zipPath);
+  }
+  return res.status(404).send('File not found');
+});
+
 // Persistent database storage on server disk
 const dataDir = path.resolve(__dirname, 'data');
 if (!fs.existsSync(dataDir)) {
