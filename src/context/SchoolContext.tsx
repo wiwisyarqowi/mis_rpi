@@ -368,11 +368,33 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     let isMounted = true;
     const hydrateFromServer = async () => {
       try {
-        const res = await fetch('/api/school-data');
-        if (res.ok) {
-          const json = await res.json();
-          if (json.data && isMounted) {
-            const serverData = json.data;
+        let serverData: any = null;
+
+        // 1. Try dynamic backend endpoint
+        try {
+          const res = await fetch('/api/school-data');
+          const contentType = res.headers.get('content-type') || '';
+          if (res.ok && contentType.includes('application/json')) {
+            const json = await res.json();
+            if (json && json.data) {
+              serverData = json.data;
+            }
+          }
+        } catch (_) {}
+
+        // 2. If backend endpoint not responding or returning HTML (static hosting fallback), try static school-data.json
+        if (!serverData) {
+          try {
+            const fallbackRes = await fetch('/school-data.json');
+            const fallbackContentType = fallbackRes.headers.get('content-type') || '';
+            if (fallbackRes.ok && fallbackContentType.includes('application/json')) {
+              const fallbackJson = await fallbackRes.json();
+              serverData = fallbackJson.data || fallbackJson;
+            }
+          } catch (_) {}
+        }
+
+        if (serverData && isMounted) {
             if (serverData.settings) {
               setSettings(serverData.settings);
               try {
@@ -533,7 +555,6 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               } catch (_) {}
             }
           }
-        }
       } catch (err) {
         console.warn('Initial server hydration warning:', err);
       } finally {

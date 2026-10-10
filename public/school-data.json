@@ -780,56 +780,56 @@
       "id": "ex-1",
       "name": "Klub Robotik & Coding Scratch",
       "category": "Teknologi",
-      "icon": "\ud83e\udd16",
+      "icon": "🤖",
       "desc": "Membangun logika komputasi anak dengan membuat game Islami dan robot sederhana."
     },
     {
       "id": "ex-2",
       "name": "Panahan Sunnah (Archery)",
       "category": "Olahraga",
-      "icon": "\ud83c\udff9",
+      "icon": "🏹",
       "desc": "Melatih konsentrasi, ketenangan emosi, dan ketepatan fokus bidikan."
     },
     {
       "id": "ex-3",
       "name": "Pencak Silat Tradisi",
       "category": "Bela Diri",
-      "icon": "\ud83e\udd4b",
+      "icon": "🥋",
       "desc": "Membina ketangkasan gerak, perlindungan diri, dan sportivitas ksatria."
     },
     {
       "id": "ex-4",
       "name": "Seni Hadrah & Marawis",
       "category": "Seni Religi",
-      "icon": "\ud83e\udd41",
+      "icon": "🥁",
       "desc": "Menghidupkan mahabbah shalawat Nabi dengan alunan tabuhan rebana harmonis."
     },
     {
       "id": "ex-5",
       "name": "Tari Saman Nusantara",
       "category": "Seni Tradisi",
-      "icon": "\ud83e\ude95",
+      "icon": "🪕",
       "desc": "Melatih kedisiplinan gerak sinkron cepat dan syair zikir puji-pujian."
     },
     {
       "id": "ex-6",
       "name": "Pramuka Siaga & Penggalang",
       "category": "Kepanduan",
-      "icon": "\u269c\ufe0f",
+      "icon": "⚜️",
       "desc": "Keterampilan survival, simpul tali, kemandirian, dan bakti peduli sesama."
     },
     {
       "id": "ex-7",
       "name": "Klub Sains Cilik (STEM)",
       "category": "Sains",
-      "icon": "\ud83d\udd2c",
+      "icon": "🔬",
       "desc": "Eksperimen alam, roket air, eko-enzim, dan observasi botani madrasah."
     },
     {
       "id": "ex-8",
       "name": "Kaligrafi Arab & Desain",
       "category": "Seni Rupa",
-      "icon": "\u2712\ufe0f",
+      "icon": "✒️",
       "desc": "Menulis indah khat Naskhi dan Riq'ah serta ornamen geometri Islami."
     }
   ],
@@ -1122,5 +1122,5 @@
       "notes": "Dokumen lengkap, dalam antrean verifikasi panitia SPMB."
     }
   ],
-  "lastUpdated": "2026-10-10T01:17:57.117Z"
+  "lastUpdated": "2026-10-09T02:47:59.922Z"
 }
