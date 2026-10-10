@@ -1,0 +1,46 @@
+===================================================================
+PANDUAN LENGKAP UPLOAD WEBSITE MI RPI JAKARTA KE CPANEL RUMAHWEB
+===================================================================
+
+Paket zip ini berisi SEMUA file yang dibutuhkan untuk menjalankan website
+dan database backend MI RPI Jakarta secara permanen.
+
+-------------------------------------------------------------------
+LANGKAH 1: UPLOAD & EKSTRAK FILE
+-------------------------------------------------------------------
+1. Login ke cPanel hosting Rumahweb Anda.
+2. Buka menu "File Manager".
+3. Masuk ke folder "app/" (jika belum ada, buat folder baru bernama "app").
+4. Di dalam folder "app/", klik tombol "Upload" di menu atas.
+5. Upload file zip ini (cpanel-lengkap-misrpijakarta.zip).
+6. Setelah upload selesai 100%, klik kanan file zip lalu pilih "Extract".
+7. Pastikan di dalam folder "app/" sekarang ada:
+   - server.js        (file backend mandiri)
+   - package.json     (konfigurasi server)
+   - folder dist/     (tampilan web & asset)
+   - folder data/     (database murid, guru, profil)
+   - folder public/   (folder foto uploads)
+
+-------------------------------------------------------------------
+LANGKAH 2: AKTIFKAN DI MENU "SETUP NODE.JS APP"
+-------------------------------------------------------------------
+1. Kembali ke halaman utama cPanel, klik menu "Setup Node.js App".
+2. Atur konfigurasinya seperti berikut:
+   - Node.js version          : Pilih 18.x atau 20.x
+   - Application mode         : Pilih "Production"
+   - Application root         : app
+   - Application URL          : misrpijakarta.com (pilih domain utama)
+   - Application startup file : server.js
+3. Klik tombol "Save" (Simpan).
+4. Klik tombol "Restart" (ikon panah melingkar hijau/biru di atas).
+
+-------------------------------------------------------------------
+LANGKAH 3: CEK WEBSITE ANDA
+-------------------------------------------------------------------
+1. Buka browser: https://misrpijakarta.com
+2. Website langsung aktif normal!
+3. Sekarang, jika Anda login ke Portal Admin dan menambah data guru,
+   murid, atau upload foto kegiatan, semuanya akan TERSIMPAN PERMANEN
+   ke dalam folder data/ dan public/uploads/ di hosting cPanel Anda,
+   serta langsung muncul di HP dan semua perangkat lain!
+===================================================================

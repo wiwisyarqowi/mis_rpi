@@ -34,6 +34,22 @@ app.get('/cpanel-app.zip', (req: Request, res: Response) => {
   return res.status(404).send('File not found');
 });
 
+app.get('/cpanel-lengkap-misrpijakarta.zip', (req: Request, res: Response) => {
+  const zipPath = path.resolve(__dirname, 'public', 'cpanel-lengkap-misrpijakarta.zip');
+  if (fs.existsSync(zipPath)) {
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename="cpanel-lengkap-misrpijakarta.zip"');
+    return res.sendFile(zipPath);
+  }
+  const fallbackZip = path.resolve(__dirname, 'public', 'cpanel-app.zip');
+  if (fs.existsSync(fallbackZip)) {
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename="cpanel-lengkap-misrpijakarta.zip"');
+    return res.sendFile(fallbackZip);
+  }
+  return res.status(404).send('File not found');
+});
+
 // Persistent database storage on server disk
 const dataDir = path.resolve(__dirname, 'data');
 if (!fs.existsSync(dataDir)) {

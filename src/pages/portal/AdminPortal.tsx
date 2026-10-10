@@ -201,6 +201,50 @@ export const AdminPortal: React.FC = () => {
           </div>
         </div>
 
+        {/* PUSAT UNDUHAN FILE CPANEL (SELALU TAMPIL DI ATAS) */}
+        <div className="bg-gradient-to-r from-emerald-950 via-teal-900 to-slate-900 rounded-3xl p-6 text-white shadow-xl border-2 border-emerald-400/40">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-bold border border-emerald-400/30">
+                <Download size={14} />
+                <span>Pusat Unduhan File Deployment cPanel Rumahweb</span>
+              </div>
+              <h2 className="text-xl font-black text-white">
+                📦 File Unduhan Lengkap Website (Siap Upload ke cPanel)
+              </h2>
+              <p className="text-xs text-emerald-100 max-w-2xl leading-relaxed">
+                Klik tombol di samping untuk langsung mengunduh seluruh file website yang siap diekstrak di cPanel Rumahweb Anda:
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <a
+                href="/cpanel-lengkap-misrpijakarta.zip"
+                download="cpanel-lengkap-misrpijakarta.zip"
+                className="px-5 py-3.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black text-xs rounded-2xl shadow-lg transition flex items-center gap-2.5 cursor-pointer"
+              >
+                <Download size={18} className="text-slate-950" />
+                <div className="text-left">
+                  <div className="leading-tight font-black">Unduh Paket Lengkap (.ZIP)</div>
+                  <div className="text-[10px] font-semibold text-emerald-950 opacity-90">1.8 MB • Node.js + DB + Dist</div>
+                </div>
+              </a>
+
+              <a
+                href="/website-misrpijakarta-siap-cpanel.zip"
+                download="website-misrpijakarta-siap-cpanel.zip"
+                className="px-4 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-2xl border border-white/20 transition flex items-center gap-2.5 cursor-pointer"
+              >
+                <Download size={16} />
+                <div className="text-left">
+                  <div className="leading-tight">Paket Frontend Statis (.ZIP)</div>
+                  <div className="text-[10px] font-normal text-slate-300">704 KB • Langsung public_html</div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* Tab Controls */}
         <div className="flex justify-start overflow-x-auto pb-2 no-scrollbar">
           <div className="bg-white p-1 rounded-2xl border border-slate-200 shadow-xs inline-flex gap-1 overflow-x-auto max-w-full">
